@@ -8,7 +8,7 @@ import signal
 import sys
 from pathlib import Path
 
-# Add project root to sys.path to allow importing utils
+
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent.parent))
 from utils.data_handler import save_scraped_data
 
@@ -36,7 +36,7 @@ def scrape_topjobs_optimized(max_pages=100):
     print("=" * 80)
 
     all_jobs = []
-    seen_job_codes = set()  # Track what we've seen
+    seen_job_codes = set()  # Track what we've seen to avoid duplicates
     stop_requested = False
 
     def signal_handler(sig, frame):
@@ -98,7 +98,6 @@ def scrape_topjobs_optimized(max_pages=100):
                         company_match = re.search(r'<h1>([^<]+)</h1>', content)
                         company = company_match.group(1).strip() if company_match else "Unknown"
 
-                        # Extract ALL text content from the row
                         text_content = re.sub(r'<[^>]+>', ' ', content)
                         text_content = re.sub(r'\s+', ' ', text_content).strip()
 
@@ -108,7 +107,7 @@ def scrape_topjobs_optimized(max_pages=100):
                         posted_date = dates[0] if len(dates) > 0 else ""
                         closing_date = dates[1] if len(dates) > 1 else ""
 
-                        # Extract location - look for Sri Lankan cities
+                        # Extract location 
                         location = ""
                         locations = ['Colombo', 'Gampaha', 'Kandy', 'Galle', 'Matara', 'Negombo',
                                      'Jaffna', 'Batticaloa', 'Trincomalee', 'Kurunegala', 'Anuradhapura',
@@ -146,7 +145,7 @@ def scrape_topjobs_optimized(max_pages=100):
                 print(f"Extracted {extracted} unique")
 
                 if extracted == 0 and page > 5:
-                    print("\n   Multiple pages with 0 new jobs, stopping")
+                    print("\n Multiple pages with 0 new jobs, stopping")
                     break
 
                 time.sleep(2)
@@ -161,7 +160,6 @@ def scrape_topjobs_optimized(max_pages=100):
     print(f"{'=' * 80}")
 
     if all_jobs:
-        # Save with appropriate prefix
         prefix = "topjobs_PARTIAL" if stop_requested else "topjobs_FINAL"
         df = save_jobs_optimized(all_jobs, prefix=prefix)
 
@@ -193,7 +191,7 @@ def scrape_topjobs_optimized(max_pages=100):
 
 
 if __name__ == "__main__":
-    print("\n TOPJOBS scraper")
+    print("\n Topjobs scraper")
     print("\n Press Ctrl+C at any time to stop and save progress!\n")
 
     pages = input("Pages? (default=4 for ~1,500 jobs): ").strip()
