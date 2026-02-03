@@ -1,5 +1,3 @@
-
-
 from seleniumbase import SB
 import pandas as pd
 import time
@@ -13,6 +11,58 @@ sys.path.append(str(Path(__file__).resolve().parent.parent.parent.parent))
 from utils.data_handler import save_scraped_data
 
 
+def get_description(sb, url):
+    """Visits the job page and extracts the description."""
+    try:
+        sb.open(url)
+        # Wait for the main container or body
+        sb.wait_for_element_present("div#root, body", timeout=20)
+        sb.sleep(3) # Wait for React content
+        
+        # Check if we are stuck on a challenge page
+        body_text = sb.get_text("body")
+        if "confirm you are human" in body_text.lower():
+            print(f"  Bot detection hit for {url}")
+            return ""
+
+        # Extract the main text content
+        # Use body as a safer general fallback
+        text = sb.get_text("body")
+        
+        # If possible, narrow down to root to avoid nav/footer noise
+        try:
+            root_text = sb.get_text("div#root")
+            if root_text and len(root_text) > 100:
+                text = root_text
+        except:
+            pass
+
+        # Clean: Remove header/footer noise by finding logical bounds
+        if "Job Role" in text:
+            parts = text.split("Job Role", 1)
+            if len(parts) > 1:
+                description = parts[1].split("Related Jobs", 1)[0]
+                return ("Job Role " + description).strip()
+        
+        # Alternative markers
+        for marker in ["Job Description", "Key Duties", "The role requires"]:
+            if marker in text:
+                description = text.split(marker, 1)[1].split("Related Jobs", 1)[0]
+                return (marker + description).strip()
+
+        # Fallback to a simpler slice if 'Job Role' isn't standard
+        if "APPLY FOR JOB" in text:
+            parts = text.split("APPLY FOR JOB", 2)
+            if len(parts) > 2:
+                desc = parts[1].split("Related Jobs", 1)[0]
+                return desc.strip()
+
+        return text.strip() if text else ""
+    except Exception as e:
+        print(f"  Error extracting description for {url}: {str(e)[:100]}")
+        return ""
+
+
 def scrape_all_categories(max_pages_per_category=3):
 
 
@@ -21,18 +71,14 @@ def scrape_all_categories(max_pages_per_category=3):
         "Software Engineering": [
             "software engineer",
             "software developer",
-            "full stack developer",
-            "backend developer",
-            "frontend developer",
-            "mobile developer",
-            "web developer",
-            "developer"
+            "developer",
+            "intern"
         ],
         "Data & AI": [
             "data analyst",
             "data scientist",
             "business intelligence",
-            "data engineer",
+            "data",
             "machine learning",
             "AI "
         ],
@@ -118,7 +164,9 @@ def scrape_all_categories(max_pages_per_category=3):
             "civil engineer",
             "mechanical engineer",
             "electrical engineer",
-            "industrial engineer"
+            "industrial engineer",
+            "architect",
+            "Statistics"
         ],
 
         # HEALTHCARE
@@ -141,8 +189,7 @@ def scrape_all_categories(max_pages_per_category=3):
         "Management": [
             "manager",
             "executive",
-            "supervisor",
-            "chef"
+            "supervisor"
         ]
     }
 
@@ -152,115 +199,124 @@ def scrape_all_categories(max_pages_per_category=3):
     print(f"Categories to scrape: {len(job_categories)}")
     print(f"Total search terms: {sum(len(terms) for terms in job_categories.values())}")
     print(f"Pages per category: {max_pages_per_category}")
+    print("(Getting descriptions)")
     print("=" * 80)
 
     all_jobs = []
-    total_scraped = 0
     category_count = 0
 
     with SB(uc=True, headless=True) as sb:
+        try:
+            for category, search_terms in job_categories.items():
+                category_count += 1
+                print(f"\n{'=' * 80}")
+                print(f"[{category_count}/{len(job_categories)}] CATEGORY: {category}")
+                print(f"{'=' * 80}")
 
-        for category, search_terms in job_categories.items():
-            category_count += 1
-            print(f"\n{'=' * 80}")
-            print(f"[{category_count}/{len(job_categories)}] CATEGORY: {category}")
-            print(f"{'=' * 80}")
+                category_jobs = []
 
-            category_jobs = []
+                for search_term in search_terms:
+                    print(f"\nSearching: {search_term}")
 
-            for search_term in search_terms:
-                print(f"\nSearching: {search_term}")
+                    term_jobs = []
 
-                term_jobs = []
+                    for page in range(1, max_pages_per_category + 1):
+                        try:
+                            url = f"https://xpress.jobs/jobs?KeyWord={search_term.replace(' ', '%20')}&page={page}"
 
-                for page in range(1, max_pages_per_category + 1):
-                    try:
-                        url = f"https://xpress.jobs/jobs?KeyWord={search_term.replace(' ', '%20')}&page={page}"
+                            sb.open(url)
+                            sb.sleep(5)
 
-                        sb.open(url)
-                        sb.sleep(5)
+                            sb.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                            sb.sleep(8)
 
-                        sb.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                        sb.sleep(8)
-
-                       
-                        links = sb.find_elements("a[href*='/jobs/view/'], a[href*='/Jobs/View']")
-
-                        if not links:
-                            if page == 1:
-                                print(f"Page {page}: No jobs found")
-                            break
-
-                        print(f"Page {page}: Found {len(links)} listings", end="")
-
-                        seen_urls = set()
-                        page_count = 0
-
-                        for link in links:
+                           
+                            # Use a controlled timeout to check for listings
                             try:
-                                job_url = link.get_attribute('href')
+                                # Wait for at least one link to appear, or timeout if empty
+                                links = sb.find_elements("a[href*='/jobs/view/'], a[href*='/Jobs/View']", timeout=10)
+                            except Exception:
+                                links = []
 
-                                if job_url in seen_urls:
+                            if not links:
+                                if page == 1:
+                                    print(f"Page {page}: No jobs found")
+                                else:
+                                    print(f"Page {page}: Reached end of results")
+                                break
+
+                            # 1. Collect all job metadata on the search page first
+                            # This avoids StaleElementReference errors when navigating back and forth
+                            job_metadata = []
+                            for link in links:
+                                try:
+                                    raw_url = link.get_attribute('href')
+                                    if not raw_url: continue
+                                    job_url = raw_url if raw_url.startswith('http') else f"https://xpress.jobs{raw_url}"
+                                    title_text = link.text.strip()
+                                    if not title_text or len(title_text) < 5: continue
+                                    
+                                    if job_url not in [m['job_url'] for m in job_metadata]:
+                                        job_metadata.append({'title': title_text, 'job_url': job_url})
+                                except:
                                     continue
-                                seen_urls.add(job_url)
 
-                                # Get text
-                                title_text = link.text.strip()
+                            if not job_metadata:
+                                break
 
-                                if not title_text or len(title_text) < 5:
+                            page_count = 0
+                            print(f"Page {page}: Processing {len(job_metadata)} listings", flush=True)
+
+                            # 2. Now visit each job one by one
+                            for meta in job_metadata:
+                                try:
+                                    print(f"  * {meta['title'][:40]}...", end="", flush=True)
+                                    description = get_description(sb, meta['job_url'])
+                                    
+                                    job = {
+                                        'raw_title': meta['title'],
+                                        'job_url': meta['job_url'],
+                                        'description': description,
+                                        'category': category,
+                                        'search_term': search_term,
+                                        'scraped_date': datetime.now().strftime('%Y-%m-%d')
+                                    }
+                                    all_jobs.append(job)
+                                    page_count += 1
+                                    print(f" (desc captured) [Total: {len(all_jobs)}]")
+                                    
+                                except Exception as e:
+                                    print(f" (failed: {str(e)[:30]})")
                                     continue
 
-                                # Create job entry
-                                job = {
-                                    'raw_title': title_text,
-                                    'job_url': job_url if job_url.startswith(
-                                        'http') else f"https://xpress.jobs{job_url}",
-                                    'category': category,
-                                    'search_term': search_term,
-                                    'scraped_date': datetime.now().strftime('%Y-%m-%d')
-                                }
+                            print(f" → Extracted {page_count}")
 
-                                term_jobs.append(job)
-                                page_count += 1
+                            if page_count == 0:
+                                break
 
-                            except Exception as e:
-                                continue
+                            time.sleep(5)
 
-                        print(f" → Extracted {page_count}")
-
-                        if page_count == 0:
+                        except Exception as e:
+                            print(f" Error on page {page}: {str(e)[:60]}")
                             break
 
-                        time.sleep(5)
-
-                    except Exception as e:
-                        print(f" Error on page {page}: {str(e)[:60]}")
-                        break
-
-                if term_jobs:
-                    category_jobs.extend(term_jobs)
-                    print(f"Total for '{search_term}': {len(term_jobs)}")
-                else:
-                    print(f" No jobs for '{search_term}'")
-
-                time.sleep(1)
-
-            if category_jobs:
-                all_jobs.extend(category_jobs)
-                total_scraped += len(category_jobs)
-                print(f"\n   Category '{category}' total: {len(category_jobs)} jobs")
-
-            # Brief pause between categories
-            time.sleep(2)
+                # Brief pause between categories
+                time.sleep(2)
+        except KeyboardInterrupt:
+            print("\n" + "!" * 80)
+            print("SCRAPING stopped (KeyboardInterrupt)\n Saved Data")
+            print("!" * 80)
 
     print("\n" + "=" * 80)
-    print("SCRAPING COMPLETE")
+    print("Scraping done sucessfully")
     print("=" * 80)
-    print(f"Total jobs scraped: {total_scraped}")
+    print(f"Total entries in session: {len(all_jobs)}")
 
     if all_jobs:
         # Create DataFrame
+        print(f"Debug: all_jobs first item keys: {all_jobs[0].keys() if all_jobs else 'empty'}")
         df = pd.DataFrame(all_jobs)
+        print(f"Debug: df columns before cleaning: {df.columns.tolist()}")
 
         # Remove duplicates by URL
         initial_count = len(df)
@@ -287,10 +343,10 @@ def scrape_all_categories(max_pages_per_category=3):
 
        
         print("\n" + "=" * 80)
-        print("STATISTICS")
-        print("=" * 80)
+        print("STATISTICS\n")
+      
 
-        print("\nJobs by Category:")
+        print("Jobs by Category:")
         print(cleaned_df['category'].value_counts().to_string())
 
         print("\nTop Job Titles:")
@@ -419,6 +475,7 @@ def clean_job_data(df):
                 'job_type': job_type,
                 'days_left': days_left,
                 'level': level,
+                'description': row.get('description', ''),
                 'job_url': row['job_url'],
                 'category': row['category'],
                 'search_term': row['search_term'],
@@ -457,7 +514,7 @@ if __name__ == "__main__":
         max_pages = 3
     
     except KeyboardInterrupt:
-        print("\n\ Scraping interrupted by user (Ctrl+C).")
+        print("\nScraping interrupted by user (Ctrl+C).")
         print(" Exiting...")
 
     print(f"\nStarting FULL scrape with {max_pages} page(s) per category...\n")
