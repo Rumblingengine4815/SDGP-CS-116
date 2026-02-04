@@ -399,11 +399,11 @@ def main():
         print(f"✓ pickacourse.lk: {len(courses)} courses")
         print()
     except KeyboardInterrupt:
-        print("\n⚠️  Interrupted! Saving...")
+        print("\n Interrupted! Saving...")
         save_to_csv(all_courses, output_file)
         return
     except Exception as e:
-        print(f"✗ Error: {e}")
+        print(f" Error: {e}")
 
     # 2. coursenet.lk
     print("[2/3] Scraping coursenet.lk...")
@@ -416,7 +416,7 @@ def main():
         print(f"✓ coursenet.lk: {len(courses)} courses")
         print()
     except KeyboardInterrupt:
-        print("\n⚠️  Interrupted! Saving...")
+        print("\n Interrupted! Saving...")
         save_to_csv(all_courses, output_file)
         return
     except Exception as e:
@@ -433,11 +433,11 @@ def main():
         print(f"✓ course.lk: {len(courses)} courses")
         print()
     except KeyboardInterrupt:
-        print("\n⚠️  Interrupted! Saving...")
+        print("\nInterrupted! Saving...")
         save_to_csv(all_courses, output_file)
         return
     except Exception as e:
-        print(f"✗ Error: {e}")
+        print(f" Error: {e}")
 
     # Summary
     print("\n" + "=" * 80)
@@ -459,7 +459,7 @@ def main():
         for l, c in sorted(levels.items(), key=lambda x: x[1], reverse=True)[:10]:
             print(f"  {l}: {c}")
 
-        print(f"\n💾 File: {output_file}")
+        print(f"\n File: {output_file}")
         print("=" * 80)
 
 
@@ -469,4 +469,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\n\nInterrupted")
     except Exception as e:
-        print(f"\n✗ Error: {e}")
+        print(f"\n Error: {e}")
