@@ -23,7 +23,7 @@ export default function Hero() {
                         tailored to your skills, interests, and real-time job market trends.
                     </p>
 
-                    /* {/* App Store Buttons */}
+                    {/* App Store Buttons */}
                     <div className="mt-1 flex flex-wrap items-center gap-4">
                         <a
                             href="#"
@@ -57,7 +57,7 @@ export default function Hero() {
 
                         </a>
 
-                    </div> */
+                    </div>
                 </div>
 
                 {/* RIGHT VISUAL */}
