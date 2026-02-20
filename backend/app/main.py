@@ -54,3 +54,37 @@ def status():
     if engine is None:
         return {"engine_loaded": False, "error": startup_error}
     return {"engine_loaded": True}
+
+@app.post("/api/recommend")
+def recommend(req: RecommendRequest):
+    """
+    Generate job and course recommendations using ML engine
+    """
+
+    # Safety check
+    if engine is None:
+        return {
+            "error": "Recommendation engine not loaded"
+        }
+
+    # Call ML engine for job recommendations
+    jobs = engine.recommend_jobs(
+        target_role=req.target_role,
+        skills=req.skills,
+        interests=req.interests,
+        top_n=req.top_n
+    )
+
+    # Call ML engine for course recommendations
+    courses = engine.recommend_courses(
+        target_role=req.target_role,
+        skills=req.skills,
+        interests=req.interests,
+        top_n=req.top_n
+    )
+
+    return {
+        "target_role": req.target_role,
+        "jobs": jobs,
+        "courses": courses
+    }
