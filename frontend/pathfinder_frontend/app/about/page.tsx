@@ -6,45 +6,45 @@ export default function AboutPage() {
   const teamMembers = [
     {
       name: "Lorion Ravindradasan",
-      role: "Project Leader / Main ML Dev",
+      role: "Project Leader / ML Dev",
       image: "/team/lorion.jpg",
       linkedin: "https://www.linkedin.com/in/lorion-ravindradasan/",
-      github: "https://github.com/LorionRavindradasan",
+      github: "https://github.com/Rumblingengine4815",
     },
     {
       name: "Senuth Kodithuwakku",
       role: "Full Stack Developer",
       image: "https://ui-avatars.com/api/?name=Senuth+Kodithuwakku&size=256&background=7c3aed&color=fff",
       linkedin: "https://www.linkedin.com/in/senuth-kodithuwakku/",
-      github: "https://github.com/LorionRavindradasan",
+      github: "https://github.com/SenuX69",
     },
     {
       name: "Nithila Mandiw",
       role: "Backend and Growth Lead",
       image: "https://ui-avatars.com/api/?name=Nithila+Mandiw&size=256&background=7c3aed&color=fff",
       linkedin: "https://www.linkedin.com/in/nithila-mandiw/",
-      github: "https://github.com/LorionRavindradasan",
+      github: "https://github.com/nithilamandiw",
     },
     {
       name: "Thathsara Samarakoon",
-      role: "RAG Developer",
+      role: "Bot Developer",
       image: "https://ui-avatars.com/api/?name=Thathsara+Samarakoon&size=256&background=7c3aed&color=fff",
       linkedin: "https://www.linkedin.com/in/thathsara-samarakoon/",
-      github: "https://github.com/LorionRavindradasan",
+      github: "https://github.com/thathsara336",
     },
     {
       name: "Dineth Weerasekara",
-      role: "Product and ML Developer",
+      role: "Product Developer",
       image: "https://ui-avatars.com/api/?name=Dineth+Weerasekara&size=256&background=7c3aed&color=fff",
       linkedin: "https://www.linkedin.com/in/dineth-weerasekara/",
-      github: "https://github.com/LorionRavindradasan",
+      github: "https://github.com/DinethWr",
     },
     {
       name: "Anton Jude",
       role: "UI/UX Developer",
       image: "/team/jude.jpeg",
       linkedin: "https://www.linkedin.com/in/anton-jude-702810253/",
-      github: "https://github.com/LorionRavindradasan",
+      github: "https://github.com/judethayaan",
     },
   ];
 
@@ -56,7 +56,7 @@ export default function AboutPage() {
             Meet the Team
           </h2>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-            The people building PathFinder+ — combining AI, engineering, and design to revolutionize career guidance.
+            The people building PathFinder+ — combining AI,ML and grit with design to revolutionize career guidance for everyone.
           </p>
         </div>
 
