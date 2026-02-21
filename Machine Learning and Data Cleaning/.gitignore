@@ -1,0 +1,32 @@
+# Python Caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment Variables
+.env
+
+# Data Exclusion (Crucial)
+# We keep PROCESSED data, but exclude raw scraper outputs to keep repo small
+Machine Learning and Data Cleaning/data/raw/scrapers/
+Machine Learning and Data Cleaning/data/raw/*.csv
+Machine Learning and Data Cleaning/data/raw/esco/*.csv
+Machine Learning and Data Cleaning/data/raw/assessment/*.json
+Machine Learning and Data Cleaning/models/*.pt
+
+
+# Logs & Temp
+*.log
+Machine Learning and Data Cleaning/logs/
+Machine Learning and Data Cleaning/temp/
+persona_test_results.txt
+persona_test_utf8.txt
+
+# Model artifacts (Large files)
+# Typically kept in a separate storage or ignored if they can be regenerated easily
+# But for handoff, we might include them. If too large, ignore:
+# Machine Learning and Data Cleaning/models/*.pt
+
+# OS specific
+.DS_Store
+Thumbs.db

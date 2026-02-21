@@ -1,0 +1,171 @@
+[
+    {
+        "input": {
+            "role": "Nurse",
+            "band": 1,
+            "skills": [
+                "Patient Care",
+                "Nursing",
+                "Basic Life Support"
+            ]
+        },
+        "progression": [
+            {
+                "type": "Vertical (Promotion)",
+                "role": "Professional Nurse",
+                "target_band": 2,
+                "typical_years": "2-4 years",
+                "advice": "Focus on moving from Independent to Professional responsibilities."
+            },
+            {
+                "type": "Horizontal (Transition)",
+                "role": "specialist nurse",
+                "target_band": 1,
+                "typical_years": "6-12 months",
+                "advice": "Leverage your existing skill overlap to switch domains."
+            },
+            {
+                "type": "Horizontal (Transition)",
+                "role": "nursing lecturer",
+                "target_band": 1,
+                "typical_years": "6-12 months",
+                "advice": "Leverage your existing skill overlap to switch domains."
+            }
+        ]
+    },
+    {
+        "input": {
+            "role": "Business Analyst",
+            "band": 2,
+            "skills": [
+                "Requirements Gathering",
+                "SQL",
+                "Stakeholder Management"
+            ]
+        },
+        "progression": [
+            {
+                "type": "Vertical (Promotion)",
+                "role": "Lead Business Analyst",
+                "target_band": 3,
+                "typical_years": "2-4 years",
+                "advice": "Focus on moving from Professional to Lead responsibilities."
+            },
+            {
+                "type": "Horizontal (Transition)",
+                "role": "financial analyst",
+                "target_band": 2,
+                "typical_years": "6-12 months",
+                "advice": "Leverage your existing skill overlap to switch domains."
+            },
+            {
+                "type": "Horizontal (Transition)",
+                "role": "accounting analyst",
+                "target_band": 2,
+                "typical_years": "6-12 months",
+                "advice": "Leverage your existing skill overlap to switch domains."
+            }
+        ]
+    },
+    {
+        "input": {
+            "role": "UI/UX Designer",
+            "band": 1,
+            "skills": [
+                "Figma",
+                "Prototyping",
+                "User Research"
+            ]
+        },
+        "progression": [
+            {
+                "type": "Vertical (Promotion)",
+                "role": "Professional UI/UX Designer",
+                "target_band": 2,
+                "typical_years": "2-4 years",
+                "advice": "Focus on moving from Independent to Professional responsibilities."
+            },
+            {
+                "type": "Horizontal (Transition)",
+                "role": "user interface developer",
+                "target_band": 1,
+                "typical_years": "6-12 months",
+                "advice": "Leverage your existing skill overlap to switch domains."
+            },
+            {
+                "type": "Horizontal (Transition)",
+                "role": "web designer",
+                "target_band": 1,
+                "typical_years": "6-12 months",
+                "advice": "Leverage your existing skill overlap to switch domains."
+            }
+        ]
+    },
+    {
+        "input": {
+            "role": "Cybersecurity Specialist",
+            "band": 3,
+            "skills": [
+                "Network Security",
+                "Pentesting",
+                "Incident Response"
+            ]
+        },
+        "progression": [
+            {
+                "type": "Vertical (Promotion)",
+                "role": "Executive Cybersecurity Specialist",
+                "target_band": 4,
+                "typical_years": "2-4 years",
+                "advice": "Focus on moving from Lead to Executive responsibilities."
+            },
+            {
+                "type": "Horizontal (Transition)",
+                "role": "security consultant",
+                "target_band": 3,
+                "typical_years": "6-12 months",
+                "advice": "Leverage your existing skill overlap to switch domains."
+            },
+            {
+                "type": "Horizontal (Transition)",
+                "role": "ICT security administrator",
+                "target_band": 3,
+                "typical_years": "6-12 months",
+                "advice": "Leverage your existing skill overlap to switch domains."
+            }
+        ]
+    },
+    {
+        "input": {
+            "role": "Software Engineer",
+            "band": 0,
+            "skills": [
+                "Python",
+                "HTML/CSS"
+            ]
+        },
+        "progression": [
+            {
+                "type": "Vertical (Promotion)",
+                "role": "Independent Software Engineer",
+                "target_band": 1,
+                "typical_years": "2-4 years",
+                "advice": "Focus on moving from Intern to Independent responsibilities."
+            },
+            {
+                "type": "Horizontal (Transition)",
+                "role": "application engineer",
+                "target_band": 0,
+                "typical_years": "6-12 months",
+                "advice": "Leverage your existing skill overlap to switch domains."
+            },
+            {
+                "type": "Horizontal (Transition)",
+                "role": "software analyst",
+                "target_band": 0,
+                "typical_years": "6-12 months",
+                "advice": "Leverage your existing skill overlap to switch domains."
+            }
+        ]
+    }
+]

@@ -1,0 +1,21 @@
+job_title,paylab_category,min_salary_lkr,avg_salary_lkr,max_salary_lkr,description,source
+Software Engineer,Information Technology,200000,268000,350000,"Developing applications and analyzing customer requirements. Participating in technical specifications and testing.",paylab.com
+Data Scientist,Information Technology,250000,300000,400000,"ML model development and data analysis. Processing datasets and implementing prediction algorithms.",paylab.com
+Full Stack Developer,Information Technology,180000,250000,320000,"Developing both frontend and backend applications. Working with databases and APIs.",paylab.com
+DevOps Engineer,Information Technology,250000,304000,450000,"CI/CD pipeline management and cloud infrastructure. Automation and deployment optimization.",paylab.com
+Product Manager,Management,200000,300000,400000,"Product strategy and roadmap planning. Stakeholder management and feature prioritization.",paylab.com
+Business Analyst,Economy Finance Accountancy,120000,180000,250000,"Analyzing business requirements and processes. Creating reports and recommendations.",paylab.com
+UI/UX Designer,Information Technology,100000,150000,200000,"Designing user interfaces and experiences. Creating wireframes and prototypes.",paylab.com
+Project Manager,Management,150000,220000,300000,"Managing project timelines and resources. Coordinating teams and stakeholders.",paylab.com
+Marketing Manager,Marketing Advertising PR,120000,180000,250000,"Developing marketing strategies and campaigns. Managing brand and digital presence.",paylab.com
+HR Manager,Human Resources,100000,150000,200000,"Managing recruitment and employee relations. Developing HR policies and programs.",paylab.com
+Accountant,Economy Finance Accountancy,80000,120000,150000,"Managing financial records and preparing reports. Ensuring compliance with regulations.",paylab.com
+Civil Engineer,Construction Real Estate,100000,150000,200000,"Designing and overseeing construction projects. Ensuring structural integrity and safety.",paylab.com
+Electrical Engineer,Electrical Power Engineering,90000,140000,180000,"Designing electrical systems and components. Testing and troubleshooting installations.",paylab.com
+Mechanical Engineer,Mechanical Engineering,90000,140000,180000,"Designing mechanical systems and equipment. Analyzing performance and efficiency.",paylab.com
+Nurse,Medicine Social Care,60000,90000,120000,"Providing patient care and medical assistance. Administering treatments and medications.",paylab.com
+Teacher,Education Science Research,50000,80000,100000,"Planning and delivering educational content. Assessing student progress and development.",paylab.com
+Sales Executive,Commerce,60000,100000,150000,"Managing client relationships and sales targets. Identifying business opportunities.",paylab.com
+Customer Service Representative,Customer Support,40000,60000,80000,"Handling customer inquiries and complaints. Providing product support and solutions.",paylab.com
+Graphic Designer,Arts Culture,60000,90000,120000,"Creating visual designs and graphics. Working with branding and marketing materials.",paylab.com
+Content Writer,Journalism Printing Arts Media,50000,80000,100000,"Writing and editing content for various platforms. Researching topics and SEO optimization.",paylab.com

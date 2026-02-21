@@ -1,0 +1,134 @@
+{
+    "Compulsory": {
+        "Personal_Background": [
+            {
+                "id": "career_stage",
+                "question": "What is your current career stage?",
+                "options": [
+                    "Student",
+                    "Intern / Trainee",
+                    "Entry-level Professional",
+                    "Experienced Professional",
+                    "Career Switcher"
+                ],
+                "purpose": "context_setting"
+            },
+            {
+                "id": "highest_education",
+                "question": "What is your highest level of completed or ongoing education?",
+                "options": [
+                    "GCE O/L",
+                    "GCE A/L",
+                    "Diploma / NVQ 4",
+                    "Higher Diploma / NVQ 5",
+                    "Bachelor's Degree",
+                    "Master's / PhD"
+                ],
+                "purpose": "base_qualification"
+            },
+            {
+                "id": "experience_years",
+                "question": "How many years of professional experience do you have?",
+                "options": [
+                    "0 (None)",
+                    "1-2 years",
+                    "3-5 years",
+                    "6-10 years",
+                    "10+ years"
+                ],
+                "purpose": "seniority_check"
+            },
+            {
+                "id": "major_subjects",
+                "question": "Which subjects/modules did you find most engaging during your studies?",
+                "options": [
+                    "Software Engineering / Programming",
+                    "Management / HR",
+                    "Finance / Accounting",
+                    "Graphic Design / UI-UX",
+                    "Marketing / Content",
+                    "Data Science / Math"
+                ],
+                "type": "multi_select",
+                "purpose": "interest_anchoring"
+            }
+        ],
+        "Responsibility_Scenarios": [
+            {
+                "id": "autonomy_scen",
+                "question": "When given a high-level goal from a manager without a detailed guide, how do you proceed?",
+                "options": [
+                    "Wait for a detailed step-by-step checklist.",
+                    "Ask for a brief outline and research the execution myself.",
+                    "Plan the strategy, research tools, and propose a solution before starting.",
+                    "Coordinate the team's response and set the strategic direction."
+                ],
+                "purpose": "band_inference",
+                "weight": 1.5
+            },
+            {
+                "id": "problem_solving_scen",
+                "question": "If you discover a major error in a project that isn't your direct fault, your reaction is:",
+                "options": [
+                    "I ignore it as it's outside my assigned scope.",
+                    "I alert my supervisor and wait for their specific instructions.",
+                    "I report it and attempt to fix it to ensure project success.",
+                    "I organize a review to fix the root cause and prevent future occurrences."
+                ],
+                "purpose": "ownership_check",
+                "weight": 1.5
+            }
+        ]
+    },
+    "Optional": {
+        "Refinement": [
+            {
+                "id": "preferred_industry",
+                "question": "Is there a specific industry you are most interested in?",
+                "options": [
+                    "FinTech",
+                    "Healthcare / MedTech",
+                    "E-commerce",
+                    "GovTech",
+                    "Education",
+                    "No preference"
+                ],
+                "purpose": "industry_filtering"
+            },
+            {
+                "id": "growth_preference",
+                "question": "What is your primary goal for upskilling right now?",
+                "options": [
+                    "Quick certification for immediate job readiness.",
+                    "Academic degree/diploma for long-term career stability.",
+                    "Gaining a specific niche technical skill.",
+                    "Developing leadership and management capabilities."
+                ],
+                "purpose": "recommendation_tuning"
+            },
+            {
+                "id": "work_mode",
+                "question": "What is your preferred mode of working?",
+                "options": [
+                    "Strictly On-site",
+                    "Hybrid (2-3 days office)",
+                    "Strictly Remote",
+                    "No preference"
+                ],
+                "purpose": "job_match_filtering"
+            },
+            {
+                "id": "education_type",
+                "question": "Which type of education are you currently looking for?",
+                "options": [
+                    "BSc / Undergraduate Degree",
+                    "MSc / Postgraduate Degree",
+                    "Professional Certification",
+                    "Diploma",
+                    "No preference"
+                ],
+                "purpose": "education_filtering"
+            }
+        ]
+    }
+}

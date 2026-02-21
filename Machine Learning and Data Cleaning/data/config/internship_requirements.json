@@ -1,0 +1,160 @@
+{
+    "software_engineering_intern": {
+        "role_title": "Software Engineering Intern",
+        "skills_required": [
+            "Basic programming (Python/Java/JavaScript)",
+            "Git fundamentals",
+            "Problem-solving ability",
+            "Data structures basics"
+        ],
+        "education_requirement": "Pursuing CS/IT/Software Engineering degree or A-L completed with strong math/science background",
+        "duration_months": "3-6",
+        "typical_stipend_lkr_min": 15000,
+        "typical_stipend_lkr_max": 30000,
+        "next_role": "Junior Software Engineer",
+        "learning_outcomes": [
+            "Version control proficiency",
+            "Code review participation",
+            "Agile methodology exposure",
+            "Production code contribution"
+        ]
+    },
+    "backend_development_intern": {
+        "role_title": "Backend Development Intern",
+        "skills_required": [
+            "Server-side programming basics (Node.js/Python/Java)",
+            "Database fundamentals (SQL)",
+            "RESTful API concepts",
+            "Git version control"
+        ],
+        "education_requirement": "Pursuing CS/IT degree or relevant bootcamp completion",
+        "duration_months": "3-6",
+        "typical_stipend_lkr_min": 15000,
+        "typical_stipend_lkr_max": 30000,
+        "next_role": "Junior Backend Developer"
+    },
+    "frontend_development_intern": {
+        "role_title": "Frontend Development Intern",
+        "skills_required": [
+            "HTML/CSS/JavaScript",
+            "Responsive design principles",
+            "Version control (Git)",
+            "UI/UX awareness"
+        ],
+        "education_requirement": "Pursuing CS/IT/Design degree or self-taught with portfolio",
+        "duration_months": "3-6",
+        "typical_stipend_lkr_min": 15000,
+        "typical_stipend_lkr_max": 28000,
+        "next_role": "Junior Frontend Developer"
+    },
+    "data_analytics_intern": {
+        "role_title": "Data Analytics Intern",
+        "skills_required": [
+            "Excel proficiency",
+            "Basic SQL",
+            "Data visualization tools (Tableau/Power BI basics)",
+            "Analytical thinking"
+        ],
+        "education_requirement": "Pursuing degree in Statistics/Math/Business/CS or A-L with strong analytical background",
+        "duration_months": "3-6",
+        "typical_stipend_lkr_min": 15000,
+        "typical_stipend_lkr_max": 25000,
+        "next_role": "Junior Data Analyst"
+    },
+    "business_analyst_intern": {
+        "role_title": "Business Analyst Intern",
+        "skills_required": [
+            "Requirements gathering",
+            "Process documentation",
+            "Stakeholder communication",
+            "Analytical skills"
+        ],
+        "education_requirement": "Pursuing Business/IT/Management degree",
+        "duration_months": "3-6",
+        "typical_stipend_lkr_min": 12000,
+        "typical_stipend_lkr_max": 25000,
+        "next_role": "Junior Business Analyst"
+    },
+    "qa_intern": {
+        "role_title": "QA Intern",
+        "skills_required": [
+            "Testing fundamentals",
+            "Bug reporting",
+            "Test case creation",
+            "Attention to detail"
+        ],
+        "education_requirement": "Pursuing CS/IT degree or relevant certification",
+        "duration_months": "3-6",
+        "typical_stipend_lkr_min": 12000,
+        "typical_stipend_lkr_max": 22000,
+        "next_role": "Junior QA Engineer"
+    },
+    "devops_intern": {
+        "role_title": "DevOps Intern",
+        "skills_required": [
+            "Linux basics",
+            "CI/CD concepts",
+            "Cloud platform exposure (AWS/Azure)",
+            "Scripting fundamentals (Bash/Python)"
+        ],
+        "education_requirement": "Pursuing CS/IT degree with systems/networking interest",
+        "duration_months": "3-6",
+        "typical_stipend_lkr_min": 15000,
+        "typical_stipend_lkr_max": 28000,
+        "next_role": "Junior DevOps Engineer"
+    },
+    "uiux_design_intern": {
+        "role_title": "UI/UX Design Intern",
+        "skills_required": [
+            "Design tools (Figma/Adobe XD)",
+            "User research basics",
+            "Wireframing",
+            "Design principles"
+        ],
+        "education_requirement": "Pursuing Design/HCI/CS degree or design bootcamp completion",
+        "duration_months": "3-6",
+        "typical_stipend_lkr_min": 12000,
+        "typical_stipend_lkr_max": 25000,
+        "next_role": "Junior UI/UX Designer"
+    },
+    "marketing_intern": {
+        "role_title": "Marketing Intern",
+        "skills_required": [
+            "Social media basics",
+            "Content creation",
+            "Market research",
+            "Communication skills"
+        ],
+        "education_requirement": "Pursuing Marketing/Business/Communications degree",
+        "duration_months": "3-6",
+        "typical_stipend_lkr_min": 10000,
+        "typical_stipend_lkr_max": 20000,
+        "next_role": "Marketing Coordinator"
+    },
+    "hr_intern": {
+        "role_title": "HR Intern",
+        "skills_required": [
+            "Recruitment basics",
+            "HRIS familiarity",
+            "Employee relations",
+            "Organizational skills"
+        ],
+        "education_requirement": "Pursuing HR/Business/Psychology degree",
+        "duration_months": "3-6",
+        "typical_stipend_lkr_min": 10000,
+        "typical_stipend_lkr_max": 20000,
+        "next_role": "HR Coordinator"
+    },
+    "general_requirements": {
+        "soft_skills": [
+            "Communication",
+            "Teamwork",
+            "Time management",
+            "Willingness to learn",
+            "Adaptability"
+        ],
+        "typical_work_hours": "Full-time (40 hrs/week) or Part-time (20-30 hrs/week)",
+        "remote_availability": "Hybrid or on-site preferred for learning",
+        "mentorship": "Assigned mentor/supervisor for guidance"
+    }
+}
