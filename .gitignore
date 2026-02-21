@@ -9,7 +9,7 @@ __pycache__/
 env/
 venv/
 
-# Documentation Exclusions (As requested)
+# Documentation Exclusions 
 *.md
 
 # Logs & Temp Exclusions
@@ -31,7 +31,6 @@ Machine Learning and Data Cleaning/data/raw/*.csv
 !Machine Learning and Data Cleaning/data/raw/assessment/*.json
 
 # Folder Exclusions
-backend/
 tmp/
 .vscode/
 .idea/
