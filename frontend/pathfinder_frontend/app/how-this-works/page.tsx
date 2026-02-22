@@ -29,7 +29,7 @@ export default function HowThisWorksPage() {
   return (
     <div className="min-h-screen bg-white text-slate-900">
       <div className="max-w-5xl mx-auto space-y-12 py-12 px-6">
-        {/* Hero */}
+      
         <section className="animate-fade-up text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-extrabold !text-slate-900 tracking-tight">
             The <span className="text-purple-600">PathFinder+</span> Advantage
@@ -40,12 +40,12 @@ export default function HowThisWorksPage() {
           </p>
         </section>
 
-        {/* Interactive Stepper */}
+        
         <section className="bg-white/60 rounded-[40px] p-2 md:p-8 border border-purple-300">
           <Stepper steps={steps} />
         </section>
 
-        {/* Two info cards */}
+        
         <section className="pt-4 grid md:grid-cols-2 gap-8 text-center md:text-left">
           <div className="p-8 rounded-3xl bg-white border border-purple-100 shadow-sm">
             <h3 className="text-xl font-bold text-slate-900">Why choose our AI?</h3>
@@ -63,7 +63,7 @@ export default function HowThisWorksPage() {
           </div>
         </section>
 
-        {/* Image + step cards layout */}
+      
         <section className="py-16 bg-white rounded-3xl border border-purple-100 px-6">
           <div className="w-full max-w-7xl px-4 md:px-5 mx-auto">
             <div className="w-full flex-col justify-start items-center lg:gap-12 gap-8 inline-flex">
@@ -105,7 +105,7 @@ export default function HowThisWorksPage() {
 
         {/* Ambient grid of steps */}
         <section className="relative bg-gradient-to-b from-purple-100 to-purple-50 py-16 rounded-[40px] overflow-hidden">
-          {/* Glow */}
+          
           <div
             className="absolute inset-0 m-auto max-w-xs h-[357px] blur-[118px] sm:max-w-md md:max-w-lg pointer-events-none"
             style={{
