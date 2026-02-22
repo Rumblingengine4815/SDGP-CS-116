@@ -7,7 +7,7 @@ const Footer = () => {
     { href: "/", label: "Home" },
     { href: "/data-sources", label: "Data Sources" },
     { href: "/about", label: "About" },
-    { href: "/how-it-works", label: "How It Works" },
+    { href: "/how-this-works", label: "How this Works" },
   ];
 
   return (
@@ -47,17 +47,17 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* <div>
-              <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase">Legal</h2>
-              <ul className="text-gray-600 font-medium">
+            <div>
+              <h2 className="mb-6 text-sm font-semibold text-[#30203d] uppercase">Legal</h2>
+              <ul className="text-[#4f318f] font-medium">
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">Privacy Policy</a>
+                  <Link href="/privacy" className="hover:underline">Privacy Policy</Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">Terms &amp; Conditions</a>
+                  <Link href="/terms" className="hover:underline">Terms &amp; Conditions</Link>
                 </li>
               </ul>
-            </div> */}
+            </div>
           </div>
         </div>
 
@@ -67,18 +67,18 @@ const Footer = () => {
           <span className="text-sm text-gray-500 sm:text-center">
             © {new Date().getFullYear()} <Link href="/" className="hover:underline">PathFinder+™</Link>. All Rights Reserved.
           </span>
-          <div className="flex mt-4 sm:justify-center sm:mt-0 gap-5">
-            <a href="https://github.com/Rumblingengine4815/SDGP-CS-116#" className="text-gray-500 hover:text-purple-600">
-              <Github size={20} />
+          <div className="flex mt-4 sm:justify-center sm:mt-0 gap-4">
+            <a href="https://github.com/Rumblingengine4815/SDGP-CS-116#" className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover:bg-white/30">
+              <Github size={18} className="align-middle" />
               <span className="sr-only">GitHub account</span>
             </a>
-            <a href="https://linkedin.com" className="text-gray-500 hover:text-purple-600">
-              <Linkedin size={20} />
+            <a href="https://linkedin.com" className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover:bg-white/30">
+              <Linkedin size={18} className="align-middle" />
               <span className="sr-only">LinkedIn account</span>
-              <a href="https://linkedin.com" className="text-gray-500 hover:text-purple-600">
-                <Facebook size={20} />
-                <span className="sr-only">Facebook account</span>
-              </a>
+            </a>
+            <a href="https://facebook.com" className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover:bg-white/30">
+              <Facebook size={18} className="align-middle" />
+              <span className="sr-only">Facebook account</span>
             </a>
           </div>
         </div>

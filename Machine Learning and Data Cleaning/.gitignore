@@ -25,7 +25,7 @@ persona_test_utf8.txt
 # Model artifacts (Large files)
 # Typically kept in a separate storage or ignored if they can be regenerated easily
 # But for handoff, we might include them. If too large, ignore:
-# Machine Learning and Data Cleaning/models/*.pt
+Machine Learning and Data Cleaning/models/*.pt
 
 # OS specific
 .DS_Store
