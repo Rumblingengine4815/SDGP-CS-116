@@ -11,6 +11,7 @@ venv/
 
 # Documentation Exclusions 
 *.md
+!README.md
 
 # Logs & Temp Exclusions
 *.log
