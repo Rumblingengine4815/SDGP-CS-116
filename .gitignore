@@ -11,10 +11,12 @@ venv/
 
 # Documentation Exclusions 
 *.md
+!README.md
 
 # Logs & Temp Exclusions
 *.log
 *.txt
+!**/requirements.txt
 *.msg
 *.bak
 *.tmp
