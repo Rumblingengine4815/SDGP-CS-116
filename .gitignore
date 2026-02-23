@@ -16,6 +16,7 @@ venv/
 # Logs & Temp Exclusions
 *.log
 *.txt
+!**/requirements.txt
 *.msg
 *.bak
 *.tmp
