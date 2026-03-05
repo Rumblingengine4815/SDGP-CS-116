@@ -1,6 +1,6 @@
 """
 PathFinder+ Automated Multi-Persona Report Generator
-Runs 3 distinct user scenarios end-to-end and writes a detailed
+Runs 4 distinct user scenarios end-to-end and writes a detailed
 startup-level verification report — suitable for SDGP project documentation.
 """
 import sys
@@ -113,18 +113,26 @@ def write_persona_report(f, persona, vector, bundle):
     section(f, "A.  ASSESSMENT INPUTS (12-POINT PROFILE)")
     for k, v in persona["answers"].items():
         w(f, f"    {k.replace('_', ' ').title():<30} {v}")
+        
+    n_skills = vector.get("normalized_soft_skills", {})
+    if n_skills:
+        w(f)
+        w(f, f"    --- Normalized Soft Skills (0-100) ---")
+        w(f, f"    Problem Solving                {n_skills.get('problem_solving', 0)}/100")
+        w(f, f"    Adaptability                   {n_skills.get('adaptability', 0)}/100")
+        w(f, f"    Teamwork                       {n_skills.get('teamwork', 0)}/100")
 
     # ── CRI ──
     section(f, "B.  CAREER READINESS INDEX (CRI)")
-    cri = bundle.get("readiness_score", {})
+    cri = bundle.get("career_readiness", {})
     w(f, f"    Overall Score  : {cri.get('overall', 0)}/100")
     w(f, f"    Stage          : {cri.get('stage', 'Development Phase')}")
     hr(f)
     w(f, f"    Skills Alignment    : {cri.get('skills_match', 0):.1f}%")
     w(f, f"    Experience Level    : {cri.get('experience', 0):.1f}%")
-    w(f, f"    Responsibility Band : {cri.get('responsibility', 0):.1f}%")
-    w(f, f"    Role Clarity        : {cri.get('clarity', 0):.1f}%")
-    w(f, f"    Market Intent       : {cri.get('communication', 0):.1f}%")
+    w(f, f"    Demand Score        : {cri.get('demand_score', 0):.1f}%")
+    w(f, f"    Qualification       : {cri.get('qualification', 0):.1f}%")
+    w(f, f"    Gap Coverage        : {cri.get('gap_coverage', 0):.1f}%")
 
     # ── Extracted Skills ──
     skills = vector.get("extracted_intent_skills", [])
@@ -147,20 +155,19 @@ def write_persona_report(f, persona, vector, bundle):
     w(f, "  BENEFICIAL (value-add):")
     for s in nice[:4]: w(f, f"    [ ] {s}")
 
-    # ── Roadmap ──
+    # ── Roadmap (E) ──
     section(f, "E.  CAREER ROADMAP")
-    vert  = bundle.get("vertical_roadmap", [])
-    horiz = bundle.get("horizontal_roadmap", [])
-    w(f, "  VERTICAL PROGRESSION:")
-    for step in vert[:2]:
-        w(f, f"    → {step['role']}  (Est. {step['typical_years']} years)")
-        w(f, f"      Advice: {step['advice']}")
-    if horiz:
+    roadmap = bundle.get("career_roadmap", [])
+    if roadmap:
+        w(f, "    VERTICAL PROGRESSION:")
+        for r in [r for r in roadmap if r['type'] == 'Vertical']:
+            w(f, f"    ▸  {r['title']}  (Success Likelihood: {int(r['similarity']*100)}%)")
         w(f)
-        w(f, "  LATERAL MOVES:")
-        for step in horiz[:2]:
-            w(f, f"    ↔ {step['role']}")
-            if step.get('advice'): w(f, f"      {step['advice']}")
+        w(f, "    HORIZONTAL PIVOTS:")
+        for r in [r for r in roadmap if r['type'] == 'Horizontal']:
+            w(f, f"    ▸  {r['title']}  (Skill Transferability: {int(r['similarity']*100)}%)")
+    else:
+        w(f, "    Roadmap planning not available for this domain.")
 
     # ── Courses ──
     section(f, "F.  RECOMMENDED COURSES & PROGRAMS")
@@ -181,24 +188,24 @@ def write_persona_report(f, persona, vector, bundle):
 
     # ── Jobs ──
     section(f, "G.  LIVE JOB OPPORTUNITIES")
-    jobs = bundle.get("job_ideas", [])
-    for j in jobs[:3]:
-        if "job_title" in j:
+    jobs = bundle.get("jobs", [])
+    if jobs:
+        for j in jobs[:3]:
             w(f, f"  ◈  {j['job_title']}  @  {j.get('company', 'Confidential')}")
-            w(f, f"      Deadline     : {j.get('deadline', 'Apply Soon')}")
-            if j.get("skill_gap_pct") is not None:
-                w(f, f"      Your Fit     : {max(0, 100-j['skill_gap_pct']):.0f}% skills match")
-            # Added: Specific Missing Skills gap
-            if j.get("missing_skills"):
-                w(f, f"      Missing Skills : {', '.join(j['missing_skills'])}")
-            if j.get("url"): w(f, f"      Apply At     : {j['url']}")
+            w(f, f"      Location     : {j.get('location', 'Sri Lanka')}")
+            if j.get("link"): w(f, f"      Link         : {j['link']}")
+    else:
+        w(f, "    No live job openings found for this domain currently.")
 
     # ── Salary ──
     section(f, "H.  SALARY INTELLIGENCE")
-    sal = bundle.get("salary_estimate", {})
-    if isinstance(sal, dict) and sal.get("min"):
-        w(f, f"    Entry Level  : LKR {sal.get('min', '?')} / month")
-        w(f, f"    Senior Level : LKR {sal.get('max', '?')} / month")
+    sal = bundle.get("salary_intelligence", {})
+    if isinstance(sal, dict) and sal.get("min_salary"):
+        w(f, f"    Seniority Tier: {sal.get('seniority_tier')}")
+        w(f, f"    Min Salary  : LKR {sal.get('min_salary', '?'):,} / month")
+        w(f, f"    Avg Salary  : LKR {sal.get('avg_salary', '?'):,} / month")
+        w(f, f"    Max Salary  : LKR {sal.get('max_salary', '?'):,} / month")
+        w(f, f"    Source      : {sal.get('source')} ({sal.get('domain')})")
     else:
         w(f, "    Salary data not available for this specific role.")
 
@@ -235,30 +242,29 @@ def write_persona_report(f, persona, vector, bundle):
         w(f, "    No direct mentor matches.")
 
     # ── Action Plan ──
-    section(f, "K.  12-MONTH ACTION PLAN")
-    plan = bundle.get("action_plan", [])
-    # If bundle doesn't provide action plan steps, build one from skill gaps + courses
-    if not plan or (plan and not plan[0].get('month') and not plan[0].get('timeline')):
-        plan = []
-        if must:
-            plan.append({"month": "Month 1-3",  "action": f"Close ESCO gap: '{must[0]}' via targeted course or self-study"})
-            if len(must) > 1:
-                plan.append({"month": "Month 2-4",  "action": f"Address skill: '{must[1]}'"})
-        if recs:
-            plan.append({"month": "Month 3-6",  "action": f"Enroll in: {recs[0]['course_name']} ({recs[0]['provider']})"})
-        plan.append({"month": "Month 6-9",  "action": f"Apply for internships / entry positions targeting '{target}'"})
-        plan.append({"month": "Month 9-12", "action": f"Full application campaign for '{target}' — build portfolio, network actively"})
-    for step in plan[:6]:
-        m = step.get("month", step.get("timeline", ""))
-        a = step.get("action", step.get("task", ""))
-        w(f, f"    {m:<16} → {a}")
+    section(f, "K.  PERSONALISED ACTION PLAN")
+    plan = bundle.get("action_plan", {})
+    steps = plan.get("steps", [])
+    
+    if "estimated_weeks" in plan:
+        w(f, f"    Estimated timeline   : {plan['estimated_weeks']} weeks")
+        w(f, f"    Pace intensity       : Standard")
+        hr(f)
 
-    # ── Alternate Paths ──
-    alts = bundle.get("alternate_paths", [])
-    if alts:
-        section(f, "L.  ALTERNATE CAREER PATHS")
-        for path in alts[:4]:
-            w(f, f"    ↪ {path['title']}  (Similarity: {path['similarity']:.1%})")
+    for step in steps[:6]:
+        period = step.get("period", "")
+        action = step.get("action", "")
+        milestone = step.get("milestone", "")
+        w(f, f"    {period:<20} → {action}")
+        if milestone:
+            w(f, f"    {'':20}   ✓ Milestone: {milestone}")
+
+    # ── ML Diagnostics ──
+    ml_d = bundle.get("ml_diagnostics", {})
+    section(f, "M.  ML DIAGNOSTICS  (Hybrid Scoring Layer)")
+    w(f, f"    Mode             : {ml_d.get('mode', 'SBERT-only')}")
+    note = ml_d.get('note', 'Enable ML layer for enhanced diagnostics.')
+    w(f, f"    Note : {note}")
 
     w(f)
     hr(f, "█")
@@ -271,7 +277,7 @@ def run():
     print(f"\n{'='*60}")
     print("  PathFinder+ Multi-Persona Verification Report Generator")
     print(f"{'='*60}")
-    print("  Initializing engine (uses cached .pt files if available)...")
+    print("  Initializing engine...")
 
     engine = RecommendationEngine(
         jobs_path=ml_root / "data/processed/all_jobs_master.csv",
@@ -282,12 +288,11 @@ def run():
     print("  Engine ready.\n")
 
     with open(REPORT_PATH, "w", encoding="utf-8") as f:
-        # Header
         hr(f, "█")
         w(f, "  PATHFINDER+  —  ASSESSMENT VERIFICATION REPORT")
         w(f, f"  Generated : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         w(f, f"  Personas  : {len(PERSONAS)}")
-        w(f, f"  Engine    : 12-Point Assessment + ESCO Mapping + SBERT Embeddings")
+        w(f, f"  Engine    : 12-Point Assessment + ESCO Mapping + SBERT + Hybrid ML (RF / GBM / KNN)")
         hr(f, "█")
 
         for i, persona in enumerate(PERSONAS):
@@ -296,16 +301,6 @@ def run():
             bundle = engine.get_recommendations_from_assessment(vector, persona["answers"]["target_role"])
             write_persona_report(f, persona, vector, bundle)
             print(f"     Done.")
-
-        # Summary Footer
-        w(f)
-        hr(f, "█")
-        w(f, "  REPORT SUMMARY")
-        hr(f, "█")
-        w(f, f"  Personas processed : {len(PERSONAS)}")
-        w(f, f"  Report path        : {REPORT_PATH}")
-        w(f, f"  Sections per case  : A-L (12 sections covering all engine features)")
-        hr(f, "█")
 
     print(f"\n  Report saved to: {REPORT_PATH}")
     print(f"  {'='*56}")

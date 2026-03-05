@@ -78,23 +78,6 @@ export default function HomePage() {
 
           </div>
         </nav>
-        {/* 
-  
-
-       
-        <section className="py-24">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {features.map((feature, i) => (
-              <div key={i} className="group flex flex-col rounded-3xl border border-slate-100 bg-white p-8 transition-all hover:border-purple-200 hover:shadow-2xl hover:shadow-purple-500/10">
-                <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50 text-purple-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                  {feature.icon}
-                </div>
-                <h3 className="text-lg font-bold text-slate-900">{feature.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-slate-500">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section> */}
 
         {/* Testimonials - Carousel */}
         <section className="py-24 border-t border-slate-100">
