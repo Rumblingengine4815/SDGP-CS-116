@@ -6,6 +6,7 @@ All logic delegated here from the main orchestrator.
 import json
 import pandas as pd
 import numpy as np
+import re  # needed for pattern in calculate_local_demand_score
 from typing import Dict, Any, List, Optional
 from .rule_engine import RuleEngine
 
@@ -137,6 +138,3 @@ class Analytics:
             "stage":         stage,
             "logs":          logs,
         }
-
-
-import re  # needed for pattern in calculate_local_demand_score
