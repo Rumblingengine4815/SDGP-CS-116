@@ -43,3 +43,15 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(120), nullable=False)
     role = Column(String(20), default="student")  # student/mentor/admin
+
+class MentorProfile(Base):
+    __tablename__ = "mentor_profiles"
+    id = Column(Integer, primary_key=True)
+    # If you later want real mentor accounts: store user_id
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    display_name = Column(String(120), nullable=False)
+    is_real = Column(Boolean, default=False)
+    bio = Column(Text, default="")
+    active = Column(Boolean, default=True)
+    
+        
