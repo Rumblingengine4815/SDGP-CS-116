@@ -2,31 +2,65 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Environment Variables
+# Environment Variables & Secrets
 .env
+.venv
+venv/
+ENV/
 
-# Data Exclusion (Crucial)
-# We keep PROCESSED data, but exclude raw scraper outputs to keep repo small
-Machine Learning and Data Cleaning/data/raw/scrapers/
-Machine Learning and Data Cleaning/data/raw/*.csv
-Machine Learning and Data Cleaning/data/raw/esco/*.csv
-Machine Learning and Data Cleaning/data/raw/assessment/*.json
-Machine Learning and Data Cleaning/models/*.pt
+# Data Exclusion
+# We keep PROCESSED data, but exclude raw scraper outputs and intermediate files
+data/raw/scrapers/
+data/raw/*.csv
+data/raw/esco/*.csv
+data/raw/assessment/*.json
+models/*.pt
+models/*.joblib
+models/*.pkl
 
-
-# Logs & Temp
+# Logs, Reports & Temp (Recent Developments)
 *.log
-Machine Learning and Data Cleaning/logs/
-Machine Learning and Data Cleaning/temp/
-persona_test_results.txt
-persona_test_utf8.txt
+logs/
+temp/
+tmp/
+*.txt
+!README.md
+!ML_HANDOVER_README.md
+assessment_verification_report.txt
+pit_results*.txt
+final_comprehensive_results.txt
+verification_results.txt
+final_production_logs.txt
+final_roadmap_test.txt
+error_trace*.txt
+test_out.txt
+scenario_results_internal.txt
+variation_check.txt
+masters_check_v2.txt
+merge_log.txt
 
-# Model artifacts (Large files)
-# Typically kept in a separate storage or ignored if they can be regenerated easily
-# But for handoff, we might include them. If too large, ignore:
-Machine Learning and Data Cleaning/models/*.pt
-
-# OS specific
+# IDE & OS specific
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
+desktop.ini

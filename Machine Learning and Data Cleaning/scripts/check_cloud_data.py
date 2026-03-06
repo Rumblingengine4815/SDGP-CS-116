@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 def check_cloud_inventory():
-    print(">>> CHECKING CLOUD DATA INVENTORY <<<")
+    print(" CHECKING CLOUD DATA INVENTORY ")
     ml_root = Path(__file__).resolve().parent.parent
     load_dotenv(ml_root / ".env")
     
