@@ -105,4 +105,20 @@ class MentorSkillIn(BaseModel):
     skill_name: str
     level: int = Field(ge=1, le=10)
  
-    
+ 
+ 
+class AssessmentCreateOut(BaseModel):
+    assessment_id: int
+
+class AssessmentResultsIn(BaseModel):
+    results: Dict[str, int]  # {"Java":40,"SQL":80}
+
+class ApplyIn(BaseModel):
+    mentor_id: int
+
+class ApproveIn(BaseModel):
+    status: str  # "approved" or "rejected"
+
+class MessageIn(BaseModel):
+    type: str = "text"   # text/image/file
+    content: str
