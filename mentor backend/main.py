@@ -122,3 +122,25 @@ class ApproveIn(BaseModel):
 class MessageIn(BaseModel):
     type: str = "text"   # text/image/file
     content: str
+
+# ---------------------------
+# Simple auth for SDGP demo
+# ---------------------------
+"""
+For your SDGP demo, easiest is: pass user id in header.
+Later you can replace with JWT.
+
+Frontend sends:
+  X-User-Id: 1
+"""
+def get_me(x_user_id: Optional[str] = None, db: Session = Depends(get_db)) -> User:
+    if not x_user_id:
+        raise HTTPException(401, "Missing X-User-Id header")
+    me = db.get(User, int(x_user_id))
+    if not me:
+        raise HTTPException(401, "Invalid user")
+    return me
+
+# ---------------------------
+# Recommendation Engine
+# ---------------------------
