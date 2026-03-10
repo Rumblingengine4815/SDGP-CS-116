@@ -274,14 +274,18 @@ python tests/final_system_verification.py
 from core.recommendation_engine import RecommendationEngine
 
 # Initialize from cloud (production mode)
-engine = RecommendationEngine(from_mongo=True)
+engine = RecommendationEngine.from_mongo()
 
-# Get a full career recommendation dashboard
+# Get a full career recommendation dashboard bundle
+# assessment_vector is typically created via process_comprehensive_assessment
 bundle = engine.get_recommendations_from_assessment(
     assessment_vector={
         "status_level": 2,          # 0=O/L, 1=A/L, 2=Undergraduate, 3=Professional
         "experience_years": 2,
+        "responsibility_band": 1,
+        "education_level": 3,
         "extracted_intent_skills": ["Python", "SQL"],
+        "domain": "IT"
     },
     target_job="Data Scientist"
 )

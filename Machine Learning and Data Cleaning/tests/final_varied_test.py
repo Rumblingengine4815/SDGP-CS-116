@@ -29,7 +29,7 @@ def run_final_varied_tests():
     # 5 EXTREME PERSONAS with 12-POINT PROFILES
     personas = [
         {
-            "id": "PERSONA 1: ABSOLUTE ZERO (O/L School Leaver)",
+            "id": "PERSONA 1:  (O/L School Leaver)",
             "target_job": "Junior Web Developer",
             "answers": {
                 "career_stage": "Student / School Leaver",
@@ -74,12 +74,12 @@ def run_final_varied_tests():
                 "responsibility_level": "Completed independent tasks",
                 "career_background": "4 years in retail management. I have been using Excel for inventory and want to move to data analytics.",
                 "key_achievements": "Optimized store inventory using Excel macros, reducing waste by 15%.",
-                "upskilling_budget": "200k-500k",
+                "upskilling_budget": "500k+",
                 "weekly_availability": "10-20 hours",
                 "problem_solving": "Analyze the root cause and propose a new approach",
                 "adaptability": "Pivot quickly while documenting the change",
                 "education_preference": "MSc",
-                "domain": "Healthcare"
+                "domain": "IT"
             }
         },
         {
