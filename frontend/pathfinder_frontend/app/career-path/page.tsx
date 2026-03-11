@@ -1,110 +1,187 @@
 "use client";
 
-export default function CareerPath() {
-  return (
-    <div className="min-h-screen bg-gray-50 px-16 py-10">
+import { useState } from "react";
 
-      {/* PAGE TITLE */}
-      <h1 className="text-3xl font-semibold text-gray-800 mb-10">
+export default function CareerPath() {
+
+  const [form, setForm] = useState({
+    role: "",
+    qualification: "",
+    field: "",
+    reason: "",
+    interest: "",
+    jobStatus: "",
+    payCourses: "",
+    language: ""
+  });
+
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleChange = (e: any) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = () => {
+    setSubmitted(true);
+
+    if (
+      !form.role ||
+      !form.qualification ||
+      !form.interest ||
+      !form.jobStatus ||
+      !form.payCourses ||
+      !form.language
+    ) {
+      return;
+    }
+
+    alert("Assessment Submitted!");
+  };
+
+  const inputStyle =
+    "w-full border border-gray-300 rounded-lg p-3 mt-1 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500";
+
+  const errorInput =
+    "w-full border border-red-400 rounded-lg p-3 mt-1 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-400";
+
+  return (
+    <div className="w-full min-h-screen bg-white px-16 py-10">
+
+      <h1 className="text-3xl font-semibold text-gray-800 mb-12">
         Skill Assessment
       </h1>
 
-      <div className="flex gap-16">
+      <div className="grid grid-cols-2 gap-20">
 
-        {/* LEFT SIDE FORM */}
-        <div className="flex-1 space-y-6">
+        {/* LEFT SIDE */}
+        <div className="space-y-6">
 
           {/* CURRENT ROLE */}
           <div>
-            <label className="text-sm text-gray-600">
+            <label className="text-sm text-gray-800 font-medium">
               Current Role*
             </label>
 
             <input
-              type="text"
+              name="role"
               placeholder="Enter role"
-              className="w-full border rounded-lg p-3 mt-1"
+              value={form.role}
+              onChange={handleChange}
+              className={submitted && !form.role ? errorInput : inputStyle}
             />
           </div>
 
 
           {/* QUALIFICATION */}
           <div>
-            <label className="text-sm text-gray-600">
-              Highest Qualification Obtained
+            <label className="text-sm text-gray-800 font-medium">
+              Highest Qualification Obtained (Ex: O/L, BSc)*
             </label>
 
             <input
-              type="text"
+              name="qualification"
               placeholder="Enter Qualification"
-              className="w-full border rounded-lg p-3 mt-1"
+              value={form.qualification}
+              onChange={handleChange}
+              className={submitted && !form.qualification ? errorInput : inputStyle}
             />
           </div>
 
 
-          {/* TYPE OF FIELD */}
+          {/* FIELD */}
           <div>
-            <label className="text-sm text-gray-600">
+            <label className="text-sm text-gray-800 font-medium">
               Type of Field (If Working)
             </label>
 
             <input
-              type="text"
+              name="field"
               placeholder="Enter Field"
-              className="w-full border rounded-lg p-3 mt-1"
+              value={form.field}
+              onChange={handleChange}
+              className={inputStyle}
             />
           </div>
 
 
           {/* REASON */}
           <div>
-            <label className="text-sm text-gray-600">
-              Reason for switching fields
+            <label className="text-sm text-gray-800 font-medium">
+              Reason for switching fields (if so)
             </label>
 
             <input
-              type="text"
+              name="reason"
               placeholder="Enter Reason"
-              className="w-full border rounded-lg p-3 mt-1"
+              value={form.reason}
+              onChange={handleChange}
+              className={inputStyle}
             />
           </div>
 
 
           {/* FIELD INTERESTED */}
           <div>
-            <label className="text-sm text-gray-600">
+            <label className="text-sm text-gray-800 font-medium">
               Enter Field Interested In
             </label>
 
             <input
-              type="text"
+              name="interest"
               placeholder="Enter Field"
-              className="w-full border rounded-lg p-3 mt-1"
+              value={form.interest}
+              onChange={handleChange}
+              className={submitted && !form.interest ? errorInput : inputStyle}
             />
+
+            {submitted && !form.interest && (
+              <p className="text-red-500 text-sm mt-1">
+                Please Complete the field with an actual Field of Work
+              </p>
+            )}
           </div>
 
 
           {/* LANGUAGE */}
-          <div className="space-y-3">
+          <div>
 
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-800 font-medium mb-3">
               Preferred Language of Choice
             </p>
 
-            <label className="flex gap-2">
-              <input type="radio" name="lang" />
-              English
-            </label>
+            <div className="space-y-2">
 
-            <label className="flex gap-2">
-              <input type="radio" name="lang" />
-              Sinhala
-            </label>
+              <label className="flex items-center gap-2 text-gray-700">
+                <input
+                  type="radio"
+                  name="language"
+                  value="English"
+                  onChange={handleChange}
+                />
+                English
+              </label>
 
-            <label className="flex gap-2">
-              <input type="radio" name="lang" />
-              Tamil
-            </label>
+              <label className="flex items-center gap-2 text-gray-700">
+                <input
+                  type="radio"
+                  name="language"
+                  value="Sinhala"
+                  onChange={handleChange}
+                />
+                Sinhala
+              </label>
+
+              <label className="flex items-center gap-2 text-gray-700">
+                <input
+                  type="radio"
+                  name="language"
+                  value="Tamil"
+                  onChange={handleChange}
+                />
+                Tamil
+              </label>
+
+            </div>
 
           </div>
 
@@ -112,22 +189,25 @@ export default function CareerPath() {
 
 
         {/* RIGHT SIDE */}
-        <div className="flex-1 space-y-8">
+        <div className="space-y-10">
 
           {/* JOB STATUS */}
           <div>
 
-            <label className="text-sm text-gray-600">
+            <label className="text-sm text-gray-800 font-medium">
               Job Status
             </label>
 
-            <select className="w-full border rounded-lg p-3 mt-1">
-
-              <option>Select Answer</option>
+            <select
+              name="jobStatus"
+              value={form.jobStatus}
+              onChange={handleChange}
+              className={submitted && !form.jobStatus ? errorInput : inputStyle}
+            >
+              <option value="">Select Answer</option>
               <option>Employed</option>
               <option>Unemployed</option>
               <option>Committed to Studies</option>
-
             </select>
 
           </div>
@@ -136,17 +216,20 @@ export default function CareerPath() {
           {/* PAY FOR COURSES */}
           <div>
 
-            <label className="text-sm text-gray-600">
+            <label className="text-sm text-gray-800 font-medium">
               Are you willing to pay for courses?
             </label>
 
-            <select className="w-full border rounded-lg p-3 mt-1">
-
-              <option>Select Answer</option>
+            <select
+              name="payCourses"
+              value={form.payCourses}
+              onChange={handleChange}
+              className={submitted && !form.payCourses ? errorInput : inputStyle}
+            >
+              <option value="">Select Answer</option>
               <option>Yes</option>
               <option>No</option>
               <option>Free or Low cost Courses would be appropriate</option>
-
             </select>
 
           </div>
@@ -154,6 +237,15 @@ export default function CareerPath() {
         </div>
 
       </div>
+
+
+      {/* SUBMIT BUTTON */}
+      <button
+        onClick={handleSubmit}
+        className="mt-12 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+      >
+        Submit Assessment
+      </button>
 
     </div>
   );
