@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CareerPath() {
+
+  const router = useRouter();
 
   const [form, setForm] = useState({
     role: "",
@@ -39,7 +42,7 @@ export default function CareerPath() {
       return;
     }
 
-    alert("Assessment Submitted!");
+    router.push("/career-path/result");
   };
 
   const inputStyle =
@@ -136,7 +139,7 @@ export default function CareerPath() {
 
             {submitted && !form.interest && (
               <p className="text-red-500 text-sm mt-1">
-                Please Complete the field with an actual Field of Work
+                Please complete the field with an actual Field of Work
               </p>
             )}
           </div>
@@ -145,7 +148,7 @@ export default function CareerPath() {
           <div>
 
             <p className="text-sm text-gray-800 font-medium mb-3">
-              Preferred Language of Choice
+              Preferred Language of Choice*
             </p>
 
             <div className="space-y-2">
@@ -194,7 +197,7 @@ export default function CareerPath() {
           <div>
 
             <label className="text-sm text-gray-800 font-medium">
-              Job Status
+              Job Status*
             </label>
 
             <select
@@ -215,7 +218,7 @@ export default function CareerPath() {
           <div>
 
             <label className="text-sm text-gray-800 font-medium">
-              Are you willing to pay for courses?
+              Are you willing to pay for courses?*
             </label>
 
             <select
@@ -232,12 +235,11 @@ export default function CareerPath() {
 
           </div>
 
-
           {/* DIGITAL SKILLS */}
           <div>
 
             <label className="text-sm text-gray-800 font-medium">
-              How confident are you with Digital Skills
+              How confident are you with Digital Skills*
             </label>
 
             <select
@@ -256,12 +258,11 @@ export default function CareerPath() {
 
           </div>
 
-
           {/* TIME COMMITMENT */}
           <div>
 
             <label className="text-sm text-gray-800 font-medium">
-              Time Commitment for learning (Per month)
+              Time Commitment for learning (Per month)*
             </label>
 
             <select
@@ -283,11 +284,10 @@ export default function CareerPath() {
 
       </div>
 
-
       {/* SUBMIT BUTTON */}
       <button
         onClick={handleSubmit}
-        className="mt-12 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+        className="mt-12 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
       >
         Submit Assessment
       </button>
