@@ -166,25 +166,25 @@ export default function Courses() {
 
 
         {/* FILTER PANEL */}
-        <div className="w-56 bg-blue-100 p-5 rounded-lg">
+        <div className="w-56 bg-blue-50 border border-blue-100 p-6 rounded-xl">
 
-          <h3 className="font-semibold mb-4">
+          <h3 className="font-semibold text-gray-700 mb-4">
             Filter
           </h3>
 
           <div className="space-y-3 text-sm">
 
-            <label className="flex gap-2">
+            <label className="flex gap-2 text-gray-600">
               <input type="checkbox" />
               Most Relevant
             </label>
 
-            <label className="flex gap-2">
+            <label className="flex gap-2 text-gray-600">
               <input type="checkbox" />
               Alphabetical Order
             </label>
 
-            <label className="flex gap-2">
+            <label className="flex gap-2 text-gray-600">
               <input type="checkbox" />
               Price Low to High
             </label>
