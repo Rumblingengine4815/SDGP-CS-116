@@ -23,7 +23,9 @@ export default function Courses() {
       <div className="flex gap-10">
 
         <div className="flex-1">
-          Courses Here
+                  <div className="grid grid-cols-3 gap-6">
+                      Course Cards
+                  </div>
         </div>
 
         <div className="w-56 bg-blue-100 p-5 rounded">
