@@ -24,3 +24,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Setup Database connection
+client = MongoClient(os.getenv("MONGO_URI"))
+db = client[os.getenv("DATABASE_NAME")]
+
+# Initialize the ChatService (Standalone mode: no engine passed)
+chat_service = ChatService(db=db)
