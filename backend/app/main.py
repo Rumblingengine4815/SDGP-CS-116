@@ -4,6 +4,19 @@ from typing import List, Any, Dict
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+from .database import engine
+from . import models
+from .routers import users 
+
+models.Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title="PathFinder+ API", version="1.0.0")
+app.include_router(users.router)
+
+@app.get("/health")
+def health_check():
+    return {"status": "PathFinder+ is alive!"}
+
 
 # --- Path setup: allow importing ML code that lives outside backend/ ---
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
