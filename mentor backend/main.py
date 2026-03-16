@@ -271,4 +271,23 @@ def apply_for_mentor(data: ApplyIn, db: Session = Depends(get_db), me: User = De
     db.add(req)
     db.commit()
     db.refresh(req)
-    return {"request_id": req.id, "status": req.status}        
+    return {"request_id": req.id, "status": req.status}  
+      
+@app.get("/mentorship/my-request")
+def my_latest_request(db: Session = Depends(get_db), me: User = Depends(get_me)):
+    req = (
+        db.query(MentorshipRequest)
+        .filter(MentorshipRequest.student_id == me.id)
+        .order_by(MentorshipRequest.id.desc())
+        .first()
+    )
+    if not req:
+        return {"has_request": False}
+
+    mentor = db.get(MentorProfile, req.mentor_id)
+    return {
+        "has_request": True,
+        "request_id": req.id,
+        "status": req.status,
+        "mentor": {"id": mentor.id, "display_name": mentor.display_name, "bio": mentor.bio}
+    }
