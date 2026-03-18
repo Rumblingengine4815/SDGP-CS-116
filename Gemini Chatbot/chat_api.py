@@ -38,17 +38,21 @@ class ChatRequest(BaseModel):
     message: str
     history: Optional[List[Dict[str, Any]]] = []
 
+<<<<<<< HEAD
 import time
 
 # Rate limiting storage (user_id -> last_timestamp)
 user_last_request: Dict[str, float] = {}
 RATE_LIMIT_SECONDS = 5.0  # 1 message per 5 seconds
 
+=======
+>>>>>>> d9814acc2cbed0db16a0f5769cc64a51c618d0be
 @app.post("/api/chat")
 async def chat_with_ui(request: ChatRequest):
     """
     Endpoint that the frontend or Postman will call.
     """
+<<<<<<< HEAD
     current_time = time.time()
     last_req_time = user_last_request.get(request.user_id, 0.0)
     
@@ -58,6 +62,8 @@ async def chat_with_ui(request: ChatRequest):
     
     user_last_request[request.user_id] = current_time
 
+=======
+>>>>>>> d9814acc2cbed0db16a0f5769cc64a51c618d0be
     try:
         reply = chat_service.get_reply(
             user_id=request.user_id,

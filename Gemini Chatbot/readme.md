@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PathFinder+ Gemini Chatbot
 
 This directory contains the AI-powered conversational agent for PathFinder+. It integrates Google's Gemini LLMs with MongoDB to provide localized, context-aware career and academic guidance for Sri Lankan students and professionals.
@@ -51,3 +52,12 @@ python chat_service.py
 
 ## Architecture Note
 The system uses `gemma-3-1b-it` in the API service for fast, token-efficient responses suitable for a free-tier environment, while utilizing specific keyword-extraction regex logic to minimize database load when fetching contextual documents.
+=======
+Chatbot related files
+PathFinder+ Gemini Chatbot
+
+This directory contains the AI-powered conversational agent for PathFinder+. It integrates Google's Gemini LLMs with MongoDB to provide localized, context-aware career and academic guidance for Sri Lankan students and professionals.
+
+
+Mainly Intended for shorter questions or supplement certain questions users may get from generated recommendations
+>>>>>>> d9814acc2cbed0db16a0f5769cc64a51c618d0be

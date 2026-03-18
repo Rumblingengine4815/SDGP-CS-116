@@ -1,6 +1,5 @@
-"""
-PathFinder+ Career Guidance Chatbot
-"""
+
+#PathFinder+ Career Guidance Chatbot
 
 import os
 from dotenv import load_dotenv
@@ -87,7 +86,7 @@ def setup_gemini():
     - If the user is given course or job data, mention those first.
     - If no internal data is available, suggest: LinkedIn, Glassdoor, Coursera, or Udemy.
     - Never make up job titles, salaries, or course details.
-    - Keep answers under 100 words.
+    - Keep answers under 200 words.
     """
 
     model = genai.GenerativeModel(

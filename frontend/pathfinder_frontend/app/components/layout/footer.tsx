@@ -85,21 +85,21 @@ const Footer = () => {
           <div className="flex mt-4 sm:justify-center sm:mt-0 gap-4">
             <a
               href="https://www.linkedin.com/company/pathfinderplus/"
-              className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover: bg-content1/30"
+              className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover:bg-content1/30"
             >
               <Linkedin size={18} className="align-middle" />
               <span className="sr-only">LinkedIn account</span>
             </a>
             <a
               href="https://www.facebook.com/pathfinderplus.lk/"
-              className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover: bg-content1/30"
+              className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover:bg-content1/30"
             >
               <Facebook size={18} className="align-middle" />
               <span className="sr-only">Facebook account</span>
             </a>
             <a
               href="https://instagram.com/pathfinder.plus?igsh=MTFnenJxdm84YW1ldA"
-              className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover: bg-content1/30"
+              className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover:bg-content1/30"
             >
               <Instagram size={18} className="align-middle" />
               <span className="sr-only">Instagram account</span>
