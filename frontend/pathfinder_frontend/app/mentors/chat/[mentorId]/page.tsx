@@ -44,9 +44,7 @@ export default function MentorChat({
 
   const fetchHistory = async () => {
     try {
-      // The backend expects `/chat/history/{mentor_id}` where mentor_id is the shared session ID.
-      // In a real app, the backend logic would handle generic /chat/{session} rather than strictly mentor ID.
-      // Here, the Mentor ID is the constant session identifier.
+
       const res = await fetch(
         `http://127.0.0.1:8001/chat/history/${params.mentorId}`,
         {
@@ -236,7 +234,7 @@ export default function MentorChat({
                     className={`p-4 rounded-2xl shadow-sm relative ${
                       isMe
                         ? "bg-gradient-to-br from-purple-600 to-indigo-600 text-white rounded-tr-sm"
-                        : " bg-content1 text-gray-800 rounded-tl-sm border border-gray-100"
+                        : "bg-content1 dark:bg-content2 text-foreground rounded-tl-sm border border-divider"
                     }`}
                   >
                     {msg.message && (

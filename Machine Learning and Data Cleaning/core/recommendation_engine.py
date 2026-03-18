@@ -132,7 +132,7 @@ class RecommendationEngine:
 
     def load_from_mongo(self):
         """Fetches all primary datasets and configs from MongoDB Atlas."""
-        if self.show_progress: print(" FETCHING DATA FROM MONGODB ATLAS")
+        if self.show_progress: print("mongodb fetching")
         try:
             # Check for .env in current root
             env_path = self.ml_root / ".env"

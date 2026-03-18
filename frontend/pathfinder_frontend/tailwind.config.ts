@@ -9,7 +9,23 @@ const config: Config = {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'pf-purple-500': '#7C3AED',
+        'pf-purple-50': '#F5F3FF',
+        'pf-glass': '#F8F5FF',
+        'pf-border': '#DDD6FE',
+        'pf-purple-900': '#1E0B40',
+        'pf-purple-800': '#2D1260',
+        'pf-purple-600': '#5B21B6',
+        'pf-success': '#059669',
+      },
+      fontFamily: {
+        sora: ["var(--font-sora)"],
+        "dm-sans": ["var(--font-dm-sans)"],
+        jetbrains: ["var(--font-jetbrains)"]
+      },
+    },
   },
   darkMode: "class",
   plugins: [

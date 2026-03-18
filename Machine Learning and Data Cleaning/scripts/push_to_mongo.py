@@ -356,6 +356,8 @@ def main():
         return
     
     try:
+        if mentors_path.exists():
+            upload_mentors(db, mentors_path)
         # Upload Jobs
         if jobs_path.exists():
             upload_jobs(db, jobs_path)
@@ -376,8 +378,7 @@ def main():
         upload_configs(db, config_dir, raw_dir)
         
         # Upload Metadata
-        if mentors_path.exists():
-            upload_mentors(db, mentors_path)
+       
         if progressions_path.exists():
             upload_career_paths(db, progressions_path)
         if internships_path.exists():

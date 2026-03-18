@@ -160,11 +160,11 @@ export default function ChatbotPopup() {
             className="mb-6 z-50"
           >
             <Card
-              className="h-[500px] w-[360px] max-w-[90vw] bg-white/90 backdrop-blur-3xl shadow-[0_32px_128px_-32px_rgba(0,0,0,0.3)] border-2 border-purple-800 rounded-[2rem] overflow-hidden"
+              className="h-[500px] w-[360px] max-w-[90vw] bg-content1/90 backdrop-blur-3xl shadow-[0_32px_128px_-32px_rgba(0,0,0,0.3)] border-2 border-pf-purple-400 rounded-[2rem] overflow-hidden"
               shadow="lg"
             >
               {/* Header  */}
-              <CardHeader className="flex justify-between items-center px-6 py-5 bg-white/50 border-b border-divider/50">
+              <CardHeader className="flex justify-between items-center px-6 py-5 bg-content2/50 border-b border-divider/50">
                 <div className="flex items-center gap-3.5">
                   <Badge
                     content=""
@@ -218,7 +218,7 @@ export default function ChatbotPopup() {
               {/* Easy scroll */}
               <CardBody
                 ref={scrollRef}
-                className="flex-1 overflow-y-auto px-6 py-10 space-y-8 scrollbar-hide bg-gradient-to-b from-transparent via-white/10 to-white/40"
+                className="flex-1 overflow-y-auto px-6 py-10 space-y-8 scrollbar-hide bg-gradient-to-b from-transparent via-content2/10 to-content2/40"
               >
                 <AnimatePresence mode="popLayout">
                   {history.length === 0 && (
@@ -260,7 +260,7 @@ export default function ChatbotPopup() {
                       <Avatar
                         src={msg.role === "user" ? "/user.png" : "/model.png"}
                         size="sm"
-                        className={`flex-shrink-0 shadow-md border-2 border-white ring-1 ring-black/5 ${msg.role === "user" ? "bg-purple-50" : "bg-white"}`}
+                        className={`flex-shrink-0 shadow-md border-2 border-pf-purple-100 ring-1 ring-black/5 ${msg.role === "user" ? "bg-pf-purple-50" : "bg-content2"}`}
                       />
 
                       <Card
@@ -295,7 +295,7 @@ export default function ChatbotPopup() {
               </CardBody>
 
               {/*  Professional Input Section */}
-              <CardFooter className="flex flex-col p-5 pt-4 bg-white border-t border-divider/50 shadow-[0_-10px_40px_-5px_rgba(0,0,0,0.03)] pb-4">
+              <CardFooter className="flex flex-col p-5 pt-4 bg-content1 border-t border-divider/50 shadow-[0_-10px_40px_-5px_rgba(0,0,0,0.03)] pb-4">
                 {/* Starter Chips: Material Style */}
                 {history.length < 3 && (
                   <div className="flex flex-wrap gap-2 mb-4 w-full">
@@ -306,7 +306,7 @@ export default function ChatbotPopup() {
                         variant="flat"
                         color="secondary"
                         onClick={() => handleSend(q)}
-                        className="font-bold text-[9px] border-none bg-purple-50 hover:bg-purple-100 transition-all cursor-pointer px-1 active:scale-95 h-6 uppercase tracking-tight text-purple-700"
+                        className="font-bold text-[9px] border-none bg-pf-purple-50 hover:bg-pf-purple-100 transition-all cursor-pointer px-1 active:scale-95 h-6 uppercase tracking-tight text-pf-purple-700"
                       >
                         {q}
                       </Chip>
@@ -314,7 +314,7 @@ export default function ChatbotPopup() {
                   </div>
                 )}
 
-                <div className="relative flex items-end gap-2 w-full bg-default-50/50 rounded-[2rem] p-2 ring-1 ring-default-200 transition-all focus-within:ring-purple-300 focus-within:bg-white shadow-inner">
+                <div className="relative flex items-end gap-2 w-full bg-content2/50 rounded-[2rem] p-2 ring-1 ring-divider transition-all focus-within:ring-pf-purple-300 focus-within:bg-content1 shadow-inner">
                   <Textarea
                     variant="flat"
                     size="sm"
@@ -332,9 +332,9 @@ export default function ChatbotPopup() {
                     classNames={{
                       base: "flex-1",
                       input:
-                        "text-xs font-semibold placeholder:text-default-400 no-scrollbar leading-relaxed",
+                        "text-xs font-semibold placeholder:text-gray-400 no-scrollbar leading-relaxed !text-gray-900",
                       inputWrapper:
-                        "bg-transparent hover:bg-transparent shadow-none px-2",
+                        "bg-transparent hover:bg-transparent shadow-none px-2 !text-gray-900",
                     }}
                   />
                   {isLoading || isTyping ? (

@@ -469,7 +469,12 @@ def get_chat_history(mentor_id: str, db: Session = Depends(get_db)):
         }
         for msg in messages
     ]
-from fastapi import UploadFile, File
+@app.delete("/chat/history/{mentor_id}")
+def clear_chat_history(mentor_id: str, db: Session = Depends(get_db)):
+    """Wipe the chat history block for a specific mentor room."""
+    db.query(ChatMessageLog).filter(ChatMessageLog.mentor_id == mentor_id).delete()
+    db.commit()
+    return {"status": "cleared"}
 
 @app.post("/chat/upload")
 def upload_chat_file(file: UploadFile = File(...)):

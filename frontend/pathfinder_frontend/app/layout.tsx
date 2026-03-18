@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
+import { Sora, DM_Sans, JetBrains_Mono, Geist } from 'next/font/google';
 import { Providers } from "./providers";
 import Footer from "./components/layout/footer";
 import ChatbotPopup from "../components/ChatbotPopup";
 import { ThemeSwitcher } from "../components/ThemeSwitcher";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+
+const sora = Sora({ subsets: ['latin'], variable: '--font-sora' });
+const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans' });
+const jetbrains = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains' });
 
 export const metadata: Metadata = {
   title: "PathFinder+",
@@ -18,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en" className={cn("scroll-smooth", sora.variable, dmSans.variable, jetbrains.variable, "font-sans", geist.variable)} suppressHydrationWarning>
       <body
         className="min-h-screen bg-background text-foreground font-sans antialiased relative"
         suppressHydrationWarning

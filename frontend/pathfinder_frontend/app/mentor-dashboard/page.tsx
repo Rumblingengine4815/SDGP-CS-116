@@ -97,7 +97,9 @@ export default function MentorDashboardPage() {
     }, [activeMentor]);
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        if (chatHistory && chatHistory.length > 0) {
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
     }, [chatHistory]);
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -117,7 +119,8 @@ export default function MentorDashboardPage() {
             }
             setActiveMentor(data.mentor);
             setActiveChatUser(null);
-        } catch (err: any) {
+        } catch (error) {
+            const err = error as any;
             setErrorLine(err.message || "Login failed. Please check your email and password.");
         } finally {
             setIsLoggingIn(false);
@@ -125,19 +128,27 @@ export default function MentorDashboardPage() {
     };
 
     const handleApprove = async (requestId: number) => {
-        await fetchAPI(`/mentorship/requests/${requestId}`, {
-            method: "PATCH",
-            body: JSON.stringify({ status: "approved" }),
-        });
-        loadDashboardData(activeMentor.id);
+        try {
+            await fetchAPI(`/mentorship/requests/${requestId}`, {
+                method: "PATCH",
+                body: JSON.stringify({ status: "approved" }),
+            });
+            loadDashboardData(activeMentor.id);
+        } catch (error) {
+            console.error("Failed to approve request:", error);
+        }
     };
 
     const handleReject = async (requestId: number) => {
-        await fetchAPI(`/mentorship/requests/${requestId}`, {
-            method: "PATCH",
-            body: JSON.stringify({ status: "rejected" }),
-        });
-        loadDashboardData(activeMentor.id);
+        try {
+            await fetchAPI(`/mentorship/requests/${requestId}`, {
+                method: "PATCH",
+                body: JSON.stringify({ status: "rejected" }),
+            });
+            loadDashboardData(activeMentor.id);
+        } catch (error) {
+            console.error("Failed to reject request:", error);
+        }
     };
 
     const openChatWithStudent = async (
@@ -147,29 +158,46 @@ export default function MentorDashboardPage() {
         setActiveChatUser(studentName);
         setChatHistory([]);
 
-        const history = await fetchAPI(`/chat/history/${activeMentor.id}`);
-        // For this demo, we assume history is shared/filtered properly in a real app.
-        if (history) setChatHistory(history);
+        try {
+            const history = await fetchAPI(`/chat/history/${activeMentor.id}`);
+            // For this demo, we assume history is shared/filtered properly in a real app.
+            if (history) setChatHistory(history);
+        } catch (error) {
+            console.error("Error fetching chat history:", error);
+        }
 
         if (wsRef.current) wsRef.current.close();
 
-        const ws = new WebSocket(
-            `${WS_BASE_URL}/ws/chat/${activeMentor.id}/mentor`,
-        );
+        try {
+            const ws = new WebSocket(
+                `${WS_BASE_URL}/ws/chat/${activeMentor.id}/mentor`,
+            );
 
-        ws.onmessage = (event) => {
-            const msg = JSON.parse(event.data);
-            setChatHistory((prev) => [...prev, msg]);
-        };
+            ws.onmessage = (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    setChatHistory((prev) => [...prev, msg]);
+                } catch (e) {
+                    console.error("WebSocket message parse error:", e);
+                }
+            };
 
-        ws.onclose = () => console.log("WebSocket Disconnected");
-        wsRef.current = ws;
+            ws.onerror = (error) => console.error("WebSocket Error:", error);
+            ws.onclose = () => console.log("WebSocket Disconnected");
+            wsRef.current = ws;
+        } catch (error) {
+            console.error("Failed to initialize WebSocket:", error);
+        }
     };
 
     const sendMessage = () => {
         if (!messageInput.trim() || !wsRef.current) return;
-        wsRef.current.send(JSON.stringify({ content: messageInput }));
-        setMessageInput("");
+        try {
+            wsRef.current.send(JSON.stringify({ content: messageInput }));
+            setMessageInput("");
+        } catch (error) {
+            console.error("Failed to transmit WebSocket message:", error);
+        }
     };
 
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -211,9 +239,9 @@ export default function MentorDashboardPage() {
 
     if (!activeMentor) {
         return (
-            <div className="min-h-screen bg-transparent flex flex-col items-center relative overflow-x-hidden">
+            <div className="min-h-screen bg-pf-purple-50 flex flex-col items-center relative overflow-x-hidden">
                 {/* Universal Consistent Navbar using HeroUI */}
-                <Navbar maxWidth="xl" isBordered className="bg-content1/80 backdrop-blur-xl z-50 w-full" onMenuOpenChange={setIsMenuOpen}>
+                <Navbar maxWidth="xl" isBordered className="bg-content1/80 backdrop-blur-xl border-b border-divider z-50 w-full" onMenuOpenChange={setIsMenuOpen}>
                     <NavbarContent>
                         <NavbarMenuToggle
                             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -263,111 +291,114 @@ export default function MentorDashboardPage() {
                     </NavbarMenu>
                 </Navbar>
 
-                <div className="flex min-h-[90vh] flex-col justify-center px-6 py-12 lg:px-8 w-full z-10 w-full relative">
-                    <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                        <div className="mx-auto h-16 w-16 bg-content1 rounded-2xl flex items-center justify-center shadow-sm border border-divider mb-6">
-                            <Image
-                                src="/logonb.png"
-                                alt="PathFinder+ Logo"
-                                width={48}
-                                height={48}
-                                className="object-contain drop-shadow-sm w-auto h-auto"
-                            />
-                        </div>
-                        <h2 className="mt-6 text-center text-2xl/9 font-bold tracking-tight text-foreground">
-                            Sign in to your account
-                        </h2>
-                        <p className="mt-2 text-center text-sm text-default-400 text-default-500">
-                            Manage your mentoring sessions and student applications.
-                        </p>
+                <div className="flex min-h-[90vh] items-center justify-center px-6 py-12 lg:px-8 w-full z-10 max-w-6xl mx-auto gap-12">
+                    {/* Illustration Side */}
+                    <div className="hidden lg:flex w-1/2 justify-center items-center">
+                        <Image src="/illustrations/review.png" alt="Mentor Setup" width={500} height={500} className="object-contain drop-shadow-[0_15px_35px_rgba(91,33,182,0.15)] opacity-95" priority />
                     </div>
 
-                    <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                        <form onSubmit={handleLogin} className="space-y-6">
-                            <div>
-                                <label
-                                    htmlFor="email"
-                                    className="block text-sm/6 font-medium text-foreground"
-                                >
-                                    Email address
-                                </label>
-                                <div className="mt-2">
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        name="email"
-                                        required
-                                        autoComplete="email"
-                                        value={email}
-                                        onValueChange={setEmail}
-                                        variant="bordered"
-                                        size="lg"
-                                        classNames={{
-                                            inputWrapper: "!bg-white dark:!bg-zinc-800 border border-gray-200 dark:border-zinc-700 hover:border-gray-400 dark:hover:border-zinc-500 focus-within:border-indigo-500 transition-colors shadow-sm",
-                                            input: "!text-gray-900 dark:!text-white font-medium placeholder:!text-gray-400 dark:placeholder:!text-zinc-400",
-                                            label: "!text-gray-600 dark:!text-slate-400",
-                                        }}
-                                    />
-                                </div>
+                    {/* Auth Side */}
+                    <div className="w-full max-w-md bg-content1 p-10 rounded-[2rem] shadow-2xl shadow-pf-purple-500/5 border border-divider">
+                        <div className="mb-8 flex flex-col items-center">
+                            <div className="h-16 w-16 bg-pf-purple-50 rounded-2xl flex items-center justify-center shadow-sm border border-pf-purple-100 mb-6">
+                                <Image
+                                    src="/logonb.png"
+                                    alt="PathFinder+ Logo"
+                                    width={48}
+                                    height={48}
+                                    className="object-contain drop-shadow-sm"
+                                />
                             </div>
+                            <h2 className="text-center text-2xl font-black tracking-tight text-foreground font-sora">
+                                Sign in to your portal
+                            </h2>
+                            <p className="mt-2 text-center text-sm font-medium text-default-500">
+                                Manage your mentoring sessions and student applications.
+                            </p>
+                        </div>
 
-                            <div>
-                                <div className="flex items-center justify-between">
+                        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                            <form onSubmit={handleLogin} className="space-y-6">
+                                <div>
                                     <label
-                                        htmlFor="password"
+                                        htmlFor="email"
                                         className="block text-sm/6 font-medium text-foreground"
                                     >
-                                        Password
+                                        Email address
                                     </label>
-                                    <div className="text-sm">
-                                        <a
-                                            href="#"
-                                            className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors"
-                                        >
-                                            Forgot password?
-                                        </a>
+                                    <div className="mt-2">
+                                        <Input
+                                            id="email"
+                                            type="email"
+                                            name="email"
+                                            required
+                                            autoComplete="email"
+                                            value={email}
+                                            onValueChange={setEmail}
+                                            variant="bordered"
+                                            size="lg"
+                                            placeholder="Enter your registered email"
+                                            classNames={{
+                                                inputWrapper: "!bg-white border-divider hover:border-pf-purple-400 focus-within:border-pf-purple-500 transition-colors shadow-sm",
+                                                input: "!text-gray-900 font-medium placeholder:!text-default-400",
+                                                label: "!text-gray-900",
+                                            }}
+                                        />
                                     </div>
                                 </div>
-                                <div className="mt-2">
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        name="password"
-                                        required
-                                        autoComplete="current-password"
-                                        value={password}
-                                        onValueChange={setPassword}
-                                        variant="bordered"
+
+                                <div>
+                                    <div className="flex items-center justify-between">
+                                        <label
+                                            htmlFor="password"
+                                            className="block text-sm/6 font-medium text-foreground"
+                                        >
+                                            Password
+                                        </label>
+                                    </div>
+                                    <div className="mt-2">
+                                        <Input
+                                            id="password"
+                                            type="password"
+                                            name="password"
+                                            required
+                                            autoComplete="current-password"
+                                            value={password}
+                                            onValueChange={setPassword}
+                                            variant="bordered"
+                                            size="lg"
+                                            placeholder="••••••••"
+                                            classNames={{
+                                                inputWrapper: "!bg-white border-divider hover:border-pf-purple-400 focus-within:border-pf-purple-500 transition-colors shadow-sm",
+                                                input: "!text-gray-900 font-medium tracking-widest placeholder:!text-default-400",
+                                                label: "!text-gray-900",
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+
+                                {errorLine && (
+                                    <div className="p-4 bg-danger-50 text-danger-600 rounded-xl text-sm font-semibold border border-danger-200 shadow-sm flex items-center justify-center gap-2">
+                                        <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                        <span className="leading-snug text-left">{errorLine}</span>
+                                    </div>
+                                )}
+
+                                <div>
+                                    <Button
+                                        type="submit"
+                                        isLoading={isLoggingIn}
                                         size="lg"
-                                        classNames={{
-                                            inputWrapper: "!bg-white dark:!bg-zinc-800 border border-gray-200 dark:border-zinc-700 hover:border-gray-400 dark:hover:border-zinc-500 focus-within:border-indigo-500 transition-colors shadow-sm",
-                                            input: "!text-gray-900 dark:!text-white font-medium placeholder:!text-gray-400 dark:placeholder:!text-zinc-400",
-                                            label: "!text-gray-600 dark:!text-slate-400",
-
-                                        }}
-                                    />
+                                        className="w-full bg-pf-purple-600 font-bold text-white shadow-lg hover:bg-pf-purple-700 transition-all font-sans"
+                                        radius="full"
+                                    >
+                                        Sign in securely
+                                    </Button>
                                 </div>
-                            </div>
-
-                            {errorLine && (
-                                <div className="p-4 bg-danger-50 text-danger-600 rounded-xl text-sm font-semibold border border-danger-200 shadow-sm flex items-center justify-center gap-2">
-                                    <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                    </svg>
-                                    <span className="leading-snug text-left">{errorLine}</span>
-                                </div>
-                            )}
-
-                            <div>
-                                <Button
-                                    type="submit"
-                                    isLoading={isLoggingIn}
-                                    className="flex w-full justify-center rounded-xl bg-indigo-600 px-3 py-6 text-sm/6 font-bold text-white shadow-md hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all"
-                                >
-                                    Sign in
-                                </Button>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -375,11 +406,11 @@ export default function MentorDashboardPage() {
     }
 
     return (
-        <div className="min-h-screen bg-transparent flex justify-center items-center font-sans md:p-6 p-0 w-full relative overflow-y-auto overflow-x-hidden">
+        <div className="min-h-screen bg-pf-purple-50 flex justify-center items-center font-sans md:p-6 p-0 w-full relative overflow-y-auto overflow-x-hidden">
             {/* App Window Container */}
             <div className="w-full max-w-7xl mx-auto h-[90vh] flex bg-background rounded-none md:rounded-[2rem] shadow-2xl overflow-hidden border border-divider relative z-10">
                 {/* Sidebar Navigation */}
-                <div className="w-[320px] bg-content1/80 backdrop-blur-xl border-r border-divider flex flex-col z-10 shadow-sm relative shrink-0">
+                <div className="w-[320px] bg-content1 border-b border-divider border-r flex flex-col z-10 shadow-sm relative shrink-0">
                     <div className="p-6 border-b border-divider flex items-center justify-between shrink-0">
                         <div className="flex items-center gap-3">
                             <Avatar
@@ -434,7 +465,7 @@ export default function MentorDashboardPage() {
                                 >
                                     <ScrollShadow className="h-[calc(100vh-220px)] hide-scrollbar pt-2">
                                         {pendingRequests.length === 0 ? (
-                                            <div className="text-center p-6 text-default-400 text-default-500 text-sm font-medium mt-10">
+                                            <div className="text-center p-6 text-default-500 text-sm font-medium mt-10">
                                                 No pending applications.
                                             </div>
                                         ) : (
@@ -451,15 +482,16 @@ export default function MentorDashboardPage() {
                                                                 <CardBody className="p-4 bg-content2/50">
                                                                     <div className="flex items-center gap-3 mb-1">
                                                                         <Avatar
+                                                                            src="/user.png"
                                                                             name={req.student_name}
                                                                             size="sm"
-                                                                            className="bg-content1 text-indigo-600 font-bold border border-indigo-100 shadow-sm"
+                                                                            className="bg-content2 text-indigo-600 font-bold border border-divider shadow-sm shrink-0"
                                                                         />
                                                                         <div>
                                                                             <p className="font-bold text-sm text-foreground">
                                                                                 {req.student_name}
                                                                             </p>
-                                                                            <p className="text-[11px] font-medium text-default-400 text-default-500">
+                                                                            <p className="text-[11px] font-medium text-default-500">
                                                                                 Applied{" "}
                                                                                 {new Date(
                                                                                     req.created_at,
@@ -500,7 +532,7 @@ export default function MentorDashboardPage() {
                                 <Tab key="students" title="My Students">
                                     <ScrollShadow className="h-[calc(100vh-220px)] hide-scrollbar pt-2">
                                         {activeStudents.length === 0 ? (
-                                            <div className="text-center p-6 text-default-400 text-default-500 text-sm font-medium mt-10">
+                                            <div className="text-center p-6 text-default-500 text-sm font-medium mt-10">
                                                 No active students yet.
                                             </div>
                                         ) : (
@@ -520,17 +552,18 @@ export default function MentorDashboardPage() {
                                                             }`}
                                                     >
                                                         <Avatar
+                                                            src="/user.png"
                                                             name={student.student_name}
                                                             size="sm"
-                                                            className={`${activeChatUser === student.student_name ? "bg-indigo-600 text-white" : " bg-content4 text-default-600"} font-bold transition-colors`}
+                                                            className={`${activeChatUser === student.student_name ? "ring-2 ring-indigo-500 ring-offset-1 ring-offset-content1 shadow-sm" : "border border-divider"} transition-all shrink-0 bg-white`}
                                                         />
                                                         <div className="flex-1 overflow-hidden">
                                                             <p
-                                                                className={`font-bold text-sm truncate ${activeChatUser === student.student_name ? "text-indigo-900" : " text-foreground"}`}
+                                                                className={`font-bold text-sm truncate ${activeChatUser === student.student_name ? "text-indigo-600 dark:text-indigo-400" : "text-foreground"}`}
                                                             >
                                                                 {student.student_name}
                                                             </p>
-                                                            <p className="text-[11px] text-default-400 text-default-500 truncate">
+                                                            <p className="text-[11px] !text-gray-900 font-semibold opacity-80 truncate">
                                                                 Tap to open chat room
                                                             </p>
                                                         </div>
@@ -561,7 +594,7 @@ export default function MentorDashboardPage() {
                 </div>
 
                 {/* Main Chat Area */}
-                <div className="flex-1 flex flex-col bg-transparent relative z-10 shadow-[-10px_0_20px_-10px_rgba(0,0,0,0.05)]">
+                <div className="flex-1 flex flex-col bg-pf-purple-50 relative z-10 shadow-[-10px_0_20px_-10px_rgba(0,0,0,0.05)]">
                     {!activeChatUser ? (
                         <div className="flex-1 flex flex-col items-center justify-center p-12 text-center h-full bg-content1/40 backdrop-blur-sm">
                             <div className="w-32 h-32 bg-indigo-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
@@ -593,20 +626,31 @@ export default function MentorDashboardPage() {
                             <div className="h-[73px] bg-content1/90 backdrop-blur-md border-b border-divider px-8 flex items-center justify-between shadow-sm shrink-0">
                                 <div className="flex items-center gap-4">
                                     <Avatar
+                                        src="/user.png"
                                         name={activeChatUser}
                                         size="sm"
-                                        className="bg-indigo-100 text-indigo-700 font-bold"
+                                        className="bg-white border border-divider shadow-sm shrink-0"
                                     />
                                     <div>
                                         <h2 className="text-base font-bold text-foreground leading-tight">
                                             {activeChatUser}
                                         </h2>
-                                        <p className="text-[11px] text-green-500 font-semibold tracking-wide flex items-center gap-1">
+                                        <p className="text-[11px] text-green-600 font-semibold tracking-wide flex items-center gap-1">
                                             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>{" "}
                                             Online
                                         </p>
                                     </div>
                                 </div>
+                                <Button size="sm" variant="flat" color="danger" className="font-bold shadow-sm" onPress={async () => {
+                                    try {
+                                        await fetch(`${API_BASE_URL}/chat/history/${activeMentor?.id}`, { method: 'DELETE' });
+                                        setChatHistory([]);
+                                    } catch (err) {
+                                        console.error("Failed to wipe messages:", err);
+                                    }
+                                }}>
+                                    Reset Messages
+                                </Button>
                             </div>
 
                             {/* Chat History */}
@@ -632,13 +676,14 @@ export default function MentorDashboardPage() {
                                             >
                                                 {!isMe && (
                                                     <Avatar
+                                                        src="/user.png"
                                                         name={activeChatUser}
                                                         size="sm"
-                                                        className="mr-3 shrink-0 bg-content4 text-default-600 font-bold"
+                                                        className="mr-3 shrink-0 bg-white shadow-sm border border-divider"
                                                     />
                                                 )}
                                                 <div
-                                                    className={`max-w-[70%] rounded-2xl px-5 py-3.5 shadow-sm ${isMe ? "bg-indigo-600 text-white rounded-br-none" : " bg-content1 border border-divider text-foreground rounded-bl-none shadow-[0_2px_10px_rgb(0,0,0,0.02)]"}`}
+                                                    className={`max-w-[70%] rounded-2xl px-5 py-3.5 shadow-sm ${isMe ? "bg-indigo-600 text-white rounded-br-none" : " bg-white border border-pf-purple-100 !text-gray-900 rounded-bl-none shadow-[0_4px_14px_rgb(0,0,0,0.05)]"}`}
                                                 >
                                                     <p className="text-[15px] leading-relaxed font-medium">
                                                         {msg.message || msg.text}
@@ -669,7 +714,7 @@ export default function MentorDashboardPage() {
                                                                 </svg>
                                                             </div>
                                                             <div
-                                                                className={`text-sm font-bold tracking-wide break-all line-clamp-2 ${isMe ? "text-white" : " text-foreground"}`}
+                                                                className={`text-sm font-bold tracking-wide break-all line-clamp-2 ${isMe ? "text-white" : " !text-gray-900"}`}
                                                             >
                                                                 {msg.attachment_url.split('/').pop()}
                                                             </div>
@@ -747,10 +792,8 @@ export default function MentorDashboardPage() {
                                         value={messageInput}
                                         onValueChange={setMessageInput}
                                         classNames={{
-                                            inputWrapper:
-                                                " bg-content3 border-transparent shadow-inner focus-within:! bg-content1 focus-within:ring-2 focus-within:ring-indigo-500 rounded-xl h-12",
-                                            input:
-                                                "text-base font-medium placeholder: text-default-400 text-default-500 text-default-400",
+                                            inputWrapper: "bg-white border-transparent shadow-sm focus-within:!bg-white focus-within:ring-2 focus-within:ring-indigo-500 rounded-xl h-12",
+                                            input: "!text-gray-900 font-medium placeholder:!text-gray-500",
                                         }}
                                     />
                                     <Button

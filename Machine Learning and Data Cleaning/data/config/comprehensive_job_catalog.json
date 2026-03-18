@@ -1,0 +1,210 @@
+{
+  "Information Technology": {
+    "software engineer": {
+      "title": "Software Engineer",
+      "aliases": ["Software Developer", "Backend Developer", "Application Developer"],
+      "description": "Design, develop, test, and maintain software applications and systems to meet user needs and organizational goals.",
+      "daily_tasks": ["Write clean, scalable, and efficient code.", "Collaborate with product managers and designers on system architecture.", "Debug and fix software defects in existing codebases.", "Review peers' code and provide technical feedback.", "Deploy applications to cloud environments (AWS, Azure) using CI/CD pipelines."],
+      "hard_skills": ["Object-Oriented Programming (Java, C#, Python)", "Version Control (Git)", "Microservices Architecture", "API Development (REST/GraphQL)", "Relational Databases (SQL)", "Containerization (Docker/Kubernetes)"],
+      "soft_skills": ["Problem Solving", "Logical Thinking", "Team Collaboration", "Attention to Detail"]
+    },
+    "data scientist": {
+      "title": "Data Scientist",
+      "aliases": ["AI Researcher", "Machine Learning Scientist"],
+      "description": "Extract actionable insights from vast amounts of structured and unstructured data using advanced analytics and machine learning techniques.",
+      "daily_tasks": ["Build, tune, and deploy machine learning and deep learning models.", "Clean, aggregate, and visualize large datasets.", "Design A/B tests to measure product changes and business impact.", "Communicate complex statistical findings to non-technical stakeholders.", "Develop predictive models for user behavior or financial forecasting."],
+      "hard_skills": ["Python (Pandas, NumPy, Scikit-learn)", "Statistical Modeling", "Machine Learning / Deep Learning", "SQL", "Data Visualization (Tableau/Matplotlib)", "Big Data (Spark, Hadoop)"],
+      "soft_skills": ["Critical Thinking", "Business Acumen", "Curiosity", "Data Storytelling"]
+    },
+    "web developer": {
+      "title": "Web Developer",
+      "aliases": ["Frontend Developer", "Full Stack Web Developer"],
+      "description": "Build high-performing, interactive, and responsive websites and web applications ensuring an optimal user experience.",
+      "daily_tasks": ["Translate UI/UX designs into functional web components using HTML/CSS/JS.", "Build dynamic single-page applications (SPAs) with frameworks like React or Vue.", "Optimize web pages for maximum speed and scalability.", "Ensure cross-browser compatibility and mobile responsiveness.", "Integrate frontend code with backend RESTful APIs."],
+      "hard_skills": ["JavaScript / TypeScript", "React.js / Next.js", "CSS Frameworks (Tailwind, Bootstrap)", "Web Performance Optimization", "SEO Best Practices", "REST APIs"],
+      "soft_skills": ["Creativity", "Time Management", "Adaptability", "User-Centric Mindset"]
+    },
+    "cybersecurity analyst": {
+      "title": "Cybersecurity Analyst",
+      "aliases": ["Information Security Analyst", "SecOps Engineer"],
+      "description": "Protect an organization's computer networks and systems from unauthorized access, cyberattacks, and data breaches.",
+      "daily_tasks": ["Monitor network traffic for security breaches and investigate violations.", "Install and operate vulnerability scanning tools and firewalls.", "Conduct penetration testing to find system weaknesses before attackers do.", "Prepare reports documenting security incidents and assessing damage.", "Educate staff on cybersecurity best practices and phishing threats."],
+      "hard_skills": ["Network Security Monitoring (SIEM)", "Penetration Testing", "Cryptography", "Firewall Configuration", "Incident Response", "Vulnerability Assessment"],
+      "soft_skills": ["Analytical Thinking", "Work Under Pressure", "Ethical Judgment", "Focus and Attention to Detail"]
+    },
+    "cloud architect": {
+      "title": "Cloud Architect",
+      "aliases": ["Solutions Architect", "Cloud Systems Engineer"],
+      "description": "Design and manage an organization's cloud computing architecture to ensure scalable, secure, and highly available infrastructure.",
+      "daily_tasks": ["Design cloud architectures for new applications.", "Migrate on-premise infrastructure to AWS, GCP, or Azure.", "Monitor cloud resource utilization and optimize costs.", "Implement cloud security policies and access controls.", "Automate infrastructure provisioning using Infrastructure as Code (IaC)."],
+      "hard_skills": ["Cloud Platforms (AWS, Azure, GCP)", "Infrastructure as Code (Terraform, CloudFormation)", "Networking & Routing", "Cloud Security", "Linux/Unix Administration"],
+      "soft_skills": ["Strategic Planning", "Project Management", "Leadership", "Communication"]
+    },
+    "devops engineer": {
+      "title": "DevOps Engineer",
+      "aliases": ["Platform Engineer", "Site Reliability Engineer"],
+      "description": "Bridge the gap between software development and IT operations to streamline deployment and ensure system reliability.",
+      "daily_tasks": ["Build and maintain continuous integration and continuous deployment (CI/CD) pipelines.", "Automate server configuration and deployment processes.", "Monitor application performance and system health.", "Manage cloud infrastructure scaling and load balancing.", "Respond to live production incidents and perform root-cause analysis."],
+      "hard_skills": ["CI/CD Tools (Jenkins, GitLab CI, GitHub Actions)", "Scripting (Python, Bash)", "Container Orchestration (Kubernetes)", "Configuration Management (Ansible, Chef)", "Monitoring Tools (Prometheus, Grafana)"],
+      "soft_skills": ["Collaboration", "Agility", "Troubleshooting", "Continuous Learning"]
+    },
+    "chief technology officer": {
+      "title": "Chief Technology Officer (CTO)",
+      "aliases": ["Director of Engineering", "Head of Technology"],
+      "description": "Lead the technology or engineering department, ensuring the tech strategy aligns with the company's overall business goals.",
+      "daily_tasks": ["Define the organization's overarching technical vision and roadmap.", "Oversee the development, implementation, and maintenance of all IT systems.", "Manage the engineering budget and vendor relationships.", "Scale the engineering and data teams through aggressive hiring and mentoring.", "Ensure enterprise compliance with data security and privacy regulations."],
+      "hard_skills": ["Enterprise Architecture", "Cloud Strategy (AWS/GCP/Azure)", "IT Budgeting", "Agile & Lean Methodologies", "Cybersecurity Governance", "System Scalability"],
+      "soft_skills": ["Strategic Leadership", "Visionary Thinking", "Negotiation", "Executive Communication"]
+    }
+  },
+  "Finance & Accounting": {
+    "accountant": {
+      "title": "Accountant",
+      "aliases": ["Financial Accountant", "Certified Public Accountant (CPA)"],
+      "description": "Prepare, maintain, and examine financial records, ensuring accuracy and compliance with legal and taxation guidelines.",
+      "daily_tasks": ["Reconcile bank statements and balance sheets.", "Prepare monthly, quarterly, and annual financial statements.", "Compute taxes owed and prepare tax returns, ensuring compliance with payment, reporting, and other tax requirements.", "Audit financial documents and procedures to spot errors or fraud.", "Advise management on cost reduction, revenue enhancement, and profit maximization."],
+      "hard_skills": ["Financial Reporting (IFRS/GAAP)", "Taxation Laws", "ERP Software (SAP, Oracle, QuickBooks)", "Advanced Excel", "Auditing practices", "Payroll management"],
+      "soft_skills": ["High Ethical Standards", "Extreme Attention to Detail", "Integrity", "Analytical Thinking"]
+    },
+    "financial analyst": {
+      "title": "Financial Analyst",
+      "aliases": ["Investment Analyst", "Corporate Finance Analyst"],
+      "description": "Analyze financial data, identify market trends, and make recommendations to organizations regarding business decisions and investments.",
+      "daily_tasks": ["Analyze past results, perform variance analysis, and identify trends.", "Evaluate financial performance by comparing and analyzing actual results with plans and forecasts.", "Create complex financial models for forecasting and valuation (DCF).", "Monitor foreign exchange markets and interest rates to manage corporate risk.", "Prepare detailed presentations for executives outlining investment strategies."],
+      "hard_skills": ["Financial Modeling", "Corporate Valuation", "Macroeconomic Analysis", "Variance Analysis", "Advanced Excel (VBA/Macros)", "Data Visualization (PowerBI)"],
+      "soft_skills": ["Logical Reasoning", "Persuasive Presentation", "Decision Making", "Stress Tolerance"]
+    },
+    "investment banker": {
+      "title": "Investment Banker",
+      "aliases": ["M&A Advisor", "Corporate Finance Executive"],
+      "description": "Help corporations, governments, and other groups raise capital through issuing securities (debt or equity) and assist in mergers and acquisitions (M&A).",
+      "daily_tasks": ["Analyze financial statements and create complex financial models (e.g., LBO, DCF).", "Prepare pitch books and presentations for prospective clients.", "Conduct extensive valuation and due diligence for M&A transactions.", "Structure complex financial transactions and debt offerings.", "Monitor capital markets and industry trends to identify potential deals."],
+      "hard_skills": ["Advanced Financial Modeling", "M&A Structuring", "Capital Markets Knowledge", "Due Diligence", "Corporate Valuation", "Bloomberg Terminal"],
+      "soft_skills": ["High Stress Tolerance", "Negotiation", "Client Relationship Management", "Attention to Detail", "Long-hour Stamina"]
+    }
+  },
+  "Marketing & Communications": {
+    "digital marketing manager": {
+      "title": "Digital Marketing Manager",
+      "aliases": ["Performance Marketer", "Growth Hacker"],
+      "description": "Develop, implement, and manage marketing campaigns that promote a company's products and services on digital platforms.",
+      "daily_tasks": ["Plan and execute all digital marketing, including SEO/SEM, marketing database, email, social media, and display advertising campaigns.", "Measure and report the performance of all digital marketing campaigns against goals (ROI and KPIs).", "Identify daily trends and insights to optimize ad spend and performance.", "Brainstorm new, creative growth strategies and landing page optimizations.", "Perform A/B testing on ad copies and marketing channels."],
+      "hard_skills": ["SEO & SEM", "Google Analytics & Ads", "Social Media Advertising (Meta, LinkedIn)", "Email Marketing Automation (Hubspot, Mailchimp)", "Copywriting", "CRM Management"],
+      "soft_skills": ["Creativity", "Data-Driven Thinking", "Adaptability", "Customer Empathy"]
+    },
+    "content writer": {
+      "title": "Content Writer",
+      "aliases": ["Copywriter", "SEO Writer"],
+      "description": "Produce engaging, clear text for different advertising channels, such as websites, print ads, and catalogs.",
+      "daily_tasks": ["Write clear, attractive copy with a distinct voice for various mediums.", "Conduct high-quality research and interviews to inform content.", "Edit and proofread copy to ensure perfection before publication.", "Use SEO principles to maximize copy's reach online.", "Collaborate with designers, PR, and marketing teams on large-scale campaigns."],
+      "hard_skills": ["SEO Writing", "Content Management Systems (WordPress)", "Proofreading and Editing", "Keyword Research", "Understanding Readability Metrics"],
+      "soft_skills": ["Storytelling", "Research Prowess", "Time Management", "Receptiveness to Feedback"]
+    },
+    "seo specialist": {
+      "title": "SEO Specialist",
+      "aliases": ["Search Engine Optimization Specialist", "SEO Analyst"],
+      "description": "Implement strategies, tactics, and instructions to increase the amount of visitors to a website by obtaining a high-ranking placement in the search results page of a search engine.",
+      "daily_tasks": ["Execute tests, collect and analyze data and results to identify trends and insights in order to achieve maximum ROI in paid search campaigns.", "Track, report, and analyze website analytics and PPC initiatives and campaigns.", "Manage campaign expenses, staying on budget, estimating monthly costs and reconciling discrepancies.", "Perform ongoing keyword discovery, expansion and optimization.", "Research and implement search engine optimization recommendations."],
+      "hard_skills": ["Google Search Console", "Google Analytics", "Ahrefs/SEMrush", "Technical SEO", "On-page and Off-page SEO", "HTML/CSS Basics"],
+      "soft_skills": ["Analytical Mindset", "Adaptability to Algorithm Changes", "Curiosity", "Strategic Thinking"]
+    }
+  },
+  "Human Resources & Operations": {
+    "hr manager": {
+      "title": "Human Resources Manager",
+      "aliases": ["People Operations Manager", "HR Business Partner"],
+      "description": "Plan, direct, and coordinate the administrative and employee-focused functions of an organization.",
+      "daily_tasks": ["Oversee the recruiting, interviewing, and hiring of new staff.", "Handle employee relations counseling, outplacement counseling, and exit interviewing.", "Manage compensation, benefits, and performance appraisal systems.", "Ensure compliance with federal, state, and local country (e.g., Sri Lankan Labour) employment laws.", "Develop training and development initiatives for staff progression."],
+      "hard_skills": ["Talent Acquisition", "Labor Law Compliance", "Performance Management Systems", "HRIS (Workday, BambooHR)", "Payroll Management", "Benefits Administration"],
+      "soft_skills": ["Emotional Intelligence", "Conflict Resolution", "Discretion and Confidentiality", "Empathy", "Active Listening"]
+    },
+    "project manager": {
+      "title": "Project Manager",
+      "aliases": ["Scrum Master", "Operations Manager"],
+      "description": "Plan, procure, and execute projects, ensuring they are completed on time, within budget, and to the required quality standards.",
+      "daily_tasks": ["Determine and define project scope, objectives, and specific deliverables.", "Predict resources needed to reach objectives and manage resources effectively.", "Develop and manage a detailed project schedule and work plan.", "Provide project updates on a consistent basis to various stakeholders about strategy, adjustments, and progress.", "Utilize industry best practices, techniques, and standards throughout entire project execution."],
+      "hard_skills": ["Agile / Scrum Methodologies", "Risk Management", "Budgeting & Cost Estimation", "Project Management Software (JIRA, MS Project, Asana)", "Resource Allocation"],
+      "soft_skills": ["Leadership", "Stakeholder Management", "Negotiation", "Crisis Management", "Clear Communication"]
+    },
+    "talent acquisition specialist": {
+      "title": "Talent Acquisition Specialist",
+      "aliases": ["Recruiter", "Sourcing Specialist"],
+      "description": "Identify, attract, interview, and hire top talent to meet the staffing needs of an organization.",
+      "daily_tasks": ["Source candidates using databases, social media, and professional networks.", "Conduct initial screening interviews and assess applicant qualifications.", "Coordinate interviews with hiring managers and department heads.", "Manage the end-to-end recruitment lifecycle within an ATS (Applicant Tracking System).", "Negotiate job offers and facilitate employee onboarding processes."],
+      "hard_skills": ["Applicant Tracking Systems (ATS)", "Boolean Search / Sourcing strategies", "Interviewing Techniques", "Employer Branding", "Negotiation Strategies"],
+      "soft_skills": ["Interpersonal Skills", "Persuasion", "Time Management", "Intuition"]
+    }
+  },
+  "Engineering & Construction": {
+    "civil engineer": {
+      "title": "Civil Engineer",
+      "aliases": ["Structural Engineer", "Site Engineer"],
+      "description": "Design, build, supervise, operate, and maintain large construction projects and systems, including roads, buildings, airports, tunnels, and dams.",
+      "daily_tasks": ["Analyze survey reports, maps, and other data to plan and design projects.", "Consider construction costs, government regulations, potential environmental hazards, and other factors in planning stages.", "Test building materials, such as concrete, asphalt, or steel, for use in particular projects.", "Provide cost estimates for materials, equipment, or labor.", "Manage site construction, scheduling labor, and ensuring health and safety protocols."],
+      "hard_skills": ["AutoCAD / Civil 3D", "Structural Analysis", "Geotechnical Engineering principles", "Construction Material Testing", "Project Cost Estimation", "Surveying"],
+      "soft_skills": ["Spatial Awareness", "Problem Solving", "Leadership (on-site)", "Attention to Detail"]
+    },
+    "mechanical engineer": {
+      "title": "Mechanical Engineer",
+      "aliases": ["Design Engineer", "HVAC Engineer"],
+      "description": "Design, develop, build, and test mechanical and thermal sensors and devices, including tools, engines, and machines.",
+      "daily_tasks": ["Analyze problems to see how mechanical and thermal devices might help solve the problem.", "Design or redesign mechanical and thermal devices using analysis and computer-aided design (CAD).", "Investigate equipment failures or difficulties to diagnose faulty operation and to recommend remedies.", "Oversee the manufacturing process for the device.", "Perform simulations and stress analyses on prototype models."],
+      "hard_skills": ["CAD Software (SolidWorks, AutoCAD)", "Thermodynamics", "Fluid Mechanics", "Finite Element Analysis (FEA)", "Manufacturing Processes", "Robotics Basics"],
+      "soft_skills": ["Inventiveness", "Mathematical Reasoning", "Troubleshooting", "Teamwork"]
+    },
+    "electrical engineer": {
+      "title": "Electrical Engineer",
+      "aliases": ["Hardware Engineer", "Electronics Engineer"],
+      "description": "Design, develop, test, and supervise the manufacturing of electrical equipment, such as electric motors, radar and navigation systems, communications systems, or power generation equipment.",
+      "daily_tasks": ["Design new ways to use electrical power to develop or improve products.", "Perform detailed calculations to compute and establish manufacturing, construction, and installation standards and specifications.", "Direct the manufacture, installation, and testing of electrical equipment to ensure that products meet specifications and codes.", "Investigate customer or public complaints, determine nature and extent of problem, and recommend remedial measures.", "Work with project managers on production efforts to ensure that projects are completed satisfactorily, on time, and within budget."],
+      "hard_skills": ["Circuit Design", "Power Systems Analysis", "PLC Programming", "AutoCAD Electrical", "Control Systems", "Signal Processing"],
+      "soft_skills": ["Precision", "Complex Problem Solving", "Safety-conscious", "Team Collaboration"]
+    }
+  },
+  "Healthcare & Science": {
+    "data analyst (healthcare)": {
+      "title": "Healthcare Data Analyst",
+      "aliases": ["Health Informatics Analyst"],
+      "description": "Use data to evaluate healthcare systems, improving patient outcomes, reducing costs, and streamlining hospital operations.",
+      "daily_tasks": ["Analyze electronic health records (EHR) to find patterns in patient care.", "Build dashboards tracking hospital admission rates and bed availability.", "Ensure all data handling complies with medical privacy regulations (e.g., HIPAA).", "Collaborate with doctors and administrators to present cost-saving strategies.", "Model epidemic spreads or disease trends across populations."],
+      "hard_skills": ["SQL", "Healthcare Information Systems (EHR/EMR)", "Python/R", "Data Privacy Regulations", "Biostatistics", "Tableau/Power BI"],
+      "soft_skills": ["Ethics and Confidentiality", "Critical Thinking", "Clear Communication", "Detail-Oriented"]
+    },
+    "biomedical engineer": {
+      "title": "Biomedical Engineer",
+      "aliases": ["Bioengineer", "Medical Device Engineer"],
+      "description": "Combine engineering principles with medical and biological sciences to design and create equipment, devices, computer systems, and software used in healthcare.",
+      "daily_tasks": ["Design equipment and devices, such as artificial internal organs, replacements for body parts, and machines for diagnosing medical problems.", "Install, adjust, maintain, repair, or provide technical support for biomedical equipment.", "Evaluate the safety, efficiency, and effectiveness of biomedical equipment.", "Train clinicians and other personnel on the proper use of equipment.", "Work with scientists and researchers to investigate how engineering principles apply to human/biological systems."],
+      "hard_skills": ["Biomechanics", "Biomaterials", "Medical Imaging (MRI/CT principles)", "FDA Regulatory Compliance", "CAD Software", "Signal Processing"],
+      "soft_skills": ["Interdisciplinary Collaboration", "Innovation", "Research Acumen", "Empathy for Patient Outcomes"]
+    }
+  },
+  "Sales & Customer Support": {
+    "account executive": {
+      "title": "Account Executive",
+      "aliases": ["Sales Manager", "B2B Sales Representative"],
+      "description": "Find and close new business opportunities while serving as the primary point of contact for clients, ensuring their long-term satisfaction.",
+      "daily_tasks": ["Identify and prospect new potential clients through cold calling, networking, and social selling.", "Conduct product demonstrations and sales presentations designed to address specific client pain points.", "Negotiate contract terms and close complex sales deals.", "Maintain an accurate pipeline and forecast in the CRM system (e.g., Salesforce).", "Collaborate with marketing to generate targeted lead campaigns."],
+      "hard_skills": ["CRM Software (Salesforce, Hubspot)", "B2B Sales Methodologies (MEDDIC, SPIN)", "Contract Negotiation", "Lead Generation", "Pipeline Management", "Financial Math for discounting"],
+      "soft_skills": ["Persuasion", "Resilience", "Active Listening", "Confidence", "Relationship Building"]
+    },
+    "customer success manager": {
+      "title": "Customer Success Manager",
+      "aliases": ["Client Success Specialist", "Account Manager"],
+      "description": "Ensure customers achieve their desired outcomes using the company's product or service, driving retention and upsell opportunities.",
+      "daily_tasks": ["Onboard new clients and train them on product features.", "Conduct regular business reviews (QBRs) to monitor client health and usage metrics.", "Proactively identify accounts at risk of churning and implement rescue strategies.", "Identify opportunities for upselling or cross-selling additional services.", "Act as the voice of the customer, relaying feedback to the product development team."],
+      "hard_skills": ["Customer Success Software (Gainsight, ChurnZero)", "Data Analysis (Usage Metrics)", "Account Planning", "Product Knowledge", "Onboarding Strategies"],
+      "soft_skills": ["Empathy", "Patience", "Proactive Problem Solving", "Excellent Communication", "Conflict Resolution"]
+    }
+  },
+  "Design & Creative": {
+    "ui/ux designer": {
+      "title": "UI/UX Designer",
+      "aliases": ["Product Designer", "User Experience Designer"],
+      "description": "Create intuitive, user-friendly, and aesthetically pleasing digital interfaces for web and mobile applications.",
+      "daily_tasks": ["Conduct user research, interviews, and usability testing.", "Create wireframes, storyboards, user flows, and site maps to communicate interaction and design ideas.", "Design high-fidelity mockups and interactive prototypes using tools like Figma or Adobe XD.", "Collaborate closely with developers to ensure accurate implementation of designs.", "Analyze user feedback and behavior to continually improve the product experience."],
+      "hard_skills": ["UI/UX Prototyping (Figma, Sketch, Adobe XD)", "Wireframing", "User Research & Persona Creation", "Information Architecture", "Knowledge of HTML/CSS capabilities", "Usability Testing"],
+      "soft_skills": ["Empathy for the User", "Visual Communication", "Receptiveness to Feedback", "Creative Problem Solving"]
+    }
+  }
+}

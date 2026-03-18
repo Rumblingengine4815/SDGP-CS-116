@@ -1,0 +1,19 @@
+{
+  "web developer": ["React.js / Next.js", "Node.js / Express", "TypeScript", "Tailwind CSS", "REST & GraphQL APIs", "Cloud Hosting (AWS, Vercel)", "Responsive Web Design"],
+  "software developer": ["Object-Oriented Design", "Microservices Architecture", "CI/CD Pipelines", "Docker / Kubernetes", "System Design", "Cloud Infrastructure", "DevOps Practices"],
+  "software engineer": ["Object-Oriented Design", "Microservices Architecture", "CI/CD Pipelines", "Docker / Kubernetes", "System Design", "Cloud Infrastructure", "DevOps Practices"],
+  "data analyst": ["SQL & Advanced Querying", "Python (Pandas, NumPy)", "Tableau / PowerBI Data Visualization", "A/B Testing", "Statistical Data Analysis", "Data Cleaning & Preprocessing", "Data Storytelling"],
+  "data scientist": ["Advanced Machine Learning", "Python / R Programming", "Deep Learning", "Natural Language Processing (NLP)", "Predictive Analytics", "Big Data Tools (Spark, Hadoop)", "MLOps"],
+  "machine learning": ["TensorFlow / PyTorch", "Model Deployment (MLOps)", "Feature Engineering", "Generative AI / LLM Fine-Tuning", "Data Pipeline Orchestration", "Evaluating Model Performance"],
+  "business analyst": ["Agile / Scrum Methodologies", "Stakeholder Management", "Requirements Gathering", "Process Modeling (BPMN)", "JIRA / Confluence", "Data-Driven Decision Making", "Project Management"],
+  "chief technology officer": ["Strategic Technology Planning", "Enterprise Architecture", "Cloud Infrastructure Leadership", "Engineering Team Scaling", "IT Budget & Resource Management", "Cybersecurity & Risk Management"],
+  "cto": ["Strategic Technology Planning", "Enterprise Architecture", "Cloud Infrastructure Leadership", "Engineering Team Scaling", "IT Budget & Resource Management", "Cybersecurity & Risk Management"],
+  "graphic designer": ["Adobe Creative Suite", "Figma / UI Design", "Typography & Layout", "Brand Identity Creation", "Color Theory", "Visual Storytelling"],
+  "digital marketer": ["SEO & SEM", "Google Analytics", "Social Media Strategy", "Content Marketing", "Pay-Per-Click (PPC)", "Email Marketing Automation", "Adaptability & Agility"],
+  "project manager": ["Agile Project Management", "Sprint Planning", "Risk Mitigation", "Resource Allocation", "Cross-Functional Leadership", "Budget Tracking"],
+  "hr manager": ["Talent Acquisition", "Employee Relations", "Performance Management", "HRIS (Workday, BambooHR)", "Conflict Resolution", "Emotional Intelligence", "Labor Law Compliance"],
+  "human resources": ["Talent Acquisition", "Employee Relations", "Performance Management", "HRIS (Workday, BambooHR)", "Conflict Resolution", "Emotional Intelligence", "Labor Law Compliance"],
+  "accountant": ["Financial Statement Analysis", "IFRS Compliance", "Advanced Excel / VBA", "ERP Software (SAP, Oracle)", "Corporate Tax Planning", "Auditing", "Data Literacy"],
+  "finance executive": ["Financial Forecasting", "Budgeting", "Variance Analysis", "Risk Management", "Investment Strategy", "Financial Modeling", "Data Literacy"],
+  "logistics": ["Supply Chain Optimization", "Inventory Management", "ERP & WMS Software", "Vendor Management", "Cost Reduction Analysis", "Operations Management"]
+}

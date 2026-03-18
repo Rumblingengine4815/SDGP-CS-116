@@ -35,7 +35,7 @@ MENTOR_BIOS = [
     "Focused on career guidance for young professionals."
 ]
 
-FIRST_NAME_LIST = ["Kavindu", "Shehan", "Dilshan", "Nadeesha", "Ramesh", "Aisha", "Saman", "Kumari", "Rajiv", "Priya"]
+FIRST_NAME_LIST = ["Savindu", "Shehan", "Malshan", "Nadeesha", "Ramesh", "Aisha", "Saman", "Kumari", "Rajiv", "Priya"]
 LAST_NAME_LIST = ["Fernando", "Perera", "Silva", "Gunawardena", "Wijesinghe", "Ranasinghe", "Jayawardena", "De Silva", "Fernando", "Perera"]
 
 def generate_mentors(output_path, count=15):
