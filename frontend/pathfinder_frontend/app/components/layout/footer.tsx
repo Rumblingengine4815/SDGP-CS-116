@@ -35,11 +35,16 @@ const Footer = () => {
 
           <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
             <div>
-              <h2 className="mb-6 text-sm font-semibold text-[#30203d] uppercase">Platform</h2>
+              <h2 className="mb-6 text-sm font-semibold text-[#30203d] uppercase">
+                Platform
+              </h2>
               <ul className="text-[#4f318f] font-medium">
                 {navLinks.map((link) => (
                   <li key={link.href} className="mb-4">
-                    <Link href={link.href} className="hover:text-[#3898ff] transition-colors">
+                    <Link
+                      href={link.href}
+                      className="hover:text-[#3898ff] transition-colors"
+                    >
                       {link.label}
                     </Link>
                   </li>
@@ -48,13 +53,19 @@ const Footer = () => {
             </div>
 
             <div>
-              <h2 className="mb-6 text-sm font-semibold text-[#30203d] uppercase">Legal</h2>
+              <h2 className="mb-6 text-sm font-semibold text-[#30203d] uppercase">
+                Legal
+              </h2>
               <ul className="text-[#4f318f] font-medium">
                 <li className="mb-4">
-                  <Link href="/privacy" className="hover:underline">Privacy Policy</Link>
+                  <Link href="/privacy" className="hover:underline">
+                    Privacy Policy
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/terms" className="hover:underline">Terms &amp; Conditions</Link>
+                  <Link href="/terms" className="hover:underline">
+                    Terms &amp; Conditions
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -65,22 +76,34 @@ const Footer = () => {
 
         <div className="sm:flex sm:items-center sm:justify-between">
           <span className="text-sm text-gray-500 sm:text-center">
-            © {new Date().getFullYear()} <Link href="/" className="hover:underline">PathFinder+™</Link>. All Rights Reserved.
+            © {new Date().getFullYear()}{" "}
+            <Link href="/" className="hover:underline">
+              PathFinder+™
+            </Link>
+            . All Rights Reserved.
           </span>
           <div className="flex mt-4 sm:justify-center sm:mt-0 gap-4">
-            <a href="https://www.linkedin.com/company/pathfinderplus/" className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover:bg-white/30">
+            <a
+              href="https://www.linkedin.com/company/pathfinderplus/"
+              className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover: bg-content1/30"
+            >
               <Linkedin size={18} className="align-middle" />
               <span className="sr-only">LinkedIn account</span>
             </a>
-            <a href="https://www.facebook.com/pathfinderplus.lk/" className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover:bg-white/30">
+            <a
+              href="https://www.facebook.com/pathfinderplus.lk/"
+              className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover: bg-content1/30"
+            >
               <Facebook size={18} className="align-middle" />
               <span className="sr-only">Facebook account</span>
             </a>
-            <a href="https://instagram.com/pathfinder.plus?igsh=MTFnenJxdm84YW1ldA" className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover:bg-white/30">
+            <a
+              href="https://instagram.com/pathfinder.plus?igsh=MTFnenJxdm84YW1ldA"
+              className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-purple-600 hover: bg-content1/30"
+            >
               <Instagram size={18} className="align-middle" />
               <span className="sr-only">Instagram account</span>
             </a>
-
           </div>
         </div>
       </div>

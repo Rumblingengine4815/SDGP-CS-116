@@ -3,7 +3,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Card, CardHeader, CardBody, CardFooter, Button, Chip, Textarea, Avatar, Badge, Spacer, Divider } from "@heroui/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Button,
+  Chip,
+  Textarea,
+  Avatar,
+  Badge,
+  Spacer,
+  Divider,
+} from "@heroui/react";
 
 interface Message {
   role: "user" | "model";
@@ -14,11 +26,19 @@ const STARTER_QUESTIONS = [
   "How can I improve my cv? ",
   "Technical Interview tips?",
   "What does a Data Scientist do?",
-  "Business Analyst skills?"
+  "Business Analyst skills?",
 ];
 
 //  Sub-component: Typewriter Effect from hero  ui
-const Typewriter = ({ text, onComplete, skip }: { text: string, onComplete?: () => void, skip?: boolean }) => {
+const Typewriter = ({
+  text,
+  onComplete,
+  skip,
+}: {
+  text: string;
+  onComplete?: () => void;
+  skip?: boolean;
+}) => {
   const [displayedText, setDisplayedText] = useState("");
   const [index, setIndex] = useState(0);
 
@@ -36,7 +56,12 @@ const Typewriter = ({ text, onComplete, skip }: { text: string, onComplete?: () 
         setIndex((prev) => prev + 1);
       }, 10); // Standardize speed
       return () => clearTimeout(timeout);
-    } else if (onComplete && index === text.length && displayedText.length > 0 && !skip) {
+    } else if (
+      onComplete &&
+      index === text.length &&
+      displayedText.length > 0 &&
+      !skip
+    ) {
       // Trigger onComplete only once when naturally reaching the end
       onComplete();
     }
@@ -62,7 +87,7 @@ export default function ChatbotPopup() {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
         top: scrollRef.current.scrollHeight,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   }, [history, isLoading, isTyping]);
@@ -110,7 +135,12 @@ export default function ChatbotPopup() {
       console.error("Chat Error:", error);
       setHistory((prev) => [
         ...prev,
-        { role: "model", parts: [{ text: "I'm having a technical issue. Please try again later." }] },
+        {
+          role: "model",
+          parts: [
+            { text: "I'm having a technical issue. Please try again later." },
+          ],
+        },
       ]);
     } finally {
       setIsLoading(false);
@@ -151,9 +181,13 @@ export default function ChatbotPopup() {
                     />
                   </Badge>
                   <div>
-                    <h3 className="text-[15px] font-black tracking-tight text-foreground leading-none">PathFinder+ AI</h3>
+                    <h3 className="text-[15px] font-black tracking-tight text-foreground leading-none">
+                      PathFinder+ AI
+                    </h3>
                     <Spacer y={1} />
-                    <p className="text-[10px] font-bold text-success uppercase tracking-[0.1em] opacity-80">Expert Advisor</p>
+                    <p className="text-[10px] font-bold text-success uppercase tracking-[0.1em] opacity-80">
+                      Expert Advisor
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-1.5">
@@ -205,9 +239,12 @@ export default function ChatbotPopup() {
                         />
                       </div>
                       <div className="space-y-4">
-                        <h2 className="text-3xl font-black tracking-tighter text-foreground">Insight awaits.</h2>
+                        <h2 className="text-3xl font-black tracking-tighter text-foreground">
+                          Insight awaits.
+                        </h2>
                         <p className="text-sm font-medium text-default-500 max-w-[300px] leading-relaxed">
-                          Your senior academic & career consultant, specialized for Sri Lanka.
+                          Your senior academic & career consultant, specialized
+                          for Sri Lanka.
                         </p>
                       </div>
                     </motion.div>
@@ -228,10 +265,11 @@ export default function ChatbotPopup() {
 
                       <Card
                         shadow="none"
-                        className={`max-w-[85%] px-5 py-4 border-none shadow-sm ${msg.role === "user"
-                          ? "bg-purple-600 text-white rounded-tr-none font-semibold leading-relaxed"
-                          : "bg-default-50/80 text-foreground rounded-tl-none ring-1 ring-default-200/50 leading-relaxed font-medium"
-                          }`}
+                        className={`max-w-[85%] px-5 py-4 border-none shadow-sm ${
+                          msg.role === "user"
+                            ? "bg-purple-600 text-white rounded-tr-none font-semibold leading-relaxed"
+                            : "bg-default-50/80 text-foreground rounded-tl-none ring-1 ring-default-200/50 leading-relaxed font-medium"
+                        }`}
                       >
                         <p className="text-[13px]">
                           {msg.role === "model" && i === history.length - 1 ? (
@@ -293,8 +331,10 @@ export default function ChatbotPopup() {
                     placeholder="Ask about careers, courses, or universities..."
                     classNames={{
                       base: "flex-1",
-                      input: "text-xs font-semibold placeholder:text-default-400 no-scrollbar leading-relaxed",
-                      inputWrapper: "bg-transparent hover:bg-transparent shadow-none px-2",
+                      input:
+                        "text-xs font-semibold placeholder:text-default-400 no-scrollbar leading-relaxed",
+                      inputWrapper:
+                        "bg-transparent hover:bg-transparent shadow-none px-2",
                     }}
                   />
                   {isLoading || isTyping ? (
@@ -340,8 +380,11 @@ export default function ChatbotPopup() {
         whileHover={{ scale: 1.05, y: -4, rotate: -3 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex h-16 w-16 items-center justify-center rounded-3xl shadow-[0_25px_50px_-12px_rgba(147,51,234,0.5)] ring-4 ring-white/40 transition-all overflow-hidden relative ${isOpen ? "bg-black" : "bg-gradient-to-tr from-purple-700 to-purple-500"
-          }`}
+        className={`flex h-16 w-16 items-center justify-center rounded-3xl shadow-[0_25px_50px_-12px_rgba(147,51,234,0.5)] ring-4 ring-white/40 transition-all overflow-hidden relative ${
+          isOpen
+            ? "bg-black"
+            : "bg-gradient-to-tr from-purple-700 to-purple-500"
+        }`}
       >
         <AnimatePresence mode="wait">
           {isOpen ? (

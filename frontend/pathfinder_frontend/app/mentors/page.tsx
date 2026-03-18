@@ -1,353 +1,926 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Avatar,
+  Button,
+  Input,
+  ScrollShadow,
+  Tabs,
+  Tab,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+  Chip,
+  Divider,
+} from "@nextui-org/react";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarMenuToggle,
+  NavbarMenu,
+  NavbarMenuItem
+} from "@heroui/navbar";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
 
-interface Message {
-    sender: 'user' | 'mentor';
-    text: string;
-    type?: 'text' | 'file';
-    fileName?: string;
-}
+const API_BASE_URL = "http://127.0.0.1:8001";
+const WS_BASE_URL = "ws://127.0.0.1:8001";
 
-interface Mentor {
-    id: string;
-    name: string;
-    title: string;
-    company: string;
-    expertise: string[];
-    matching_score: number;
-    avatar: string;
-    bio: string;
-    matched_skills: string[];
-}
+const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+      headers: { "Content-Type": "application/json", "X-User-Id": "1" },
+      ...options,
+    });
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    return await res.json();
+  } catch (error) {
+    console.warn(`Fetch warning for ${endpoint}:`, error);
+    return null;
+  }
+};
+
+const femaleNames = [
+  "kumari",
+  "priya",
+  "nimesha",
+  "sachini",
+  "thilini",
+  "sanduni",
+  "kavindi",
+  "amaya",
+  "dinithi",
+  "oshadi",
+  "shirley",
+  "sarah",
+  "jane",
+  "mary",
+  "emily",
+  "jessica",
+  "samantha",
+  "ashley",
+  "brittany",
+  "amanda",
+  "melissa",
+  "nicole",
+  "elizabeth",
+  "lauren",
+  "megan",
+  "rachel",
+  "hannah",
+  "stephanie",
+  "emma",
+  "olivia",
+  "ava",
+  "sophia",
+  "isabella",
+  "mia",
+  "charlotte",
+  "amelia",
+  "harper",
+  "evelyn",
+  "abigail",
+  "ruwani",
+  "hiruni",
+  "tharuki",
+  "vindya",
+  "niroshi",
+  "nilmini",
+  "kalpani",
+  "gayani",
+  "chamari",
+  "ishani",
+];
+
+const getAvatarUrl = (mentor: any) => {
+  const firstName = mentor.display_name.split(" ")[0].toLowerCase();
+  const isFemale = femaleNames.includes(firstName);
+  const genderPath = isFemale ? "women" : "men";
+
+  // Hash string to number across 0 to 99 safely for consistent picture
+  let hash = 0;
+  for (let i = 0; i < mentor.id.length; i++) {
+    hash = mentor.id.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const idNum = Math.abs(hash) % 99;
+
+  return `https://randomuser.me/api/portraits/${genderPath}/${idNum}.jpg`;
+};
 
 export default function MentorsPage() {
-    const [mentors, setMentors] = useState<Mentor[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [activeChat, setActiveChat] = useState<Mentor | null>(null);
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [inputValue, setInputValue] = useState('');
-    const [isSending, setIsSending] = useState(false);
-    const [demoView, setDemoView] = useState<'student' | 'mentor'>('student');
-    const [showToast, setShowToast] = useState(false);
-    const [toastMsg, setToastMsg] = useState('');
-    const scrollRef = useRef<HTMLDivElement>(null);
+  const [mentors, setMentors] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [appliedMentors, setAppliedMentors] = useState<Record<string, { status: string }>>({});
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    // Fetch real mentors from FastAPI
-    useEffect(() => {
-        const fetchMentors = async () => {
-            try {
-                const response = await fetch('http://127.0.0.1:8001/api/v1/mentors/recommend', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        skills: ["Python", "Machine Learning", "FastAPI"],
-                        target_role: "Backend Engineer",
-                        domain: "Software Engineering"
-                    })
-                });
-                const data = await response.json();
-                setMentors(data);
-            } catch (error) {
-                console.error("Failed to fetch mentors:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchMentors();
-    }, []);
+  // Chat State
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [activeMentor, setActiveMentor] = useState<any | null>(null);
+  const [chatHistory, setChatHistory] = useState<any[]>([]);
+  const [messageInput, setMessageInput] = useState("");
+  const wsRef = useRef<WebSocket | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
-    // Update messages when active chat changes
-    useEffect(() => {
-        if (activeChat) {
-            const fetchHistory = async () => {
-                try {
-                    const response = await fetch(`http://127.0.0.1:8001/api/v1/chat/history/${activeChat.id}`);
-                    const history = await response.json();
-                    setMessages(history);
-                } catch (error) {
-                    console.error("Failed to fetch history:", error);
-                }
-            };
-            fetchHistory();
-        }
-    }, [activeChat]);
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await fetchAPI("/mentors");
+      if (data) setMentors(data);
+      const reqs = await fetchAPI("/mentorship/my-requests");
+      if (reqs) setAppliedMentors(reqs);
+    };
+    loadData();
+  }, []);
 
-    // Auto-scroll chat
-    useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        }
-    }, [messages, isSending]);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatHistory]);
 
-    const handleSendMessage = async (textOverride?: string) => {
-        const textMsg = textOverride || inputValue;
-        if (!textMsg.trim() || !activeChat) return;
+  const openAppChat = async (mentor: any) => {
+    setActiveMentor(mentor);
+    setChatHistory([]);
+    onOpen();
 
-        if (!textOverride) setInputValue('');
-        setIsSending(true);
+    const history = await fetchAPI(`/chat/history/${mentor.id}`);
+    if (history) setChatHistory(history);
 
-        try {
-            // 1. Send Student message
-            await fetch('http://127.0.0.1:8001/api/v1/chat/send', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    user_id: "demo_user",
-                    mentor_id: activeChat.id,
-                    message: textMsg
-                })
-            });
+    if (wsRef.current) wsRef.current.close();
 
-            // 2. Refresh UI instantly (Student Side)
-            const historyResponse = await fetch(`http://127.0.0.1:8001/api/v1/chat/history/${activeChat.id}`);
-            const history = await historyResponse.json();
-            setMessages(history);
+    const ws = new WebSocket(`${WS_BASE_URL}/ws/chat/${mentor.id}/user`);
 
-            // 3. Demo Polish: Trigger notification toast
-            setToastMsg(`New message from ${activeChat.name}`);
-            setTimeout(() => setShowToast(true), 1500);
-            setTimeout(() => setShowToast(false), 4500);
-
-        } catch (error) {
-            console.error("Send failed:", error);
-        } finally {
-            setIsSending(false);
-        }
+    ws.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      setChatHistory((prev) => [...prev, msg]);
     };
 
-    const sendMockFile = () => {
-        if (!activeChat) return;
-        const fileMsg: Message = { sender: 'user', text: 'Sent a file: Student_Resume_V2.pdf', type: 'file', fileName: 'Student_Resume_V2.pdf' };
-        setMessages(prev => [...prev, fileMsg]);
-        handleSendMessage("I've attached my resume for your review.");
-    };
+    ws.onclose = () => console.log("WebSocket Disconnected");
+    wsRef.current = ws;
+  };
 
-    return (
-        <div className="min-h-screen bg-gray-50/30">
-            {/* Toast Notification Simulation */}
-            {showToast && (
-                <div className="fixed top-24 right-6 z-[100] bg-white border border-purple-100 shadow-2xl rounded-2xl p-4 flex items-center gap-4 animate-slide-in ring-4 ring-purple-600/5">
-                    <div className="w-10 h-10 rounded-full overflow-hidden bg-purple-100 flex-shrink-0">
-                        <img src="/logonb.png" className="w-full h-full object-contain p-1" />
-                    </div>
-                    <div>
-                        <p className="text-[10px] font-bold text-purple-600 uppercase tracking-widest">Notification</p>
-                        <p className="text-sm font-semibold text-gray-900">{toastMsg}</p>
-                    </div>
-                </div>
-            )}
+  const closeChat = () => {
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
+    }
+    setActiveMentor(null);
+    onClose();
+  };
 
-            {/* Navigation */}
-            <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-2">
-                    <Image src="/logonb.png" alt="PathFinder+ Logo" width={32} height={32} />
-                    <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
-                        PathFinder+
-                    </span>
-                </Link>
-                <div className="flex gap-8 text-sm font-medium text-gray-500">
-                    <Link href="/skill-assessment" className="hover:text-purple-600 transition-colors">Assessment</Link>
-                    <Link href="/resumes" className="hover:text-purple-600 transition-colors">Resumes</Link>
-                    <Link href="/mentors" className="text-purple-600 font-semibold border-b-2 border-purple-600 pb-1">Mentors</Link>
-                </div>
-            </nav>
+  const sendMessage = () => {
+    if (!messageInput.trim() || !wsRef.current) return;
+    wsRef.current.send(JSON.stringify({ content: messageInput }));
+    setMessageInput("");
+  };
 
-            {/* Hero Section */}
-            <section className="max-w-7xl mx-auto px-6 pt-16 pb-12 text-center animate-fade-in text-gray-900">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-50 text-purple-600 text-xs font-bold mb-6 ring-1 ring-purple-100">
-                    <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
-                    </span>
-                    MVP Demo: {mentors.length} Mentors Online
-                </div>
-                <h1 className="text-5xl font-black tracking-tight mb-4">
-                    Connect with <span className="text-purple-600">Experts</span>
-                </h1>
-                <p className="text-xl text-gray-500 max-w-2xl mx-auto">
-                    Directly message top industry leaders from WSO2, LSEG, and Dialog.
-                </p>
-            </section>
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !wsRef.current) return;
 
-            {loading && (
-                <div className="max-w-7xl mx-auto px-6 py-20 flex flex-col items-center justify-center gap-4">
-                    <div className="w-12 h-12 border-4 border-purple-100 border-t-purple-600 rounded-full animate-spin"></div>
-                    <p className="text-gray-400 font-medium animate-pulse">Scanning Mentor Database...</p>
-                </div>
-            )}
+    if (file.size > 8 * 1024 * 1024) {
+      alert("File is too large. Maximum size is 8MB.");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
 
-            {/* Mentor Grid */}
-            {!loading && (
-                <main className="max-w-7xl mx-auto px-6 pb-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {mentors.map((mentor) => (
-                        <div
-                            key={mentor.id}
-                            className="group relative bg-white border border-gray-100 rounded-[32px] p-8 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-500 ease-out hover:-translate-y-2"
-                        >
-                            <div className="flex items-start justify-between mb-6">
-                                <div className="w-20 h-20 rounded-2xl overflow-hidden ring-4 ring-white shadow-lg transition-transform group-hover:scale-110 duration-500">
-                                    <img src={mentor.avatar} alt={mentor.name} className="w-full h-full object-cover" />
-                                </div>
-                                <div className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-[10px] font-bold ring-1 ring-purple-100">
-                                    {mentor.matching_score}% Match
-                                </div>
-                            </div>
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
 
-                            <h3 className="text-xl font-bold text-gray-900 mb-1 leading-tight">{mentor.name}</h3>
-                            <p className="text-sm font-semibold text-purple-600 mb-4">{mentor.title} @ <span className="text-gray-900">{mentor.company}</span></p>
+      const res = await fetch(`${API_BASE_URL}/upload`, {
+        method: "POST",
+        body: formData,
+      });
 
-                            <p className="text-sm text-gray-400 mb-6 line-clamp-2 italic italic">
-                                "{mentor.bio}"
-                            </p>
+      if (!res.ok) throw new Error("Upload failed");
+      const data = await res.json();
 
-                            <div className="flex flex-wrap gap-2 mb-8 min-h-[48px]">
-                                {mentor.expertise.slice(0, 3).map((skill) => (
-                                    <span key={skill} className="px-3 py-1 bg-gray-50 text-gray-500 text-[9px] font-bold tracking-wider rounded-lg border border-gray-100 group-hover:bg-purple-50 group-hover:text-purple-600 transition-colors">
-                                        {skill}
-                                    </span>
-                                ))}
-                            </div>
+      wsRef.current.send(
+        JSON.stringify({
+          content: `Sent an attachment: ${file.name}`,
+          attachment_url: data.url,
+        })
+      );
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
-                            <button
-                                onClick={() => setActiveChat(mentor)}
-                                className="w-full py-4 bg-gray-900 text-white text-sm font-bold rounded-2xl hover:bg-purple-600 transition-all active:scale-95 flex items-center justify-center gap-2"
-                            >
-                                Start Professional Chat
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                            </button>
-                        </div>
-                    ))}
-                </main>
-            )}
+  const categories = [
+    "All",
+    "Software Engineering",
+    "Data Science",
+    "Project Management",
+    "Design",
+    "Engineering",
+    "Business",
+  ];
 
-            {/* DUAL-VIEW CHAT MODAL (The Demo Magic) */}
-            {activeChat && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 animate-fade-in-backdrop">
-                    <div className="w-full max-w-4xl h-[85vh] bg-white rounded-[40px] shadow-2xl overflow-hidden flex flex-row animate-scale-up">
+  const filteredMentors = mentors.filter((m) => {
+    const matchesSearch = m.display_name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
 
-                        {/* Sidebar / Info */}
-                        <div className="w-80 border-r border-gray-100 bg-gray-50/50 p-8 flex flex-col gap-8 hidden md:flex">
-                            <div className="text-center">
-                                <div className="w-24 h-24 mx-auto rounded-3xl overflow-hidden ring-4 ring-white shadow-xl mb-4">
-                                    <img src={activeChat.avatar} className="w-full h-full object-cover" />
-                                </div>
-                                <h4 className="font-bold text-gray-900">{activeChat.name}</h4>
-                                <p className="text-xs text-purple-600 font-bold mb-2 uppercase">{activeChat.title}</p>
-                                <div className="flex items-center justify-center gap-1 text-[10px] text-green-500 font-bold">
-                                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping"></span>
-                                    Active Now
-                                </div>
-                            </div>
+    let matchesCategory = true;
+    if (activeCategory !== "All") {
+      const expertises = Object.keys(m.expertise || {})
+        .join(" ")
+        .toLowerCase();
+      const sectorMatches =
+        m.sector === activeCategory ||
+        (m.sector || "").toLowerCase() === activeCategory.toLowerCase();
 
-                            <div className="flex flex-col gap-4">
-                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[2px]">Demo Controls</p>
-                                <div className="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-3">
-                                    <p className="text-[10px] text-gray-500 leading-tight">Switch view to see what the mentor receives:</p>
-                                    <div className="flex p-1 bg-gray-100 rounded-xl">
-                                        <button
-                                            onClick={() => setDemoView('student')}
-                                            className={`flex-1 py-2 text-[10px] font-bold rounded-lg transition-all ${demoView === 'student' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-400'}`}
-                                        >Student View</button>
-                                        <button
-                                            onClick={() => setDemoView('mentor')}
-                                            className={`flex-1 py-2 text-[10px] font-bold rounded-lg transition-all ${demoView === 'mentor' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-400'}`}
-                                        >Mentor View</button>
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={sendMockFile}
-                                    className="w-full py-3 bg-purple-50 text-purple-600 text-[10px] font-bold rounded-xl border border-purple-100 hover:bg-purple-100 transition-colors flex items-center justify-center gap-2"
-                                >
-                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-                                    Simulate Sending Resume
-                                </button>
-                            </div>
-                        </div>
+      let expertiseMatches = false;
+      const cat = activeCategory.toLowerCase();
+      if (cat === "software engineering")
+        expertiseMatches =
+          expertises.includes("software") ||
+          expertises.includes("engineer") ||
+          expertises.includes("development") ||
+          expertises.includes("react");
+      else if (cat === "data science")
+        expertiseMatches =
+          expertises.includes("data") ||
+          expertises.includes("machine learning") ||
+          expertises.includes("ai") ||
+          expertises.includes("python");
+      else if (cat === "design")
+        expertiseMatches =
+          expertises.includes("design") ||
+          expertises.includes("ui") ||
+          expertises.includes("ux");
+      else if (cat === "project management")
+        expertiseMatches =
+          expertises.includes("project") ||
+          expertises.includes("agile") ||
+          expertises.includes("manager");
+      else if (cat === "engineering")
+        expertiseMatches =
+          expertises.includes("autocad") ||
+          expertises.includes("revit") ||
+          expertises.includes("solidworks");
+      else if (cat === "business")
+        expertiseMatches =
+          expertises.includes("business") ||
+          expertises.includes("strategy") ||
+          expertises.includes("marketing");
 
-                        {/* Main Chat Area */}
-                        <div className="flex-1 flex flex-col bg-white">
-                            {/* Header */}
-                            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className="text-left">
-                                        <h2 className="font-black text-lg text-gray-900">
-                                            {demoView === 'student' ? `Chat with ${activeChat.name.split(' ')[0]}` : `Inquiry from Demo Student`}
-                                        </h2>
-                                        <p className="text-xs text-gray-400">{demoView === 'student' ? 'Secure, encrypted career discussion' : 'V3 Matching Score: 98%'}</p>
-                                    </div>
-                                </div>
-                                <button onClick={() => setActiveChat(null)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                                    <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" /></svg>
-                                </button>
-                            </div>
+      matchesCategory = sectorMatches || expertiseMatches;
+    }
 
-                            {/* Messages Panel */}
-                            <div ref={scrollRef} className="flex-1 p-8 overflow-y-auto bg-gray-50/50 flex flex-col gap-6">
-                                {messages.map((msg, idx) => (
-                                    <div key={idx} className={`flex flex-col ${msg.sender === (demoView === 'student' ? 'user' : 'mentor') ? 'items-end' : 'items-start'}`}>
-                                        <div className={`max-w-[80%] p-4 rounded-3xl text-sm ${msg.sender === (demoView === 'student' ? 'user' : 'mentor')
-                                                ? 'bg-gray-900 text-white rounded-tr-none'
-                                                : 'bg-white text-gray-700 shadow-sm border border-gray-100 rounded-tl-none'
-                                            }`}>
-                                            {msg.type === 'file' && (
-                                                <div className="flex items-center gap-3 mb-2 pb-2 border-b border-white/20">
-                                                    <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                                                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" /></svg>
-                                                    </div>
-                                                    <span className="font-bold underline decoration-dotted underline-offset-4">{msg.fileName}</span>
-                                                </div>
-                                            )}
-                                            {msg.text}
-                                        </div>
-                                        <span className="mt-2 text-[8px] text-gray-400 font-bold uppercase tracking-widest">{msg.sender} • Just now</span>
-                                    </div>
-                                ))}
-                                {isSending && (
-                                    <div className="flex gap-2 p-4 bg-white/50 rounded-2xl w-fit animate-pulse">
-                                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce"></span>
-                                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce delay-100"></span>
-                                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce delay-200"></span>
-                                    </div>
-                                )}
-                            </div>
+    return matchesSearch && matchesCategory;
+  });
 
-                            {/* Input Area */}
-                            <div className="p-8 bg-white border-t border-gray-100 flex gap-4">
-                                <input
-                                    type="text"
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                                    placeholder={demoView === 'student' ? "Ask the mentor about your career path..." : "Type your reply as the mentor..."}
-                                    className="flex-1 bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-purple-600 transition-all outline-none"
-                                />
-                                <button
-                                    onClick={() => handleSendMessage()}
-                                    disabled={!inputValue.trim()}
-                                    className="px-8 bg-gray-900 text-white rounded-2xl font-bold hover:bg-purple-600 disabled:bg-gray-200 transition-all shadow-lg"
-                                >
-                                    Send
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+  return (
+    <div className="min-h-screen text-foreground font-sans flex flex-col items-center relative overflow-hidden bg-transparent">
+      {/* Universal Consistent Navbar using HeroUI */}
+      <Navbar maxWidth="xl" isBordered className="bg-content1/80 backdrop-blur-xl z-50 w-full" onMenuOpenChange={setIsMenuOpen}>
+        <NavbarContent>
+          <NavbarMenuToggle
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            className="sm:hidden"
+          />
+          <NavbarBrand as={Link} href="/" className="gap-2 group cursor-pointer max-w-[200px]">
+            <Image
+              src="/logonb.png"
+              alt="PathFinder+ Logo"
+              width={32}
+              height={32}
+              className="object-contain"
+            />
+            <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
+              PathFinder+
+            </span>
+          </NavbarBrand>
+        </NavbarContent>
 
-            <style jsx>{`
-        .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
-        .animate-fade-in-backdrop { animation: fadeInBackdrop 0.4s ease-out forwards; }
-        .animate-scale-up { animation: scaleUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .animate-slide-in { animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        <NavbarContent className="hidden sm:flex gap-10" justify="center">
+          <NavbarItem>
+            <Link
+              href="/"
+              className="text-sm font-semibold text-default-400 text-default-500 hover:text-indigo-600 transition-colors"
+            >
+              Home
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link
+              href="/skill-assessment"
+              className="text-sm font-semibold text-default-400 text-default-500 hover:text-indigo-600 transition-colors"
+            >
+              Assessment
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link
+              href="/resumes"
+              className="text-sm font-semibold text-default-400 text-default-500 hover:text-indigo-600 transition-colors"
+            >
+              Resumes
+            </Link>
+          </NavbarItem>
+          <NavbarItem isActive>
+            <Link
+              href="/mentors"
+              className="text-sm font-bold text-indigo-600 relative after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-indigo-600 after:rounded-full"
+            >
+              Mentors
+            </Link>
+          </NavbarItem>
+        </NavbarContent>
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInBackdrop { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes scaleUp { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
-      `}</style>
+        <NavbarContent justify="end">
+          <NavbarItem className="hidden sm:flex">
+            <Button
+              variant="flat"
+              color="secondary"
+              radius="full"
+              className="font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-6 shadow-sm"
+              as={Link}
+              href="/mentor-dashboard"
+            >
+              Mentor Sign In
+            </Button>
+          </NavbarItem>
+        </NavbarContent>
+
+        <NavbarMenu>
+          {[
+            { href: "/", label: "Home" },
+            { href: "/skill-assessment", label: "Assessment" },
+            { href: "/resumes", label: "Resumes" },
+            { href: "/mentors", label: "Mentors" },
+          ].map((item, index) => (
+            <NavbarMenuItem key={`${item.label}-${index}`}>
+              <Link
+                className="w-full text-foreground hover:text-indigo-500 font-medium py-2 block"
+                href={item.href}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            </NavbarMenuItem>
+          ))}
+          <NavbarMenuItem>
+            <Button
+              variant="flat"
+              color="secondary"
+              radius="full"
+              className="font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 shadow-sm w-full mt-4"
+              as={Link}
+              href="/mentor-dashboard"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Mentor Sign In
+            </Button>
+          </NavbarMenuItem>
+        </NavbarMenu>
+      </Navbar>
+
+      {/* Vibrant 21st UI Hero Section */}
+      <section className="relative w-full max-w-7xl mx-auto px-6 py-20 lg:py-32 flex flex-col lg:flex-row items-center justify-between gap-12 z-10">
+        {/* Animated Background Gradients */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-gradient-to-r from-indigo-500/20 to-fuchsia-500/20 blur-[100px] rounded-full pointer-events-none -z-10" />
+
+        <div className="flex-1 space-y-8 text-center lg:text-left z-10 w-full mb-10 lg:mb-0">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-content1/60 backdrop-blur-md border border-indigo-100 text-indigo-600 text-xs font-bold tracking-wider uppercase shadow-sm">
+              ✨ Elite Mentorship Network
+            </span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]"
+          >
+            Accelerate your career with{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-fuchsia-500">
+              Expert Guidance.
+            </span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-lg text-default-400 text-default-500 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium"
+          >
+            We've handpicked industry leaders from top local companies.
+            Apply for 1-on-1 coaching, resume reviews, and insider career
+            secrets. Also to offer you the best.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="flex flex-wrap items-center justify-center lg:justify-start gap-4"
+          >
+            <div className="flex -space-x-3">
+              <Avatar
+                name="K"
+                size="md"
+                className="border-2 border-white bg-indigo-500 font-bold text-white shadow-sm"
+              />
+              <Avatar
+                name="S"
+                size="md"
+                className="border-2 border-white bg-green-500 font-bold text-white shadow-sm"
+              />
+              <Avatar
+                name="A"
+                size="md"
+                className="border-2 border-white bg-rose-500 font-bold text-white shadow-sm"
+              />
+              <div className="w-10 h-10 rounded-full bg-content3 border-2 border-white flex items-center justify-center text-xs font-bold text-default-600 shadow-sm">
+                +30
+              </div>
+            </div>
+            <p className="text-sm font-medium text-default-400 text-default-500">
+              Local Mentors
+            </p>
+          </motion.div>
         </div>
-    );
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          className="flex-1 relative z-10 w-full max-w-lg lg:max-w-none ml-auto mr-auto lg:mr-0 flex justify-center lg:justify-end"
+        >
+          <div className="relative rounded-[2rem] bg-gradient-to-br from-indigo-50 to-purple-50 p-2 shadow-2xl shadow-indigo-500/10 border border-white rotate-2 hover:rotate-0 transition-transform duration-500 w-full max-w-md">
+            <div className="absolute inset-0 bg-content1/40 backdrop-blur-xl rounded-[2rem] -z-10" />
+            <Image
+              src="/mentor_illustration.png"
+              alt="Mentorship Illustration"
+              width={600}
+              height={500}
+              className="w-full h-auto object-cover rounded-[1.5rem]"
+              priority
+            />
+
+            {/* Floating Tag */}
+            <div
+              className="absolute -bottom-6 -left-6 bg-background rounded-2xl p-4 shadow-2xl border border-divider flex items-center gap-4 animate-bounce z-20"
+              style={{ animationDuration: "3s" }}
+            >
+              <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 border border-green-500/30">
+                <svg
+                  className="w-7 h-7 drop-shadow-sm"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+              <div className="pr-4">
+                <p className="text-[15px] font-extrabold text-foreground drop-shadow-sm">
+                  Application Approved
+                </p>
+                <p className="text-[12px] font-bold text-indigo-500 mt-0.5">
+                  Match Successful
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Main Mentor Directory Section */}
+      <section className="w-full bg-content1 border-t border-divider relative z-20 flex-1">
+        <div className="max-w-7xl mx-auto px-6 py-20 space-y-12">
+          <div className="text-center max-w-2xl mx-auto">
+            <h2 className="text-3xl font-extrabold text-foreground tracking-tight">
+              Explore the Directory
+            </h2>
+            <p className="text-default-400 text-default-500 mt-2 font-medium">
+              Find your perfect match. You can apply to a maximum of 2 mentors.
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-full font-bold text-sm">
+              Applications Used: {Object.keys(appliedMentors).length} / 2
+            </div>
+          </div>
+
+          {/* Vibrant Filters */}
+          <div className="flex flex-col xl:flex-row justify-between items-center gap-6 bg-content2 p-3 rounded-2xl border border-divider shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
+            <div className="w-full overflow-x-auto hide-scrollbar">
+              <Tabs
+                aria-label="Mentor Categories"
+                color="primary"
+                variant="light"
+                classNames={{
+                  cursor: "w-full bg-content1 shadow-sm rounded-xl",
+                  tab: "font-semibold tracking-wide text-default-600 h-14 px-8",
+                  tabList: "gap-2",
+                }}
+                selectedKey={activeCategory}
+                onSelectionChange={(k: React.Key) =>
+                  setActiveCategory(k as string)
+                }
+              >
+                {categories.map((cat) => (
+                  <Tab key={cat} title={cat} />
+                ))}
+              </Tabs>
+            </div>
+
+            <div className="px-2 w-full xl:w-auto xl:min-w-[320px]">
+              <Input
+                isClearable
+                variant="bordered"
+                className="w-full"
+                size="lg"
+                radius="lg"
+                placeholder="Search mentors by name..."
+                value={searchQuery}
+                onValueChange={setSearchQuery}
+                startContent={
+                  <svg
+                    className="w-5 h-5 text-default-400 text-default-500 mr-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M21 21l-6-6m2-5a7 5 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                }
+                classNames={{
+                  inputWrapper: "bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 hover:border-gray-400 dark:hover:border-zinc-500 focus-within:border-indigo-500 transition-colors shadow-sm h-14",
+                  input: "text-base font-medium text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-400"
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Glassmorphic Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <AnimatePresence>
+              {filteredMentors.map((mentor, idx) => (
+                <motion.div
+                  key={idx}
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Card className="p-4 shadow-lg rounded-2xl bg-content1 border border-divider flex flex-col h-full hover:shadow-xl transition-shadow">
+                    <CardHeader className="flex gap-4 items-center">
+                      <Avatar
+                        src={`https://i.pravatar.cc/150?u=${mentor.id}`}
+                        name={mentor.display_name}
+                        size="md"
+                        className="border-2 border-indigo-100 shadow-sm"
+                      />
+                      <div>
+                        <p className="font-semibold text-lg text-foreground leading-tight">
+                          {mentor.display_name}
+                        </p>
+                        <p className="text-sm text-indigo-600 font-medium">
+                          {mentor.sector || "Tech Professional"}
+                        </p>
+                      </div>
+                    </CardHeader>
+
+                    <CardBody className="py-2 flex-grow">
+                      <p className="text-sm text-default-600 line-clamp-3 mb-4">
+                        {mentor.bio}
+                      </p>
+                      <div className="flex flex-wrap gap-2 mt-auto">
+                        <Chip size="sm" color="primary" variant="flat">
+                          Available
+                        </Chip>
+                        <Chip
+                          size="sm"
+                          variant="flat"
+                          className="bg-content3 text-default-600"
+                        >
+                          English
+                        </Chip>
+                      </div>
+                    </CardBody>
+
+                    <CardFooter className="flex gap-2">
+                      {appliedMentors[mentor.id] ? (
+                        <>
+                          <Button
+                            color="primary"
+                            isDisabled={appliedMentors[mentor.id].status !== "approved"}
+                            className="flex-1 font-bold shadow-md bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50"
+                            radius="lg"
+                            onPress={() => openAppChat(mentor)}
+                          >
+                            {appliedMentors[mentor.id].status === "approved" ? "Chat Room" : "Pending..."}
+                          </Button>
+                          <Button
+                            color="danger"
+                            variant="flat"
+                            className="font-bold border-1 border-rose-200"
+                            radius="lg"
+                            onPress={() => {
+                              const updated = { ...appliedMentors };
+                              delete updated[mentor.id];
+                              setAppliedMentors(updated);
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                        </>
+                      ) : (
+                        <Button
+                          color="primary"
+                          variant="shadow"
+                          className="w-full font-bold shadow-md bg-indigo-600/90 text-white hover:bg-indigo-700"
+                          radius="lg"
+                          onPress={async () => {
+                            if (Object.keys(appliedMentors).length >= 2) {
+                              alert(
+                                "You have reached the maximum limit of 2 mentor applications.",
+                              );
+                              return;
+                            }
+                            setAppliedMentors((prev) => ({ ...prev, [mentor.id]: { status: "pending" } }));
+                            await fetchAPI("/mentorship/apply", {
+                              method: "POST",
+                              body: JSON.stringify({ mentor_id: mentor.id }),
+                            });
+                          }}
+                        >
+                          Apply Now
+                        </Button>
+                      )}
+                    </CardFooter>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+
+            {filteredMentors.length === 0 && (
+              <div className="col-span-full py-32 flex flex-col items-center justify-center text-default-400 text-default-500">
+                <svg
+                  className="w-16 h-16 mb-4 text-slate-200"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1}
+                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                  />
+                </svg>
+                <p className="font-medium text-lg text-default-400 text-default-500">
+                  No mentors found for this selection.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Application Chat Modal */}
+      <Modal
+        isOpen={isOpen}
+        onClose={closeChat}
+        size="2xl"
+        scrollBehavior="inside"
+        backdrop="blur"
+        classNames={{
+          base: " bg-content1/90 backdrop-blur-2xl border border-white/40 shadow-2xl",
+          header: "border-b border-divider",
+          footer: "border-t border-divider",
+        }}
+      >
+        <ModalContent>
+          {(onClose: () => void) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                <div className="flex items-center gap-3">
+                  <Avatar
+                    name={activeMentor?.display_name}
+                    className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white font-bold"
+                  />
+                  <div>
+                    <h3 className="font-extrabold text-foreground tracking-tight">
+                      {activeMentor?.display_name}
+                    </h3>
+                    <p className="text-xs text-green-500 font-bold uppercase tracking-wider flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>{" "}
+                      Application Open
+                    </p>
+                  </div>
+                </div>
+              </ModalHeader>
+              <ModalBody className="p-0 bg-content2/50">
+                <ScrollShadow className="p-6 h-[450px] flex flex-col gap-4">
+                  {chatHistory.length === 0 ? (
+                    <div className="flex-1 flex flex-col items-center justify-center text-default-400 text-default-500 space-y-3">
+                      <div className="w-16 h-16 bg-content1 shadow-sm rounded-full flex items-center justify-center border border-divider">
+                        <svg
+                          className="w-8 h-8 text-indigo-400"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                          />
+                        </svg>
+                      </div>
+                      <p className="font-medium text-default-400 text-default-500 text-center max-w-[250px]">
+                        Your application to{" "}
+                        {activeMentor?.display_name.split(" ")[0]} is open. Send
+                        a message to begin!
+                      </p>
+                    </div>
+                  ) : (
+                    chatHistory.map((msg: any, i: number) => {
+                      const isMe = msg.sender === "user";
+                      return (
+                        <div
+                          key={i}
+                          className={`flex ${isMe ? "justify-end" : "justify-start"}`}
+                        >
+                          {!isMe && (
+                            <Avatar
+                              src={`https://i.pravatar.cc/150?u=${activeMentor?.id}`}
+                              name={activeMentor?.display_name}
+                              size="sm"
+                              className="mr-3 shrink-0"
+                            />
+                          )}
+                          <div
+                            className={`p-3 rounded-2xl max-w-[80%] shadow-sm ${isMe ? "bg-indigo-600 text-white rounded-br-none" : " bg-content1 border text-foreground rounded-bl-none border-divider"}`}
+                          >
+                            <p className="text-[14px] leading-relaxed">
+                              {msg.message || msg.text}
+                            </p>
+                            {msg.attachment_url && (
+                              <a
+                                href={msg.attachment_url.startsWith('http') ? msg.attachment_url : `${API_BASE_URL}${msg.attachment_url}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={`mt-3 p-3 rounded-xl border flex items-center gap-3 w-fit transition-colors ${isMe ? " bg-content1/20 border-white/30 hover:bg-content1/30 text-white" : " bg-content2 border-divider hover:bg-content3 text-foreground"}`}
+                              >
+                                <div
+                                  className={`${isMe ? "bg-indigo-400 shadow-inner" : "bg-rose-500 shadow-sm"} text-white p-2 rounded-xl shrink-0`}
+                                >
+                                  <svg
+                                    className="w-5 h-5"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2.5}
+                                      d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                                    />
+                                  </svg>
+                                </div>
+                                <div
+                                  className={`text-sm font-bold tracking-wide break-all line-clamp-2 ${isMe ? "text-white" : " text-foreground"}`}
+                                >
+                                  {msg.attachment_url.split('/').pop()}
+                                </div>
+                              </a>
+                            )}
+                            <div
+                              className={`text-[10px] mt-2 font-bold tracking-wide uppercase opacity-70 ${isMe ? "text-indigo-200 text-right" : " text-default-400 text-left"}`}
+                            >
+                              {msg.timestamp
+                                ? new Date(msg.timestamp + "Z").toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  timeZone: "Asia/Colombo"
+                                })
+                                : "Just now"}
+                            </div>
+                          </div>
+                          {isMe && (
+                            <Avatar
+                              name="You"
+                              size="sm"
+                              className="ml-3 shrink-0 bg-indigo-200 text-indigo-700 font-bold"
+                            />
+                          )}
+                        </div>
+                      );
+                    })
+                  )}
+                  <div ref={messagesEndRef} />
+                </ScrollShadow>
+              </ModalBody>
+
+              <ModalFooter className="p-3 bg-content1 border-t border-divider">
+                <form
+                  className="w-full flex items-center gap-2"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    sendMessage();
+                  }}
+                >
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    onPress={() => fileInputRef.current?.click()}
+                    isLoading={isUploading}
+                    className="text-default-400 text-default-500 hover:text-indigo-600 shrink-0"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                      />
+                    </svg>
+                  </Button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    onChange={handleFileUpload}
+                  />
+                  <Input
+                    fullWidth
+                    size="md"
+                    placeholder="Type a message..."
+                    value={messageInput}
+                    onValueChange={setMessageInput}
+                    classNames={{
+                      inputWrapper:
+                        " bg-content3/50 border-none shadow-none focus-within:! bg-content3 transition-colors",
+                      input: "text-[14px]",
+                    }}
+                  />
+                  <Button
+                    isIconOnly
+                    color="primary"
+                    type="submit"
+                    className="bg-indigo-600 shadow-md rounded-xl shrink-0"
+                    isDisabled={!messageInput.trim()}
+                  >
+                    <svg
+                      className="w-4 h-4 translate-x-[1px]"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2.5}
+                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                      />
+                    </svg>
+                  </Button>
+                </form>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </div>
+  );
 }

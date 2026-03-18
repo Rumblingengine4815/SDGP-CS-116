@@ -27,48 +27,49 @@ const steps = [
 
 export default function HowThisWorksPage() {
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-transparent text-foreground">
       <div className="max-w-5xl mx-auto space-y-12 py-12 px-6">
-
         <section className="animate-fade-up text-center space-y-4">
-          <h1 className="text-4xl md:text-5xl font-extrabold !text-slate-900 tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-extrabold ! text-foreground tracking-tight">
             The <span className="text-purple-600">PathFinder+</span> Advantage
           </h1>
-          <p className="mt-4 max-w-2xl mx-auto text-lg text-slate-600 leading-relaxed">
-            Experience a smarter way to plan your future. Our multi-stage AI process
-            turns raw data into your personalized career roadmap.
+          <p className="mt-4 max-w-2xl mx-auto text-lg text-default-600 leading-relaxed">
+            Experience a smarter way to plan your future. Our multi-stage AI
+            process turns raw data into your personalized career roadmap.
           </p>
         </section>
 
-
-        <section className="bg-white/60 rounded-[40px] p-2 md:p-8 border border-purple-300">
+        <section className="bg-content1/60 rounded-[40px] p-2 md:p-8 border border-purple-300">
           <Stepper steps={steps} />
         </section>
 
-
         <section className="pt-4 grid md:grid-cols-2 gap-8 text-center md:text-left">
-          <div className="p-8 rounded-3xl bg-white border border-purple-100 shadow-sm">
-            <h3 className="text-xl font-bold text-slate-900">Why choose our AI?</h3>
-            <p className="mt-3 text-slate-600">
-              Unlike generic advice, we use real-time market data from LinkedIn, Paylab,
-              and ESCO to ensure your recommendations are actually relevant.
+          <div className="p-8 rounded-3xl bg-content1 border border-purple-100 shadow-sm">
+            <h3 className="text-xl font-bold text-foreground">
+              Why choose our AI?
+            </h3>
+            <p className="mt-3 text-default-600">
+              Unlike generic advice, we use real-time market data from LinkedIn,
+              Paylab, and ESCO to ensure your recommendations are actually
+              relevant.
             </p>
           </div>
-          <div className="p-8 rounded-3xl bg-white border border-purple-100 shadow-sm">
-            <h3 className="text-xl font-bold text-slate-900">Always Up-To-Date</h3>
-            <p className="mt-3 text-slate-600">
+          <div className="p-8 rounded-3xl bg-content1 border border-purple-100 shadow-sm">
+            <h3 className="text-xl font-bold text-foreground">
+              Always Up-To-Date
+            </h3>
+            <p className="mt-3 text-default-600">
               Our data scrapers run weekly to catch the latest job requirements
               and skill trends in the many industries we cover.
             </p>
           </div>
         </section>
 
-
-        <section className="py-16 bg-white rounded-3xl border border-purple-100 px-6">
+        <section className="py-16 bg-content1 rounded-3xl border border-purple-100 px-6">
           <div className="w-full max-w-7xl px-4 md:px-5 mx-auto">
             <div className="w-full flex-col justify-start items-center lg:gap-12 gap-8 inline-flex">
               <div className="w-full flex-col justify-start items-center gap-3 flex">
-                <span className="w-full text-center text-slate-500 text-base font-normal leading-relaxed">
+                <span className="w-full text-center text-default-400 text-default-500 text-base font-normal leading-relaxed">
                   How It Works
                 </span>
                 <h2 className="w-full text-center text-purple-700 text-4xl font-bold leading-normal">
@@ -86,14 +87,19 @@ export default function HowThisWorksPage() {
                 <div className="flex-1 w-full">
                   <div className="space-y-5">
                     {steps.map((step, i) => (
-                      <div key={i} className="p-6 bg-white border border-purple-100 rounded-2xl shadow-sm">
+                      <div
+                        key={i}
+                        className="p-6 bg-content1 border border-purple-100 rounded-2xl shadow-sm"
+                      >
                         <span className="text-purple-600 text-sm font-semibold tracking-wide uppercase">
                           Step {i + 1}
                         </span>
-                        <h4 className="text-slate-900 text-lg font-semibold mt-1">
+                        <h4 className="text-foreground text-lg font-semibold mt-1">
                           {step.title.replace(/^\d+\)\s*/, "")}
                         </h4>
-                        <p className="mt-2 text-slate-500 text-sm leading-relaxed">{step.description}</p>
+                        <p className="mt-2 text-default-400 text-default-500 text-sm leading-relaxed">
+                          {step.description}
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -105,7 +111,6 @@ export default function HowThisWorksPage() {
 
         {/* Ambient grid of steps to show our processes for users to visualize */}
         <section className="relative bg-gradient-to-b from-purple-100 to-purple-50 py-16 rounded-[40px] overflow-hidden">
-
           <div
             className="absolute inset-0 m-auto max-w-xs h-[357px] blur-[118px] sm:max-w-md md:max-w-lg pointer-events-none"
             style={{
@@ -116,9 +121,12 @@ export default function HowThisWorksPage() {
 
           <div className="relative px-4 mx-auto max-w-5xl sm:px-6 lg:px-8">
             <div className="max-w-2xl mx-auto text-center mb-12">
-              <h2 className="text-4xl font-extrabold text-slate-900">How does it work?</h2>
-              <p className="mt-4 text-slate-600 leading-relaxed">
-                Our AI solution guides you from profile to placement with data-driven steps.
+              <h2 className="text-4xl font-extrabold text-foreground">
+                How does it work?
+              </h2>
+              <p className="mt-4 text-default-600 leading-relaxed">
+                Our AI solution guides you from profile to placement with
+                data-driven steps.
               </p>
             </div>
 
@@ -137,13 +145,17 @@ export default function HowThisWorksPage() {
               <div className="relative grid grid-cols-1 text-center gap-y-12 md:grid-cols-4 gap-x-8">
                 {steps.map((s, i) => (
                   <div key={i}>
-                    <div className="flex items-center justify-center w-14 h-14 mx-auto bg-white border-2 border-purple-200 rounded-full shadow-sm">
-                      <span className="text-lg font-bold text-purple-600">{i + 1}</span>
+                    <div className="flex items-center justify-center w-14 h-14 mx-auto bg-content1 border-2 border-purple-200 rounded-full shadow-sm">
+                      <span className="text-lg font-bold text-purple-600">
+                        {i + 1}
+                      </span>
                     </div>
-                    <h3 className="mt-6 text-base text-slate-900 font-semibold md:mt-10">
+                    <h3 className="mt-6 text-base text-foreground font-semibold md:mt-10">
                       {s.title.replace(/^\d+\)\s*/, "")}
                     </h3>
-                    <p className="mt-3 text-sm text-slate-600 leading-relaxed">{s.description}</p>
+                    <p className="mt-3 text-sm text-default-600 leading-relaxed">
+                      {s.description}
+                    </p>
                   </div>
                 ))}
               </div>

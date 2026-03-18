@@ -2,7 +2,9 @@
 
 import React from "react";
 
-type CardProps = React.HTMLAttributes<HTMLDivElement> & { children: React.ReactNode };
+type CardProps = React.HTMLAttributes<HTMLDivElement> & {
+  children: React.ReactNode;
+};
 
 export function Card({ children, className = "", ...rest }: CardProps) {
   return (
@@ -19,7 +21,10 @@ export function Card({ children, className = "", ...rest }: CardProps) {
 
 export function CardHeader({ children, className = "", ...rest }: CardProps) {
   return (
-    <div className={["flex flex-row items-center gap-3", className].join(" ")} {...rest}>
+    <div
+      className={["flex flex-row items-center gap-3", className].join(" ")}
+      {...rest}
+    >
       {children}
     </div>
   );
