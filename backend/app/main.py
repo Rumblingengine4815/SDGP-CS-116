@@ -82,15 +82,14 @@
 #     }
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from app.auth import router as auth_router
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# ✅ ADD THIS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # allow all (for development)
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -98,6 +97,6 @@ app.add_middleware(
 
 app.include_router(auth_router, prefix="/api")
 
-from app.routers.quiz import router as quiz_router
-
-app.include_router(quiz_router, prefix="/api")
+@app.get("/")
+def root():
+    return {"message": "API running"}
