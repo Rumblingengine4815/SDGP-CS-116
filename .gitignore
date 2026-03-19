@@ -41,3 +41,6 @@ tmp/
 Thumbs.db
 
 demo_output.txt
+
+# Zip archives (may contain .env secrets)
+*.zip
