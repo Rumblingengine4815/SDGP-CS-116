@@ -309,10 +309,10 @@ export default function MentorDashboardPage() {
                                     className="object-contain drop-shadow-sm"
                                 />
                             </div>
-                            <h2 className="text-center text-2xl font-black tracking-tight text-foreground font-sora">
+                            <h2 className="text-center text-2xl font-black tracking-tight text-black dark:text-white font-sora">
                                 Sign in to your portal
                             </h2>
-                            <p className="mt-2 text-center text-sm font-medium text-default-500">
+                            <p className="mt-2 text-center text-sm font-medium text-default-600 dark:text-default-500">
                                 Manage your mentoring sessions and student applications.
                             </p>
                         </div>
@@ -322,7 +322,7 @@ export default function MentorDashboardPage() {
                                 <div>
                                     <label
                                         htmlFor="email"
-                                        className="block text-sm/6 font-medium text-foreground"
+                                        className="block text-sm/6 font-medium text-black dark:text-white"
                                     >
                                         Email address
                                     </label>
@@ -351,7 +351,7 @@ export default function MentorDashboardPage() {
                                     <div className="flex items-center justify-between">
                                         <label
                                             htmlFor="password"
-                                            className="block text-sm/6 font-medium text-foreground"
+                                            className="block text-sm/6 font-medium text-black dark:text-white"
                                         >
                                             Password
                                         </label>
@@ -391,7 +391,8 @@ export default function MentorDashboardPage() {
                                         type="submit"
                                         isLoading={isLoggingIn}
                                         size="lg"
-                                        className="w-full bg-pf-purple-600 font-bold text-white shadow-lg hover:bg-pf-purple-700 transition-all font-sans"
+                                        style={{ background: "linear-gradient(to right, #4338ca, #7e22ce)", color: "#ffffff" }}
+                                        className="w-full !text-white font-bold shadow-lg transition-all font-sans"
                                         radius="full"
                                     >
                                         Sign in securely

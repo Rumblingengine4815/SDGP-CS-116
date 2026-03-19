@@ -160,11 +160,11 @@ export default function ChatbotPopup() {
             className="mb-6 z-50"
           >
             <Card
-              className="h-[500px] w-[360px] max-w-[90vw] bg-content1/90 backdrop-blur-3xl shadow-[0_32px_128px_-32px_rgba(0,0,0,0.3)] border-2 border-pf-purple-400 rounded-[2rem] overflow-hidden"
+              className="h-[500px] w-[360px] max-w-[90vw] bg-white dark:bg-zinc-900 shadow-[0_32px_128px_-32px_rgba(0,0,0,0.3)] border border-purple-200 dark:border-purple-800 rounded-[2rem] overflow-hidden"
               shadow="lg"
             >
               {/* Header  */}
-              <CardHeader className="flex justify-between items-center px-6 py-5 bg-content2/50 border-b border-divider/50">
+              <CardHeader className="flex justify-between items-center px-6 py-5 bg-gray-50 dark:bg-zinc-800 border-b border-gray-200 dark:border-zinc-700">
                 <div className="flex items-center gap-3.5">
                   <Badge
                     content=""
@@ -181,7 +181,7 @@ export default function ChatbotPopup() {
                     />
                   </Badge>
                   <div>
-                    <h3 className="text-[15px] font-black tracking-tight text-foreground leading-none">
+                    <h3 className="text-[15px] font-black tracking-tight text-gray-900 dark:text-white leading-none">
                       PathFinder+ AI
                     </h3>
                     <Spacer y={1} />
@@ -218,7 +218,7 @@ export default function ChatbotPopup() {
               {/* Easy scroll */}
               <CardBody
                 ref={scrollRef}
-                className="flex-1 overflow-y-auto px-6 py-10 space-y-8 scrollbar-hide bg-gradient-to-b from-transparent via-content2/10 to-content2/40"
+                className="flex-1 overflow-y-auto px-6 py-10 space-y-8 scrollbar-hide bg-white dark:bg-zinc-900"
               >
                 <AnimatePresence mode="popLayout">
                   {history.length === 0 && (
@@ -239,7 +239,7 @@ export default function ChatbotPopup() {
                         />
                       </div>
                       <div className="space-y-4">
-                        <h2 className="text-3xl font-black tracking-tighter text-foreground">
+                        <h2 className="text-3xl font-black tracking-tighter text-gray-900 dark:text-white">
                           Insight awaits.
                         </h2>
                         <p className="text-sm font-medium text-default-500 max-w-[300px] leading-relaxed">
@@ -268,7 +268,7 @@ export default function ChatbotPopup() {
                         className={`max-w-[85%] px-5 py-4 border-none shadow-sm ${
                           msg.role === "user"
                             ? "bg-purple-600 text-white rounded-tr-none font-semibold leading-relaxed"
-                            : "bg-default-50/80 text-foreground rounded-tl-none ring-1 ring-default-200/50 leading-relaxed font-medium"
+                            : "bg-gray-100 dark:bg-zinc-700 text-gray-800 dark:text-gray-100 rounded-tl-none ring-1 ring-gray-200 dark:ring-zinc-600 leading-relaxed font-medium"
                         }`}
                       >
                         <p className="text-[13px]">
@@ -295,7 +295,7 @@ export default function ChatbotPopup() {
               </CardBody>
 
               {/*  Professional Input Section */}
-              <CardFooter className="flex flex-col p-5 pt-4 bg-content1 border-t border-divider/50 shadow-[0_-10px_40px_-5px_rgba(0,0,0,0.03)] pb-4">
+              <CardFooter className="flex flex-col p-5 pt-4 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-700 pb-4">
                 {/* Starter Chips: Material Style */}
                 {history.length < 3 && (
                   <div className="flex flex-wrap gap-2 mb-4 w-full">
@@ -314,7 +314,7 @@ export default function ChatbotPopup() {
                   </div>
                 )}
 
-                <div className="relative flex items-end gap-2 w-full bg-content2/50 rounded-[2rem] p-2 ring-1 ring-divider transition-all focus-within:ring-pf-purple-300 focus-within:bg-content1 shadow-inner">
+                <div className="relative flex items-end gap-2 w-full bg-gray-100 dark:bg-zinc-800 rounded-[2rem] p-2 ring-1 ring-gray-300 dark:ring-zinc-600 transition-all focus-within:ring-purple-400 shadow-inner">
                   <Textarea
                     variant="flat"
                     size="sm"

@@ -1,0 +1,4 @@
+{
+  "status_code": 200,
+  "response": "{\"career\":\"Data Scientist\",\"description\":\"Based on your profile, your 1 explicit skills and 12-point NLP behavior vectors strongly align with leadership roles in Information Technology.\",\"skills\":[\"Python\"],\"courses\":[\"Advanced Specialization\",\"Foundations Course\",\"Professional Certificate\"],\"jobs\":[\"Junior Data Scientist\",\"Senior Data Scientist\"],\"bundle\":{\"error\":\"'title'\"}}"
+}

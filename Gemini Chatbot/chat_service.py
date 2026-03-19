@@ -99,11 +99,7 @@ class ChatService:
         jobs = self.get_job_context(user_message)
         if acad: context_parts.append(f"Academic: {acad}")
         if jobs: context_parts.append(f"Live Vacancies: {jobs}")
-        if self.db is not None:
-            user = self.db.users.find_one({"_id": user_id})
-            if user: 
-                context_parts.append(f"User Profile: Skills={user.get('skills')}, Goal={user.get('target_job')}")
-        
+        # Note: user profile injection removed to avoid stale data contaminating prompts
         return " | ".join(context_parts) if context_parts else ""
 
     def get_reply(self, user_id, user_message, chat_history=None):

@@ -2,31 +2,32 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import Image from "next/image";
+import { motion } from "framer-motion";
+import { Button, Input } from "@heroui/react";
+import { User, Mail, Lock, UserPlus } from "lucide-react";
 
 export default function RegisterPage() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [firstName,setFirstName] = useState("");
-  const [lastName,setLastName] = useState("");
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
-  const [confirmPassword,setConfirmPassword] = useState("");
-
-  const handleRegister = async (e:any) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // ✅ validation
-    if(password !== confirmPassword){
+    if (password !== confirmPassword) {
       alert("Passwords do not match");
       return;
     }
 
+    setIsLoading(true);
+
     try {
-      const res = await fetch("http://localhost:8000/api/register", {
+      const res = await fetch("http://localhost:8001/api/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: firstName + " " + lastName,
           email: email,
@@ -36,124 +37,99 @@ export default function RegisterPage() {
 
       const data = await res.json();
 
-      if(res.ok){
+      if (res.ok) {
         alert("User registered successfully");
-        window.location.href = "/login"; // redirect
+        window.location.href = "/login";
       } else {
         alert(data.detail || "Registration failed");
       }
-
     } catch (err) {
       console.error(err);
       alert("Error connecting to server");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
+    <main className="min-h-screen flex items-center justify-center py-20 px-4 pattern-bg relative overflow-hidden">
+      {/* Decorative Blur Blobs */}
+      <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
 
-    <div className="min-h-screen bg-white text-black">
-
-      {/* NAVBAR */}
-      <nav className="flex justify-between items-center px-8 py-4 border-b bg-white">
-
-        <div className="flex items-center gap-3">
-          <Image src="/images/logo.png" alt="logo" width={40} height={40}/>
-          <span className="font-semibold text-lg">PathFinder</span>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-lg p-8 md:p-10 bg-content1/70 backdrop-blur-xl border border-divider shadow-2xl rounded-[2.5rem] z-10"
+      >
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-black bg-gradient-to-br from-foreground to-default-500 bg-clip-text text-transparent mb-2">
+            Create an Account
+          </h1>
+          <p className="text-default-500 text-sm">Join PathFinder+ and map your future</p>
         </div>
 
-        <div className="flex items-center gap-6">
-          <Link href="/" className="text-gray-700">Home</Link>
-          <Link href="/login" className="bg-black text-white px-5 py-2 rounded-full">
+        <form onSubmit={handleRegister} className="space-y-5">
+          <div className="grid grid-cols-2 gap-4">
+            <Input 
+              label="First Name" 
+              variant="faded" color="secondary"
+              value={firstName} onChange={(e) => setFirstName(e.target.value)}
+              startContent={<User size={18} className="text-default-400" />}
+              isRequired
+            />
+            <Input 
+              label="Last Name" 
+              variant="faded" color="secondary"
+              value={lastName} onChange={(e) => setLastName(e.target.value)}
+              isRequired
+            />
+          </div>
+
+          <Input 
+            label="Email Address" 
+            type="email" variant="faded" color="secondary"
+            value={email} onChange={(e) => setEmail(e.target.value)}
+            startContent={<Mail size={18} className="text-default-400" />}
+            isRequired
+          />
+
+          <Input 
+            label="New Password" 
+            type="password" variant="faded" color="secondary"
+            value={password} onChange={(e) => setPassword(e.target.value)}
+            startContent={<Lock size={18} className="text-default-400" />}
+            isRequired
+          />
+
+          <Input 
+            label="Confirm Password" 
+            type="password" variant="faded" color="secondary"
+            value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+            startContent={<Lock size={18} className="text-default-400" />}
+            isRequired
+          />
+
+          <Button 
+            type="submit" 
+            color="secondary" 
+            size="lg" 
+            fullWidth 
+            className="font-bold shadow-lg shadow-secondary/30 mt-4"
+            isLoading={isLoading}
+            endContent={!isLoading && <UserPlus size={18} />}
+          >
+            Sign Up
+          </Button>
+        </form>
+
+        <div className="mt-8 text-center text-sm text-default-500 font-medium">
+          Already have an account?{" "}
+          <Link href="/login" className="text-secondary hover:underline">
             Login
           </Link>
         </div>
-
-      </nav>
-
-      {/* SIGNUP SECTION */}
-      <div className="grid grid-cols-2 items-center px-20 py-16">
-
-        {/* LEFT FORM */}
-        <div>
-
-          <h1 className="text-4xl font-bold mb-8">Sign-Up</h1>
-
-          <form onSubmit={handleRegister} className="space-y-6 w-96">
-
-            <div>
-              <label className="block mb-2 text-gray-800">First Name</label>
-              <input
-                type="text"
-                value={firstName}
-                onChange={(e)=>setFirstName(e.target.value)}
-                className="w-full bg-gray-200 rounded-lg p-3"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2 text-gray-800">Last Name</label>
-              <input
-                type="text"
-                value={lastName}
-                onChange={(e)=>setLastName(e.target.value)}
-                className="w-full bg-gray-200 rounded-lg p-3"
-              />
-            </div>
-
-            {/* ✅ EMAIL ADDED */}
-            <div>
-              <label className="block mb-2 text-gray-800">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e)=>setEmail(e.target.value)}
-                className="w-full bg-gray-200 rounded-lg p-3"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2 text-gray-800">New Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e)=>setPassword(e.target.value)}
-                className="w-full bg-gray-200 rounded-lg p-3"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2 text-gray-800">Confirm Password</label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e)=>setConfirmPassword(e.target.value)}
-                className="w-full bg-gray-200 rounded-lg p-3"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
-            >
-              Sign Up
-            </button>
-
-          </form>
-
-        </div>
-
-        {/* RIGHT IMAGE */}
-        <div className="flex justify-center">
-          <Image
-            src="/images/register-illustration.png"
-            alt="register"
-            width={450}
-            height={450}
-          />
-        </div>
-
-      </div>
-
-    </div>
+      </motion.div>
+    </main>
   );
 }

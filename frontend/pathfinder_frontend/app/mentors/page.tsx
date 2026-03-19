@@ -534,12 +534,12 @@ export default function MentorsPage() {
             <div className="w-full overflow-x-auto hide-scrollbar">
               <Tabs
                 aria-label="Mentor Categories"
-                color="primary"
                 variant="light"
                 classNames={{
-                  cursor: "w-full bg-content1 shadow-sm rounded-xl",
-                  tab: "font-semibold tracking-wide text-default-600 h-14 px-8",
+                  cursor: "w-full bg-white dark:bg-content1 shadow-sm rounded-xl",
+                  tab: "font-semibold tracking-wide h-14 px-8",
                   tabList: "gap-2",
+                  tabContent: "text-slate-600 dark:text-slate-400 group-data-[selected=true]:text-indigo-700 dark:group-data-[selected=true]:text-indigo-300 font-bold",
                 }}
                 selectedKey={activeCategory}
                 onSelectionChange={(k: React.Key) =>
