@@ -78,7 +78,7 @@ def save_quiz(data: QuizData):
             # Let the PyTorch Engine process the NLP responses
             assessment_vector = engine.process_comprehensive_assessment(answers_for_engine)
             
-            # INJECTION: Force the engine to also acknowledge the exact Interactive Skills clicked in the UI!
+            # Force the engine t also acknowledge the exact Interactive Skills clicked in the UI
             existing_skills = assessment_vector.get("extracted_intent_skills", [])
             explicit_skills = data.skills if isinstance(data.skills, list) else []
             assessment_vector["extracted_intent_skills"] = list(set(existing_skills + explicit_skills))
@@ -91,15 +91,69 @@ def save_quiz(data: QuizData):
             if recs:
                 courses_payload = [c.get("course_name", "General Course") for c in recs[:3]]
                 
+            # getting roles froom mongodb
+            raw_jobs = bundle.get("target_roles", bundle.get("top_job_matches", bundle.get("job_recommendations", [])))
+            for j in raw_jobs:
+                if isinstance(j, dict):
+                    jobs_payload.append({
+                        "job_title": j.get("job_title", j.get("title", "Unknown Role")),
+                        "company": j.get("company", "PathFinder+ Partners"),
+                        "link": j.get("link", j.get("apply_url", j.get("job_url", "#"))),
+                        "relevance_score": j.get("relevance_score", 0)
+                    })
+                elif isinstance(j, str):
+                    jobs_payload.append({"job_title": j, "company": "Domain Partner", "link": "#", "relevance_score": 0})
+                    
         except Exception as e:
             print(f"CRITICAL PyTorch Engine Integration Error: {e}")
             bundle = {"error": str(e)}
 
-    # --- Return Output for Frontend Result Screen ---
-    explicit_skills = data.skills if isinstance(data.skills, list) else []
+    #  Fail-Safe GenAI Explainability Wrapper 
+    # Attempt to dynamically generate a conversational career insight using gemma-3-1b-it.
+    # If the network hangs or quota is exhausted, seamlessly fallback to the standard static dictionary.
+    
+    dynamic_description = f"Based on your profile, your {len(explicit_skills)} explicit skills and 12-point NLP behavior vectors strongly align with leadership roles in {data.domain}."
+    
+    try:
+        import os
+        from google import genai
+        
+        # Hardcode bypass for Sri Lankan ISP IPv6 gRPC dropouts, forcing IPv4 REST Transport.
+        os.environ["GRPC_DNS_RESOLVER"] = "native"
+        gemini_api_key = os.getenv("GEMINI_API_KEY")
+        
+        if gemini_api_key:
+            client = genai.Client(
+                api_key=gemini_api_key,
+                http_options={'api_version': 'v1alpha', 'transport': 'rest'}
+            )
+            
+            # Extract strict metrics from the PyTorch payload to constrain hallucination
+            readiness = bundle.get("summary", {}).get("readiness_score", 50)
+            missing = ", ".join(bundle.get("skill_intelligence", {}).get("skills_to_strengthen", [])[:3])
+            
+            strict_prompt = (
+                f"You are a Senior Academic Advisor. The user wants to be a {target_job}. "
+                f"Our PyTorch ML model scored their career readiness at {readiness}/100 and identified they need to learn: {missing}. "
+                "Output exactly six distinct professional, actionable bullet points explaining their career readiness and focus areas. "
+                "Strictly separate the six points with the delimiter '|||' and do not use any other formatting or markdown."
+            )
+            
+            response = client.models.generate_content(
+                model='models/gemma-3-1b-it',
+                contents=strict_prompt,
+            )
+            
+            if response.text:
+                dynamic_description = response.text.replace('\n', ' ').strip()
+                
+    except Exception as e:
+        print(f"GenAI Fallback Triggered (Network/Quota limit): {e}")
+
+    #  Return Output for Frontend Result Screen 
     return {
         "career": target_job,
-        "description": f"Based on your profile, your {len(explicit_skills)} explicit skills and 12-point NLP behavior vectors strongly align with leadership roles in {data.domain}.",
+        "description": dynamic_description,
         "skills": explicit_skills[:5],
         "courses": courses_payload,
         "jobs": [job.get("job_title", "") for job in jobs_payload] if hasattr(jobs_payload, '__iter__') and jobs_payload else [f"Junior {target_job}", f"Senior {target_job}"],

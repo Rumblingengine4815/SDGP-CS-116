@@ -88,7 +88,7 @@ def recommend(req: RecommendRequest) -> Dict[str, Any]:
     }
 
 # --- Include Routers ---
-app.include_router(auth_router, prefix="/api")
+app.include_router(auth_router)
 
 from app.routers.skill_assessment import router as quiz_router
 app.include_router(quiz_router, prefix="/api")

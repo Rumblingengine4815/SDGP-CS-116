@@ -951,7 +951,7 @@ class RecommendationEngine:
                     if idx >= len(self.jobs_df): continue
                     job = self.jobs_df.iloc[idx]
                     results.append({
-                        "job_title": job["title"],
+                        "job_title": job.get("title", job.get("job_title", "Unknown Role")),
                         "company": job.get("company", "Confidential"),
                         "location": job.get("location", "Sri Lanka"),
                         "link": job.get("job_url", job.get("url", "#")),
