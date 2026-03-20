@@ -33,9 +33,10 @@ data/raw/scrapers/
 data/raw/*.csv
 data/raw/esco/*.csv
 data/raw/assessment/*.json
-models/*.pt
-models/*.joblib
-models/*.pkl
+# The specific models below are natively compressed under 16MB allowing for native Git distribution
+# models/*.pt
+# models/*.joblib
+# models/*.pkl
 
 # Logs, Reports & Temp (Recent Developments)
 *.log
