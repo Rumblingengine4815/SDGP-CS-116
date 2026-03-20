@@ -1,0 +1,412 @@
+{
+  "career_snapshot": {
+    "target_role": "Data Scientist",
+    "score": 63.2,
+    "stage": "Developing (Growth Potential)",
+    "estimated_transition_weeks": 7,
+    "preferred_industry": "Marketing",
+    "sub_metrics": {
+      "Skills Alignment": 50.0,
+      "Experience Level": 80.0,
+      "Demand Score": 66.0,
+      "Qualification": 100.0,
+      "Gap Coverage": 25.0
+    }
+  },
+  "career_path_recommendation": {
+    "current_role": "Data Scientist",
+    "vertical": [
+      {
+        "role": "Skill-Based Pivot (Marketing): Data Scientist",
+        "type": "Transition Target"
+      },
+      {
+        "role": "Senior Data Scientist",
+        "type": "Vertical (Promotion)"
+      },
+      {
+        "role": "Lead Data Scientist",
+        "type": "Vertical (Promotion)"
+      }
+    ],
+    "horizontal": []
+  },
+  "skill_intelligence": {
+    "current_skills": [
+      "Python",
+      "SQL",
+      "Machine Learning"
+    ],
+    "strengthen": [
+      "Communication",
+      "Project Management",
+      "Technical Analysis"
+    ],
+    "soft_skills": {}
+  },
+  "skill_gap_insights": {
+    "critical_skills": [
+      "Communication",
+      "Project Management",
+      "Technical Analysis"
+    ],
+    "beneficial_skills": [
+      "No secondary gaps"
+    ],
+    "status": "Yellow"
+  },
+  "recommended_education": [],
+  "skill_gap_courses": [
+    {
+      "course_name": "Business Management - Part Time",
+      "provider": "Lalith Atulathmudali Vocational Training Center - LAVTC",
+      "level": "Professional",
+      "type": "Academic",
+      "duration": "3-6 months",
+      "fee": "~45,000 LKR",
+      "fee_numeric": 0,
+      "location": "Online/Distance",
+      "relevance_score": 0.347,
+      "url": "https://www.pickacourse.lk/course/business-management-part-time?id=1788",
+      "why_recommended": [
+        "High semantic match to your career goals"
+      ],
+      "description": "",
+      "apply_url": "https://www.pickacourse.lk/course/business-management-part-time?id=1788",
+      "labels": [
+        "\ud83d\udcb0 Budget Friendly",
+        "\u26a1 Fast Track"
+      ]
+    }
+  ],
+  "job_opportunities": [
+    {
+      "job_title": "Technical Project Manager",
+      "company": "Cryptoworth",
+      "location": "Sri Lanka",
+      "estimated_salary": {
+        "min": 50000,
+        "max": 150000
+      },
+      "relevance_score": 0.583,
+      "missing_skills": [
+        "Communication",
+        "Project Management",
+        "Technical Analysis"
+      ],
+      "apply_url": "https://lk.linkedin.com/jobs/view/technical-project-manager-at-cryptoworth-4314272434"
+    },
+    {
+      "job_title": "Technical Project Manager",
+      "company": "Sterlinx Global",
+      "location": "Sri Lanka",
+      "estimated_salary": {
+        "min": 50000,
+        "max": 150000
+      },
+      "relevance_score": 0.583,
+      "missing_skills": [
+        "Communication",
+        "Project Management",
+        "Technical Analysis"
+      ],
+      "apply_url": "https://lk.linkedin.com/jobs/view/technical-project-manager-at-sterlinx-global-4314622915"
+    },
+    {
+      "job_title": "Technical Project Manager (Ec-20)",
+      "company": "Eyepax",
+      "location": "Colombo, Western Province, Sri Lanka",
+      "estimated_salary": {
+        "min": 50000,
+        "max": 150000
+      },
+      "relevance_score": 0.549,
+      "missing_skills": [
+        "Communication",
+        "Project Management",
+        "Technical Analysis"
+      ],
+      "apply_url": "https://lk.linkedin.com/jobs/view/technical-project-manager-ec-20-at-eyepax-4314114239"
+    },
+    {
+      "job_title": "Senior Technical Project Manager",
+      "company": "Enactor",
+      "location": "Galle, Southern Province, Sri Lanka",
+      "estimated_salary": {
+        "min": 50000,
+        "max": 150000
+      },
+      "relevance_score": 0.528,
+      "missing_skills": [
+        "Communication",
+        "Project Management",
+        "Technical Analysis"
+      ],
+      "apply_url": "https://lk.linkedin.com/jobs/view/senior-technical-project-manager-at-enactor-4310330543"
+    },
+    {
+      "job_title": "Project Manager (Interior Solution) (1)",
+      "company": "Konnect Net Pvt Ltd",
+      "location": "",
+      "estimated_salary": {
+        "min": 50000,
+        "max": 150000
+      },
+      "relevance_score": 0.52,
+      "missing_skills": [
+        "Communication",
+        "Project Management",
+        "Technical Analysis"
+      ],
+      "apply_url": "https://www.topjobs.lk/employer/JobAdvertismentServlet?rid=353&ac=0000000385&jc=0001470506&ec=0000000505"
+    }
+  ],
+  "salary_intelligence": {
+    "min": 50000,
+    "avg": 100000,
+    "max": 150000
+  },
+  "market_demand": {
+    "field": "Marketing",
+    "segments": [
+      {
+        "segment": "Project Manager",
+        "roles": [
+          "Project Manager",
+          "Senior Project Manager",
+          "Oracle Database Administrator"
+        ],
+        "demand": 412,
+        "skills": [
+          "ANALYST",
+          "BUSINESS",
+          "MANAGER",
+          "MARKETING",
+          "ROLE",
+          "SALES",
+          "SENIOR",
+          "SUPPORT"
+        ]
+      },
+      {
+        "segment": "Graphic Designer",
+        "roles": [
+          "Graphic Designer",
+          "Data Engineer",
+          "Associate Lead Business Analyst - Manufacturing"
+        ],
+        "demand": 351,
+        "skills": [
+          "AI",
+          "ENGINEER",
+          "GLOBAL",
+          "LEAD",
+          "LEADING",
+          "SOFTWARE",
+          "SOLUTIONS",
+          "TECHNOLOGY"
+        ]
+      },
+      {
+        "segment": "Senior Software Engineer",
+        "roles": [
+          "Senior Software Engineer",
+          "DevOps Engineer",
+          "Embedded Software Engineer"
+        ],
+        "demand": 343,
+        "skills": [
+          "DESIGN",
+          "DEVELOPER",
+          "ENGINEER",
+          "LEAD",
+          "ROLE",
+          "SENIOR",
+          "SOFTWARE",
+          "TEAM"
+        ]
+      },
+      {
+        "segment": "Associate Architect",
+        "roles": [
+          "Associate Architect",
+          "Data Analyst",
+          "Software Engineer"
+        ],
+        "demand": 341,
+        "skills": [
+          "BASED",
+          "BUSINESS",
+          "COLOMBO",
+          "ENGINEER",
+          "IGT1",
+          "LEADING",
+          "MANAGER",
+          "SENIOR"
+        ]
+      },
+      {
+        "segment": "Sales &amp; Marketing Manager",
+        "roles": [
+          "Digital Marketing Executive",
+          "Sales &amp; Marketing Manager",
+          "Social Media Executive"
+        ],
+        "demand": 185,
+        "skills": [
+          "AMP",
+          "ASSISTANT",
+          "MANAGER",
+          "MARKETING",
+          "PROJECT",
+          "SALES",
+          "SPECIFIED",
+          "YES"
+        ]
+      }
+    ],
+    "top_demanded_skills": {
+      "Problem Solving": 10,
+      "Communication": 8,
+      "Teamwork": 5
+    },
+    "recommendation": "Focus on Problem Solving, Communication, Teamwork to stay competitive in Marketing."
+  },
+  "mentor_recommendations": [
+    {
+      "name": "Tharindu Silva",
+      "title": "Solutions Architect",
+      "company": "Virtusa",
+      "score": 5,
+      "domain": "IT",
+      "matched_skills": [
+        "Role match: Professional"
+      ],
+      "connect_url": "/mentors"
+    },
+    {
+      "name": "Saman Silva",
+      "title": "Art Director",
+      "company": "Dialog Axiata",
+      "score": 5,
+      "domain": "General",
+      "matched_skills": [
+        "Role match: Professional"
+      ],
+      "connect_url": "/mentors"
+    },
+    {
+      "name": "Priya Dissanayake",
+      "title": "Mechanical Engineer",
+      "company": "Commercial Bank",
+      "score": 5,
+      "domain": "IT",
+      "matched_skills": [
+        "Role match: Professional"
+      ],
+      "connect_url": "/mentors"
+    }
+  ],
+  "action_roadmap": {
+    "steps": [
+      {
+        "period": "Month 1",
+        "focus": "Foundations: Develop core skills like Communication, Project Management",
+        "milestone": "Completed foundational upskilling"
+      },
+      {
+        "period": "Month 2",
+        "focus": "Portfolio Configuration: Apply skills to specialized Data Scientist enterprise projects",
+        "milestone": "Portfolio architecture assembled"
+      },
+      {
+        "period": "Month 3",
+        "focus": "Certification & Acceleration: Pursue verified credentials (e.g., AWS, SLASSCOM, NVQ)",
+        "milestone": "Accreditations verified"
+      },
+      {
+        "period": "Month 4",
+        "focus": "Market Positioning: Optimize LinkedIn SEO and GitHub/Behance profile traffic",
+        "milestone": "Market visibility established"
+      },
+      {
+        "period": "Month 5",
+        "focus": "Transition Support: Connect with Colombo mentors and execute 5+ informational interviews",
+        "milestone": "Industry network secured"
+      },
+      {
+        "period": "Month 6",
+        "focus": "Placement: Active execution of technical interviews for elite Data Scientist roles",
+        "milestone": "Role successfully negotiated"
+      }
+    ],
+    "estimated_months": 2,
+    "estimated_weeks": 7,
+    "estimated_completion": "~2 months at your current pace (15h/week)"
+  },
+  "ai_explainability": [
+    "Recommendation Confidence: Moderate (0.63)",
+    "\u2022 Chosen path matches 3 of your existing verified skills.",
+    "\u2022 ETA calculation implies a rigorous 7-week reskilling sprint based on 3 explicit knowledge gaps.",
+    "\u2022 Market demands validated against live metrics in the Marketing sector."
+  ],
+  "status": "Incomplete",
+  "mapped_occupation": "Data Scientist",
+  "skill_gap": [
+    "Communication",
+    "Project Management",
+    "Technical Analysis",
+    "Problem Solving",
+    "Strategy"
+  ],
+  "recommendations": [
+    {
+      "course_name": "Business Management - Part Time",
+      "provider": "Lalith Atulathmudali Vocational Training Center - LAVTC",
+      "level": "Professional",
+      "type": "Academic",
+      "duration": "3-6 months",
+      "fee": "~45,000 LKR",
+      "fee_numeric": 0,
+      "location": "Online/Distance",
+      "relevance_score": 0.347,
+      "url": "https://www.pickacourse.lk/course/business-management-part-time?id=1788",
+      "why_recommended": [
+        "High semantic match to your career goals"
+      ],
+      "description": "",
+      "apply_url": "https://www.pickacourse.lk/course/business-management-part-time?id=1788",
+      "labels": [
+        "\ud83d\udcb0 Budget Friendly",
+        "\u26a1 Fast Track"
+      ]
+    }
+  ],
+  "caveats": "Target Marketing roles. Focus on professional certifications to heavily increase technical ranking.",
+  "ml_diagnostics": {
+    "mode": "Hybrid (SBERT + RF + GBM + KNN)",
+    "predicted_segment": "Professional",
+    "confidence": "43.3%",
+    "all_segment_probs": {
+      "Entry": 0.42,
+      "Graduate": 0.147,
+      "Professional": 0.433,
+      "Senior": 0.0,
+      "Executive": 0.0
+    },
+    "similar_profiles": [
+      {
+        "segment": "Professional",
+        "distance": 2.0,
+        "note": "Similar profile in the 'Professional' career band"
+      }
+    ],
+    "model_accuracies": {
+      "RandomForest (career segment)": "95.2%",
+      "GradientBoosting (course fit)": "91.2%",
+      "KNN (profile similarity)": "94.9%"
+    },
+    "hybrid_formula": "hybrid_score = 0.60 \u00d7 SBERT + 0.40 \u00d7 GBM_fit",
+    "gap_skills_count": 5
+  }
+}

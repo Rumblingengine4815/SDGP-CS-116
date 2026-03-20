@@ -1,0 +1,369 @@
+{
+  "career": "Data Scientist",
+  "description": "Based on your profile, your 5 explicit skills and 12-point NLP behavior vectors strongly align with leadership roles in IT.\n\n[SYSTEM DEBUG] Gemini LLM Exception: 1 validation error for HttpOptions\ntransport\n  Extra inputs are not permitted [type=extra_forbidden, input_value='rest', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden",
+  "skills": [
+    "Python",
+    "SQL",
+    "Machine Learning",
+    "Data Analysis",
+    "Statistics"
+  ],
+  "courses": [
+    "Analytics and Data Science"
+  ],
+  "jobs": [
+    "Junior Data Scientist",
+    "Senior Data Scientist"
+  ],
+  "bundle": {
+    "career_snapshot": {
+      "target_role": "Data Scientist",
+      "score": 27.8,
+      "stage": "Weak Fit (Reskilling Needed)",
+      "estimated_transition_weeks": 24,
+      "preferred_industry": "General",
+      "sub_metrics": {
+        "Skills Alignment": 50.0,
+        "Experience Level": 0.0,
+        "Demand Score": 35.0,
+        "Qualification": 33.3,
+        "Gap Coverage": 0.0
+      }
+    },
+    "career_path_recommendation": {
+      "current_role": "Data Scientist",
+      "vertical": [
+        {
+          "role": "Target Pathway: Data Scientist",
+          "type": "Transition Target"
+        }
+      ],
+      "horizontal": [
+        {
+          "role": "data engineer",
+          "type": "Alternative Pathway"
+        },
+        {
+          "role": "data analyst",
+          "type": "Alternative Pathway"
+        }
+      ]
+    },
+    "skill_intelligence": {
+      "current_skills": [
+        "calculate tax",
+        "Machine Learning",
+        "Python",
+        "manage members",
+        "implement ict risk management",
+        "use technical documentation",
+        "manage teamwork",
+        "risk management",
+        "manage feedback",
+        "business law"
+      ],
+      "strengthen": [
+        "mathematical modelling",
+        "disseminate results to the scientific community",
+        "operate open source software",
+        "normalise data",
+        "manage research data",
+        "draft scientific or academic papers and technical documentation",
+        "data mining",
+        "speak different languages"
+      ],
+      "soft_skills": {
+        "problem_solving": 40,
+        "adaptability": 50,
+        "teamwork": 50
+      }
+    },
+    "skill_gap_insights": {
+      "critical_skills": [
+        "mathematical modelling",
+        "disseminate results to the scientific community",
+        "operate open source software",
+        "normalise data",
+        "manage research data"
+      ],
+      "beneficial_skills": [
+        "draft scientific or academic papers and technical documentation",
+        "data mining",
+        "speak different languages"
+      ],
+      "status": "Red"
+    },
+    "recommended_education": [],
+    "skill_gap_courses": [
+      {
+        "course_name": "Analytics and Data Science",
+        "provider": "UTS Insearch",
+        "level": "Mid-Level",
+        "type": "Academic",
+        "duration": "Contact Provider",
+        "fee": "Contact Provider",
+        "fee_numeric": 0,
+        "location": "Online/Distance",
+        "relevance_score": 0.634,
+        "url": "https://www.pickacourse.lk/course/analytics-and-data-science?id=3319",
+        "why_recommended": [
+          "High semantic match to your career goals"
+        ],
+        "apply_url": "https://www.pickacourse.lk/course/analytics-and-data-science?id=3319",
+        "labels": [
+          "\ud83d\udcb0 Budget Friendly"
+        ]
+      }
+    ],
+    "job_opportunities": [
+      {
+        "job_title": "Not applicable at this stage",
+        "company": "PathFinder+ Guidance",
+        "message": "You're at the learning and exploration stage. Focus on courses and building skills first. Job listings will appear once you've completed a Diploma or A/L qualification."
+      }
+    ],
+    "salary_intelligence": {
+      "min": 62283,
+      "avg": 62283,
+      "max": 62283
+    },
+    "market_demand": {
+      "field": "IT",
+      "segments": [
+        {
+          "segment": "Graphic Designer",
+          "roles": [
+            "Accounts Executive",
+            "Graphic Designer",
+            "Marketing Executive"
+          ],
+          "demand": 467,
+          "skills": [
+            "BUSINESS",
+            "DEVELOPMENT",
+            "JOIN",
+            "MANAGER",
+            "MARKETING",
+            "SALES",
+            "SENIOR",
+            "TEAM"
+          ]
+        },
+        {
+          "segment": "Data Entry Operator (1)",
+          "roles": [
+            "Digital Marketing Executive",
+            "Data Entry Operator (1)",
+            "Site Supervisor"
+          ],
+          "demand": 385,
+          "skills": [
+            "AMP",
+            "ASSISTANT",
+            "DIGITAL",
+            "MANAGER",
+            "QUALITY",
+            "SENIOR",
+            "SPECIFIED",
+            "TRAINEE"
+          ]
+        },
+        {
+          "segment": "Pharmacist (Full Time/Part Time)",
+          "roles": [
+            "Pharmacist (Full Time/Part Time)",
+            "Sales Executive",
+            "Quantity Surveyor"
+          ],
+          "demand": 349,
+          "skills": [
+            "BUSINESS",
+            "COLOMBO",
+            "ENGINEER",
+            "GROUP",
+            "LEADING",
+            "MANAGER",
+            "ORGANIZATION",
+            "SALES"
+          ]
+        },
+        {
+          "segment": "Pharmacist",
+          "roles": [
+            "Pharmacist",
+            "Accountant",
+            "Assistant Lecturer - English"
+          ],
+          "demand": 306,
+          "skills": [
+            "ASSISTANT",
+            "CARE",
+            "CUSTOMER",
+            "FEMALE",
+            "JOIN",
+            "LECTURER",
+            "STUDENT",
+            "\u0dc3\u0dc4"
+          ]
+        },
+        {
+          "segment": "Quantity Surveyor",
+          "roles": [
+            "Quantity Surveyor",
+            "Civil Engineer",
+            "Quantity Surveyors"
+          ],
+          "demand": 301,
+          "skills": [
+            "CIVIL",
+            "ELECTRICAL",
+            "ENGINEER",
+            "ENGINEERING",
+            "OFFICER",
+            "SPECIFIED",
+            "TECHNICAL",
+            "TECHNICIAN"
+          ]
+        }
+      ],
+      "top_demanded_skills": {
+        "Problem Solving": 10,
+        "Communication": 8,
+        "Teamwork": 5
+      },
+      "recommendation": "Focus on Problem Solving, Communication, Teamwork to stay competitive in IT."
+    },
+    "mentor_recommendations": [
+      {
+        "name": "Tharindu Silva",
+        "title": "Solutions Architect",
+        "company": "Virtusa",
+        "score": 5,
+        "domain": "IT",
+        "matched_skills": [
+          "Role match: Professional"
+        ],
+        "connect_url": "/mentors"
+      },
+      {
+        "name": "Saman Silva",
+        "title": "Art Director",
+        "company": "Dialog Axiata",
+        "score": 5,
+        "domain": "General",
+        "matched_skills": [
+          "Role match: Professional"
+        ],
+        "connect_url": "/mentors"
+      },
+      {
+        "name": "Priya Dissanayake",
+        "title": "Mechanical Engineer",
+        "company": "Commercial Bank",
+        "score": 5,
+        "domain": "IT",
+        "matched_skills": [
+          "Role match: Professional"
+        ],
+        "connect_url": "/mentors"
+      }
+    ],
+    "action_roadmap": {
+      "steps": [
+        {
+          "period": "Month 1",
+          "focus": "Foundations: Develop core skills like mathematical modelling, disseminate results to the scientific community",
+          "milestone": "Completed foundational upskilling"
+        },
+        {
+          "period": "Month 3",
+          "focus": "Portfolio building for Data Scientist: Apply skills to 3+ practical projects",
+          "milestone": "Portfolio ready for review"
+        },
+        {
+          "period": "Month 4",
+          "focus": "Transition Support: Connect with mentors and update industry visibility",
+          "milestone": "LinkedIn updated and 5+ informational interviews"
+        },
+        {
+          "period": "Month 6",
+          "focus": "Placement: Active application and interview prep for Data Scientist roles",
+          "milestone": "Role secured or transition completed"
+        }
+      ],
+      "estimated_months": 6,
+      "estimated_weeks": 24,
+      "estimated_completion": "~6 months at your current pace (5h/week)"
+    },
+    "ai_explainability": [
+      "Recommendation Confidence: Low (0.28)",
+      "\u2022 Chosen path matches 10 of your existing verified skills.",
+      "\u2022 ETA calculation implies a rigorous 24-week reskilling sprint based on 8 explicit knowledge gaps.",
+      "\u2022 Market demands validated against live metrics in the General sector."
+    ],
+    "status": "Incomplete",
+    "mapped_occupation": "data scientist",
+    "skill_gap": [
+      "mathematical modelling",
+      "use data processing techniques",
+      "interact professionally in research and professional environments",
+      "disseminate results to the scientific community",
+      "establish data processes",
+      "operate open source software",
+      "interpret current data",
+      "normalise data",
+      "manage research data",
+      "draft scientific or academic papers and technical documentation",
+      "data mining",
+      "speak different languages"
+    ],
+    "recommendations": [
+      {
+        "course_name": "Analytics and Data Science",
+        "provider": "UTS Insearch",
+        "level": "Mid-Level",
+        "type": "Academic",
+        "duration": "Contact Provider",
+        "fee": "Contact Provider",
+        "fee_numeric": 0,
+        "location": "Online/Distance",
+        "relevance_score": 0.634,
+        "url": "https://www.pickacourse.lk/course/analytics-and-data-science?id=3319",
+        "why_recommended": [
+          "High semantic match to your career goals"
+        ],
+        "apply_url": "https://www.pickacourse.lk/course/analytics-and-data-science?id=3319",
+        "labels": [
+          "\ud83d\udcb0 Budget Friendly"
+        ]
+      }
+    ],
+    "caveats": [],
+    "ml_diagnostics": {
+      "mode": "Hybrid (SBERT + RF + GBM + KNN)",
+      "predicted_segment": "Entry",
+      "confidence": "99.5%",
+      "all_segment_probs": {
+        "Entry": 0.995,
+        "Graduate": 0.005,
+        "Professional": 0.0,
+        "Senior": 0.0,
+        "Executive": 0.0
+      },
+      "similar_profiles": [
+        {
+          "segment": "Entry",
+          "distance": 0.0,
+          "note": "Similar profile in the 'Entry' career band"
+        }
+      ],
+      "model_accuracies": {
+        "RandomForest (career segment)": "95.2%",
+        "GradientBoosting (course fit)": "91.2%",
+        "KNN (profile similarity)": "94.9%"
+      },
+      "hybrid_formula": "hybrid_score = 0.60 \u00d7 SBERT + 0.40 \u00d7 GBM_fit",
+      "gap_skills_count": 12
+    }
+  }
+}

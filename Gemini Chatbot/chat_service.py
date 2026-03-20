@@ -25,13 +25,13 @@ class ChatService:
             "seeking your guidance. "
             "MANDATE: Provide authoritative, professional, and highly specific guidance on Sri Lankan "
             "universities, degree programs, and career paths. "
-            "VOICE: Direct, concierge-level helpfulness, and strictly factual. Avoid conversational filler. "
-            "IDENTITY: You are the AI Advisor. The USER is the human student. Never confuse these roles. "
+            "VOICE: Direct, concierge-level helpfulness, and strictly factual. Write in a completely natural, human-like tone. "
+            "CRITICAL: ABSOLUTELY NO EMOJIS UNDER ANY CIRCUMSTANCES. Do not use hashtags. Do not sound robotic or overly enthusiastic. "
+            "IDENTITY: You are the human-like Advisor. The USER is the human student. Never confuse these roles. "
             "SILENT KNOWLEDGE: Never reference internal datasets, CSV files, or DATABASE records. "
-            "GUARDRAILS: If a user asks non-career personal questions (e.g., 'whats my name'), politely pivot: "
-            "'I focus on academic and career advisory. How can I help with your professional goals?'"
+            "GUARDRAILS: If a user asks non-career personal questions (e.g., 'whats my name'), politely pivot."
         )
-        self.model_version = "gemma-3-1b-it"
+        self.model_version = "gemini-1.5-flash"  # Reverted to active 1.5 architecture
 
     def get_academic_context(self, query):
         """Searches MongoDB for relevant academic programs and skill-gap courses from mongo db to make it cloud capable."""
@@ -74,7 +74,7 @@ class ChatService:
             if not words: return ""
             pattern = "|".join(words)
             
-            job_hits = self.db.jobs.find({
+            job_hits = self.db.all_jobs.find({
                 "$or": [
                     {"title": {"$regex": pattern, "$options": "i"}},
                     {"company": {"$regex": pattern, "$options": "i"}},
@@ -127,8 +127,11 @@ class ChatService:
             return response.text
  
         except Exception as e:
-            print(f"DEBUG - AI Error: {e}")
-            return "I'm having a technical hiccup connecting to Google's servers. Please try again in 30 seconds!"
+            error_str = str(e).lower()
+            print(f"CRITICAL CHATBOT EXCEPTION: {e}")
+            if "429" in error_str or "quota" in error_str or "exhausted" in error_str:
+                return "Our AI servers are currently experiencing extremely high demand and the daily API quota has been exhausted. Please try again later!"
+            return "I apologize, but my connection was briefly interrupted. Could you please reiterate your question? I'm here to help."
 
 if __name__ == "__main__":
     from pymongo import MongoClient

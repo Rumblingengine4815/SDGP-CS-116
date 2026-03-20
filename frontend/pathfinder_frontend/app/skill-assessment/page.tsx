@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button, Input, Select, SelectItem, Progress, Textarea, ScrollShadow } from "@heroui/react";
 import { Briefcase, ChevronRight, UserCircle, GraduationCap, Target, Send, CheckCircle2, BrainCircuit } from "lucide-react";
@@ -8,6 +8,47 @@ import { Briefcase, ChevronRight, UserCircle, GraduationCap, Target, Send, Check
 export default function QuizPage() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploadingResume, setIsUploadingResume] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    setIsUploadingResume(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const headersInit: HeadersInit = {};
+      const token = localStorage.getItem("token");
+      if (token) {
+        headersInit["Authorization"] = `Bearer ${token}`;
+      }
+      
+      const res = await fetch(`${apiUrl}/api/resume/upload`, {
+        method: "POST",
+        headers: headersInit,
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.success && data.bundle) {
+        localStorage.setItem("resultData", JSON.stringify(data));
+        window.location.href = '/results';
+      } else {
+        alert(data.error || "Failed to process resume.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Network error trying to upload resume.");
+    } finally {
+      setIsUploadingResume(false);
+    }
+  };
 
   const [form, setForm] = useState({
     // Step 1
@@ -136,9 +177,15 @@ export default function QuizPage() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const headersInit: HeadersInit = { "Content-Type": "application/json" };
+      const token = localStorage.getItem("token");
+      if (token) {
+        headersInit["Authorization"] = `Bearer ${token}`;
+      }
+      
       const res = await fetch(`${apiUrl}/api/skill-assessment`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: headersInit,
         body: JSON.stringify(payload),
       });
 
@@ -158,7 +205,7 @@ export default function QuizPage() {
   // Step 3 is valid if all 12 questions are answered
   const isStep3Valid = behavioralQuestions.every(q => form[q.id as keyof typeof form] !== "");
 
-  const inputBgClass = "bg-white dark:bg-content1 border border-default-200 dark:border-default-100 shadow-sm text-foreground";
+  const inputBgClass = "bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 shadow-sm text-slate-900 dark:text-slate-100";
   const labelClass = "text-slate-900 dark:text-slate-200 font-semibold mb-1";
   
   const CardSelect = ({ options, selected, onChange }: { options: string[], selected: string, onChange: (v: string) => void }) => (
@@ -170,11 +217,11 @@ export default function QuizPage() {
           className={`flex items-center min-h-[72px] h-full w-full p-4 rounded-2xl cursor-pointer border-2 transition-all duration-300 ${
             selected === opt 
               ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-500/20 shadow-md shadow-indigo-500/20 scale-[1.02]' 
-              : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-content1 hover:bg-slate-50 dark:hover:bg-content2 hover:border-slate-300 shadow-sm'
+              : 'border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 hover:bg-slate-50 dark:hover:bg-zinc-800 hover:border-slate-300 shadow-sm'
           }`}
         >
           <div className="flex items-center justify-between w-full h-full">
-            <span className={`font-semibold text-sm ${selected === opt ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-700 dark:text-slate-300'}`}>
+            <span className={`font-semibold text-sm ${selected === opt ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-700 dark:text-slate-100'}`}>
               {opt}
             </span>
             {selected === opt && <CheckCircle2 size={18} className="text-indigo-600 dark:text-indigo-400 flex-shrink-0 ml-2" />}
@@ -184,11 +231,43 @@ export default function QuizPage() {
     </div>
   );
 
+  if (!mounted) {
+    return (
+      <main className="min-h-screen relative flex items-center justify-center py-20 px-4 bg-slate-50 dark:bg-zinc-950 pattern-bg">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="h-12 w-12 rounded-full bg-purple-200 dark:bg-purple-900 mb-4"></div>
+          <div className="h-4 w-32 bg-slate-200 dark:bg-zinc-800 rounded"></div>
+        </div>
+      </main>
+    );
+  }
+
   return (
-    <main className="min-h-screen relative flex items-center justify-center py-20 px-4 pattern-bg">
+    <main className="min-h-screen relative flex items-center justify-center py-20 px-4 bg-slate-50 dark:bg-zinc-950 pattern-bg">
       <div className="fixed top-0 left-0 w-full z-50">
         <Progress value={step * 33.33} size="sm" color="secondary" classNames={{ indicator: "bg-gradient-to-r from-purple-500 to-indigo-500" }} />
       </div>
+
+      <AnimatePresence>
+        {(isUploadingResume || isSubmitting) && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center"
+          >
+            <div className="w-24 h-24 border-8 border-indigo-500 border-t-transparent rounded-full animate-spin mb-6"></div>
+            <h2 className="text-3xl font-black text-white font-sora text-center px-4">
+              {isUploadingResume ? "Parsing Curriculum Vitae..." : "Synthesizing Core Data..."}
+            </h2>
+            <p className="text-indigo-300 mt-2 font-medium text-center px-4">
+              {isUploadingResume 
+                ? "Extracting your technical array into SBERT tensors" 
+                : "Calculating precise market trajectory using behavioral NLP vectors"}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence mode="wait">
         <motion.div
@@ -196,7 +275,7 @@ export default function QuizPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className="w-full max-w-5xl p-6 sm:p-10 md:p-12 bg-white/90 dark:bg-content1/80 backdrop-blur-3xl border border-divider shadow-2xl rounded-[2.5rem]"
+          className="w-full max-w-5xl p-6 sm:p-10 md:p-12 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-3xl border border-divider shadow-2xl rounded-[2.5rem]"
         >
           {/* STEP 1 */}
           {step === 1 && (
@@ -206,6 +285,38 @@ export default function QuizPage() {
                   Establish Your Baseline
                 </h1>
                 <p className="text-default-600 dark:text-default-500 font-medium text-lg">Let's map out your current academic and professional standing.</p>
+
+                <div className="mt-8 mb-10 p-6 sm:p-8 rounded-[2rem] bg-indigo-50/50 dark:bg-zinc-800/50 border border-indigo-100 dark:border-indigo-500/20 max-w-2xl mx-auto flex flex-col items-center justify-center space-y-5 transition-all hover:bg-indigo-50/80 dark:hover:bg-zinc-800">
+                  <div className="bg-white dark:bg-zinc-900 p-4 rounded-full shadow-sm text-indigo-600 dark:text-indigo-400 border border-divider">
+                    <Briefcase size={32} />
+                  </div>
+                  <div className="text-center space-y-1">
+                    <h3 className="text-xl font-black text-slate-800 dark:text-slate-100">Fast Track: Upload CV/Resume</h3>
+                    <p className="text-default-600 dark:text-default-500 text-sm max-w-md mx-auto">Skip the manual input. Let our PyTorch AI analyze your resume to instantly build your professional roadmap.</p>
+                  </div>
+                  <Button
+                    size="lg"
+                    color="secondary"
+                    isLoading={isUploadingResume}
+                    className="font-bold shadow-xl shadow-indigo-500/20 bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-8"
+                    onPress={() => document.getElementById("resume-upload")?.click()}
+                  >
+                    {isUploadingResume ? "Analyzing Tensor Vectors..." : "Upload PDF Resume"}
+                  </Button>
+                  <input
+                    id="resume-upload"
+                    type="file"
+                    accept=".pdf"
+                    className="hidden"
+                    onChange={handleResumeUpload}
+                  />
+                </div>
+
+                <div className="flex items-center justify-center gap-4 text-slate-400 font-medium pb-8">
+                  <div className="h-px bg-divider w-16 sm:w-32"></div>
+                  <span className="text-sm tracking-widest text-slate-500">OR MANUAL INPUT</span>
+                  <div className="h-px bg-divider w-16 sm:w-32"></div>
+                </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-10">
@@ -224,7 +335,7 @@ export default function QuizPage() {
                   
                   <div className="flex flex-col gap-2">
                     <label className={labelClass}>Highest Education Level</label>
-                    <Select placeholder="Select education level" variant="faded" color="primary" selectedKeys={form.education ? [form.education] : []} onChange={(e) => handleSelectChange("education", e.target.value)} classNames={{trigger: inputBgClass}} startContent={<GraduationCap className="text-default-400" size={18} />}>
+                    <Select placeholder="Select education level" variant="faded" color="primary" selectedKeys={form.education ? [form.education] : []} onChange={(e) => handleSelectChange("education", e.target.value)} classNames={{trigger: inputBgClass, value: "text-slate-900 dark:text-slate-100"}} popoverProps={{ classNames: { content: "bg-white dark:bg-zinc-900" } }} startContent={<GraduationCap className="text-default-400" size={18} />}>
                       {educationLevels.map(lvl => <SelectItem key={lvl} textValue={lvl}>{lvl}</SelectItem>)}
                     </Select>
                   </div>
@@ -239,19 +350,19 @@ export default function QuizPage() {
                   <div className="grid grid-cols-2 gap-x-4 gap-y-6 mt-4">
                     <div className="flex flex-col gap-2">
                       <label className={labelClass}>Years of Experience</label>
-                      <Select placeholder="Select years" size="sm" variant="faded" color="primary" selectedKeys={form.experience_years ? [form.experience_years] : []} onChange={(e) => handleSelectChange("experience_years", e.target.value)} classNames={{trigger: inputBgClass}}>
+                      <Select placeholder="Select years" size="sm" variant="faded" color="primary" selectedKeys={form.experience_years ? [form.experience_years] : []} onChange={(e) => handleSelectChange("experience_years", e.target.value)} classNames={{trigger: inputBgClass, value: "text-slate-900 dark:text-slate-100"}} popoverProps={{ classNames: { content: "bg-white dark:bg-zinc-900" } }}>
                         {experienceYears.map(yr => <SelectItem key={yr} textValue={yr}>{yr}</SelectItem>)}
                       </Select>
                     </div>
                     <div className="flex flex-col gap-2">
                       <label className={labelClass}>Weekly Availability</label>
-                      <Select placeholder="Select hours" size="sm" variant="faded" color="primary" selectedKeys={form.weekly_availability ? [form.weekly_availability] : []} onChange={(e) => handleSelectChange("weekly_availability", e.target.value)} classNames={{trigger: inputBgClass}}>
+                      <Select placeholder="Select hours" size="sm" variant="faded" color="primary" selectedKeys={form.weekly_availability ? [form.weekly_availability] : []} onChange={(e) => handleSelectChange("weekly_availability", e.target.value)} classNames={{trigger: inputBgClass, value: "text-slate-900 dark:text-slate-100"}} popoverProps={{ classNames: { content: "bg-white dark:bg-zinc-900" } }}>
                         {availability.map(a => <SelectItem key={a} textValue={a}>{a}</SelectItem>)}
                       </Select>
                     </div>
                     <div className="flex flex-col gap-2 col-span-2 sm:col-span-1">
                       <label className={labelClass}>Upskilling Budget</label>
-                      <Select placeholder="Select budget" size="sm" variant="faded" color="primary" selectedKeys={form.upskilling_budget ? [form.upskilling_budget] : []} onChange={(e) => handleSelectChange("upskilling_budget", e.target.value)} classNames={{trigger: inputBgClass}}>
+                      <Select placeholder="Select budget" size="sm" variant="faded" color="primary" selectedKeys={form.upskilling_budget ? [form.upskilling_budget] : []} onChange={(e) => handleSelectChange("upskilling_budget", e.target.value)} classNames={{trigger: inputBgClass, value: "text-slate-900 dark:text-slate-100"}} popoverProps={{ classNames: { content: "bg-white dark:bg-zinc-900" } }}>
                         {budgets.map(b => <SelectItem key={b} textValue={b}>{b}</SelectItem>)}
                       </Select>
                     </div>
@@ -283,7 +394,7 @@ export default function QuizPage() {
                   
                   <div className="flex flex-col gap-2">
                     <label className={labelClass}>Target Industry Domain</label>
-                    <Select placeholder="Select domain" size="lg" variant="faded" color="primary" selectedKeys={form.domain ? [form.domain] : []} onChange={(e) => handleSelectChange("domain", e.target.value)} classNames={{trigger: inputBgClass}}>
+                    <Select placeholder="Select domain" size="lg" variant="faded" color="primary" selectedKeys={form.domain ? [form.domain] : []} onChange={(e) => handleSelectChange("domain", e.target.value)} classNames={{trigger: inputBgClass, value: "text-slate-900 dark:text-slate-100"}} popoverProps={{ classNames: { content: "bg-white dark:bg-zinc-900" } }}>
                       {domains.map(dom => <SelectItem key={dom} textValue={dom}>{dom}</SelectItem>)}
                     </Select>
                   </div>
@@ -295,19 +406,19 @@ export default function QuizPage() {
 
                   <div className="flex flex-col gap-2">
                     <label className={labelClass}>Highest Responsibility Managed</label>
-                    <Select placeholder="Select responsibility" size="lg" variant="faded" color="primary" selectedKeys={form.responsibility_level ? [form.responsibility_level] : []} onChange={(e) => handleSelectChange("responsibility_level", e.target.value)} classNames={{trigger: inputBgClass}}>
+                    <Select placeholder="Select responsibility" size="lg" variant="faded" color="primary" selectedKeys={form.responsibility_level ? [form.responsibility_level] : []} onChange={(e) => handleSelectChange("responsibility_level", e.target.value)} classNames={{trigger: inputBgClass, value: "text-slate-900 dark:text-slate-100"}} popoverProps={{ classNames: { content: "bg-white dark:bg-zinc-900" } }}>
                       {responsibilityLevels.map(lvl => <SelectItem key={lvl} textValue={lvl}>{lvl}</SelectItem>)}
                     </Select>
                   </div>
                 </div>
 
-                <div className="md:col-span-7 bg-default-50/50 dark:bg-content2/30 p-6 md:p-8 rounded-[2rem] border border-divider">
+                <div className="md:col-span-7 bg-default-50/50 dark:bg-zinc-900/50 p-6 md:p-8 rounded-[2rem] border border-divider">
                   <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
                     <Target size={20} className="text-indigo-500"/> Core Competencies
                   </h3>
                   
                   {!form.domain ? (
-                    <div className="h-40 flex items-center justify-center text-default-500 border-2 border-dashed border-divider rounded-2xl bg-white dark:bg-content1">
+                    <div className="h-40 flex items-center justify-center text-slate-500 dark:text-slate-400 border-2 border-dashed border-divider rounded-2xl bg-white dark:bg-zinc-900">
                       <p className="font-medium">Select a Target Domain to view skills.</p>
                     </div>
                   ) : (
@@ -318,7 +429,7 @@ export default function QuizPage() {
                           const isSelected = form.skills.includes(skill);
                           return (
                             <Button key={skill} size="md" radius="full" variant={isSelected ? "solid" : "flat"} 
-                              className={`transition-all font-semibold ${isSelected ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30 scale-105' : 'bg-white dark:bg-content1 border border-default-200 hover:bg-slate-100 text-slate-800 dark:text-slate-200'}`} 
+                              className={`transition-all font-semibold ${isSelected ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30 scale-105' : 'bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-800 dark:text-slate-100'}`}
                               startContent={isSelected ? <CheckCircle2 size={16} /> : null} 
                               onPress={() => toggleSkill(skill)}>
                               {skill}
@@ -356,7 +467,7 @@ export default function QuizPage() {
                 {behavioralQuestions.map((q, idx) => (
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}
-                    key={q.id} className="bg-default-50/50 dark:bg-content2/30 p-6 rounded-[2rem] border border-divider"
+                    key={q.id} className="bg-default-50/50 dark:bg-zinc-900/50 p-6 rounded-[2rem] border border-divider"
                   >
                     <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">{q.label}</h3>
                     <CardSelect 

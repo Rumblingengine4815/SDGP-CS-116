@@ -35,9 +35,15 @@ app = FastAPI(
     version="0.3.0",
 )
 
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000", 
+        "http://localhost:3001",
+        "http://localhost:3002"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -58,6 +64,56 @@ def status():
     if engine is None:
         return {"engine_loaded": False, "error": startup_error}
     return {"engine_loaded": True}
+
+@app.get("/api/market-trends")
+def get_market_trends(domain: str = None):
+    # Fallback dictionaries for core industries tracking relative job demand locally
+    fallbacks = {
+        "Information Technology": [{"title": "Software Engineer", "jobs_active": 150}, {"title": "Data Scientist", "jobs_active": 110}, {"title": "Cloud Architect", "jobs_active": 85}, {"title": "Cybersecurity Analyst", "jobs_active": 60}],
+        "Business & Finance": [{"title": "Financial Analyst", "jobs_active": 120}, {"title": "Business Analyst", "jobs_active": 90}, {"title": "Product Analyst", "jobs_active": 75}, {"title": "Account Manager", "jobs_active": 65}],
+        "Marketing": [{"title": "SEO Specialist", "jobs_active": 110}, {"title": "Digital Marketing Manager", "jobs_active": 85}, {"title": "Content Strategist", "jobs_active": 70}, {"title": "Growth Hacker", "jobs_active": 50}],
+        "Engineering": [{"title": "Civil Engineer", "jobs_active": 80}, {"title": "Mechanical Engineer", "jobs_active": 65}, {"title": "Electrical Engineer", "jobs_active": 55}, {"title": "Quality Engineer", "jobs_active": 45}],
+        "Design & Arts": [{"title": "UX Designer", "jobs_active": 95}, {"title": "Product Designer", "jobs_active": 70}, {"title": "Graphic Designer", "jobs_active": 60}, {"title": "Motion Designer", "jobs_active": 40}],
+        "Healthcare": [{"title": "Healthcare Admin", "jobs_active": 105}, {"title": "Clinical Analyst", "jobs_active": 90}, {"title": "Medical Researcher", "jobs_active": 75}, {"title": "Nursing Manager", "jobs_active": 65}],
+        "Science": [{"title": "Research Scientist", "jobs_active": 60}, {"title": "Data Miner", "jobs_active": 55}, {"title": "Biotech Analyst", "jobs_active": 45}, {"title": "Lab Technician", "jobs_active": 35}],
+    }
+    
+    default_trends = [{"title": "Software Engineering", "jobs_active": 150}, {"title": "Data Analytics", "jobs_active": 85}, {"title": "UI/UX Design", "jobs_active": 75}, {"title": "Product Management", "jobs_active": 60}]
+    
+    if engine is None or not hasattr(engine, 'jobs_df') or engine.jobs_df is None:
+        return {"trends": fallbacks.get(domain, default_trends)}
+    
+    try:
+        df = engine.jobs_df
+        if domain and 'domain' in df.columns:
+            # Domain-Specific Targeting
+            df_slice = df[df['domain'] == domain]
+            if df_slice.empty:
+                return {"trends": fallbacks.get(domain, default_trends)}
+            
+            # Extract real-time titles safely mapping 'title' instead of deprecated 'Job Title'
+            col_name = 'title' if 'title' in df_slice.columns else 'Job Title'
+            if col_name in df_slice.columns:
+                counts = df_slice[col_name].value_counts().head(4)
+                if len(counts) == 0:
+                    return {"trends": fallbacks.get(domain, default_trends)}
+                    
+                trends = [{"title": str(title)[:28], "jobs_active": int(count)} for title, count in counts.items()]
+                return {"trends": trends}
+        
+        # Generalized Top 4 Domains or Fallback if 'domain' column isn't mapped yet
+        if 'domain' in df.columns:
+            counts = df['domain'].value_counts().head(4)
+            trends = [{"title": str(dom), "jobs_active": int(count)} for dom, count in counts.items()]
+            return {"trends": trends}
+            
+        return {"trends": fallbacks.get(domain, default_trends)}
+    except Exception as e:
+        print(f"Market Trends Serialization Error: {e}")
+        return {"trends": fallbacks.get(domain, default_trends)}
+    except Exception as e:
+        print(f"Market Trends aggregation error: {e}")
+        return {"trends": fallbacks.get(domain, default_trends)}
 
 @app.post("/api/recommend")
 def recommend(req: RecommendRequest) -> Dict[str, Any]:
@@ -93,5 +149,8 @@ app.include_router(auth_router)
 from app.routers.skill_assessment import router as quiz_router
 app.include_router(quiz_router, prefix="/api")
 
-from app.routers.resume import router as resume_router
+from app.routers.resume_api import router as resume_router
 app.include_router(resume_router, prefix="/api")
+
+from app.routers.profile import router as profile_router
+app.include_router(profile_router)

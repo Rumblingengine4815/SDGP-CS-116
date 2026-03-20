@@ -48,21 +48,24 @@ export default function ResultsPage() {
   const currentSkills = intelligence.current_skills || data.skills || [];
   const missingSkills = (intelligence.strengthen || intelligence.skills_to_strengthen || []).slice(0, 5);
   
-  const jobs = bundle.job_opportunities || bundle.real_job_opportunities || [];
+  const jobs = bundle.job_opportunities || bundle.real_job_opportunities || bundle.target_roles || bundle.top_job_matches || bundle.job_recommendations || [];
   const fallbackJobs = data.jobs || [];
   
-  const courses = bundle.recommended_education || [];
-  const shortCourses = bundle.skill_gap_courses || [];
+  // Safely map unstructured Resume courses into the Fast-Track and Academic columns if the standardized properties are missing
+  const rawRecs = bundle.recommendations || [];
+  const courses = bundle.recommended_education || rawRecs.filter((c: any) => c.source_file === 'academic' || c.course_name?.toLowerCase().includes('degree') || c.course_name?.toLowerCase().includes('diploma'));
+  const shortCourses = bundle.skill_gap_courses || rawRecs.filter((c: any) => c.source_file !== 'academic' && !c.course_name?.toLowerCase().includes('degree') && !c.course_name?.toLowerCase().includes('diploma'));
   const fallbackCourses = data.courses || [];
   
-  const salary = bundle.salary_intelligence || null;
+  const salary = bundle.salary_intelligence || bundle.salary_insights || null;
   const market = bundle.market_demand || null;
   
   const plan = bundle.action_roadmap || bundle.action_plan || {};
   const actionPlan = plan.steps ? plan.steps : (Array.isArray(plan) ? plan : []);
 
   const mentors = bundle.mentor_recommendations || bundle.mentors || [];
-  const explainability = bundle.ai_explainability || bundle.explainability_panel || bundle.explainability || null;
+  const explainability = bundle.ai_explainability || bundle.explainability_panel || bundle.explainability || [];
+  const geminiDescription = data.description || "";
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -181,18 +184,18 @@ export default function ResultsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground py-20 px-4 sm:px-8 lg:px-16 pattern-bg">
+    <main className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-foreground py-20 px-4 sm:px-8 lg:px-16 pattern-bg">
       <div className="max-w-7xl mx-auto space-y-12">
         {/* HEADER */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 text-primary-500 font-semibold mb-4 text-sm tracking-widest uppercase shadow-sm">
             <Trophy size={16} /> Persona Alignment Complete
           </div>
-          <h1 className="text-5xl lg:text-7xl font-black font-sora bg-gradient-to-br from-primary-500 to-secondary-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl min-h-[4rem] text-balance capitalize font-black font-sora text-primary-500 pb-2">
             {targetRole}
           </h1>
           <p className="text-xl text-foreground/70 max-w-3xl mx-auto leading-relaxed">
-            {data.description || "Synthesizing your exact technical array and behavioral NLP vectors reveals this track strongly matches your latent potential."}
+            Synthesizing your exact technical array and behavioral NLP vectors reveals this track strongly matches your latent potential.
           </p>
         </motion.div>
 
@@ -216,11 +219,33 @@ export default function ResultsPage() {
           </div>
         )}
 
+        {geminiDescription && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+            <Card className="border-l-4 border-l-primary-500 bg-primary-50/50 dark:bg-primary-900/10 shadow-md">
+              <CardBody className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-primary-100 dark:bg-primary-800 rounded-xl text-primary-600 dark:text-primary-300">
+                    <User size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold font-sora text-primary-700 dark:text-primary-300 mb-2">Senior Career Advisor Insight</h3>
+                    <div className="text-foreground/80 leading-relaxed text-sm space-y-4 font-medium">
+                      {geminiDescription.split('\n\n').map((paragraph: string, idx: number) => (
+                        <p key={idx}>{paragraph.trim()}</p>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </CardBody>
+            </Card>
+          </motion.div>
+        )}
+
         <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
           {/* LEFT COL: Readiness & Stats */}
           <motion.div variants={itemVariants} className="lg:col-span-4 space-y-6">
-            <Card className="border border-divider bg-content1/80 backdrop-blur-xl shadow-xl h-full">
+            <Card className="border border-divider bg-white/80 dark:bg-zinc-900/90 backdrop-blur-xl shadow-xl h-full">
               <CardBody className="p-8">
                 <div className="flex justify-between items-start mb-6">
                   <h3 className="text-xl font-bold font-sora flex items-center gap-2"><Activity className="text-primary-500"/> Readiness Profile</h3>
@@ -380,9 +405,12 @@ export default function ResultsPage() {
                              w && <span key={idx} className="flex items-center gap-1"><Lightbulb size={12}/> {w}</span>
                           ))}
                         </div>
+                        {c.description && (
+                          <p className="text-xs text-foreground/80 mt-2 italic border-l-2 border-divider pl-2 line-clamp-3">{c.description}</p>
+                        )}
                       </div>
-                      {(c.apply_url || c.apply_link) && (c.apply_url || c.apply_link) !== "#" && (
-                        <Button color="secondary" variant="flat" size="md" className="px-8 font-bold" as="a" href={c.apply_url || c.apply_link} target="_blank">View Details</Button>
+                      {(c.url || c.apply_url || c.apply_link) && (c.url || c.apply_url || c.apply_link) !== "#" && (
+                        <Button color="secondary" variant="flat" size="md" className="px-8 font-bold" as="a" href={c.url || c.apply_url || c.apply_link} target="_blank">View Details</Button>
                       )}
                     </div>
                   )) : fallbackCourses.map((c: string, i: number) => (
@@ -432,6 +460,10 @@ export default function ResultsPage() {
                         )}
                       </div>
                       <p className="text-xs font-semibold text-foreground/60 mt-1 uppercase mb-2">{j.company} • {j.location || "Sri Lanka"}</p>
+                      
+                      {j.description && (
+                         <p className="text-xs text-foreground/80 mt-2 mb-2 line-clamp-3">{j.description}</p>
+                      )}
                       
                       {j.skills_match && j.skills_match.length > 0 && (
                          <div className="text-xs text-success-600 dark:text-success-400 mb-1">

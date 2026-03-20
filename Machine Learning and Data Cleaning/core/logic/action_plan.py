@@ -68,6 +68,9 @@ class ActionPlanGenerator:
 
         # FINAL FORMULA
         total_weeks = (sum_skill_weeks / pace_factor) * exp_factor * stage_multiplier
+        # Cap weeks aggressively to prevent hallucinated long transition periods
+        if len(gap_skills) <= 5: total_weeks = min(total_weeks, 12)
+        else: total_weeks = min(total_weeks, 24)
         total_months = max(2, round(total_weeks / 4.33))
         
         # 5. Milestone Generation
@@ -77,30 +80,42 @@ class ActionPlanGenerator:
             else: return f"Months {month_start}-{month_end}"
 
         plan = []
-        seg1 = max(1, round(total_months * 0.30))
-        seg2 = max(seg1 + 1, round(total_months * 0.55))
-        seg3 = max(seg2 + 1, round(total_months * 0.80))
-        seg4 = total_months
+        seg1 = max(1, round(total_months * 0.15))
+        seg2 = max(seg1 + 1, round(total_months * 0.30))
+        seg3 = max(seg2 + 1, round(total_months * 0.50))
+        seg4 = max(seg3 + 1, round(total_months * 0.70))
+        seg5 = max(seg4 + 1, round(total_months * 0.85))
+        seg6 = total_months
 
         plan.append({
             "period": phase_label(1, seg1),
-            "focus": f"Foundations: Develop core skills like {', '.join(gap_skills[:2])}",
+            "focus": f"Foundations: Develop core skills like {', '.join(gap_skills[:2]) if gap_skills else 'infrastructure'}",
             "milestone": "Completed foundational upskilling"
         })
         plan.append({
             "period": phase_label(seg1 + 1, seg2),
-            "focus": f"Portfolio building for {target_role}: Apply skills to 3+ practical projects",
-            "milestone": "Portfolio ready for review"
+            "focus": f"Portfolio Configuration: Apply skills to specialized {target_role} enterprise projects",
+            "milestone": "Portfolio architecture assembled"
         })
         plan.append({
             "period": phase_label(seg2 + 1, seg3),
-            "focus": f"Transition Support: Connect with mentors and update industry visibility",
-            "milestone": "LinkedIn updated and 5+ informational interviews"
+            "focus": f"Certification & Acceleration: Pursue verified credentials (e.g., AWS, SLASSCOM, NVQ)",
+            "milestone": "Accreditations verified"
         })
         plan.append({
             "period": phase_label(seg3 + 1, seg4),
-            "focus": f"Placement: Active application and interview prep for {target_role} roles",
-            "milestone": "Role secured or transition completed"
+            "focus": f"Market Positioning: Optimize LinkedIn SEO and GitHub/Behance profile traffic",
+            "milestone": "Market visibility established"
+        })
+        plan.append({
+            "period": phase_label(seg4 + 1, seg5),
+            "focus": f"Transition Support: Connect with Colombo mentors and execute 5+ informational interviews",
+            "milestone": "Industry network secured"
+        })
+        plan.append({
+            "period": phase_label(seg5 + 1, seg6),
+            "focus": f"Placement: Active execution of technical interviews for elite {target_role} roles",
+            "milestone": "Role successfully negotiated"
         })
 
         est_label = f"~{total_months} months at your current pace ({availability_hours}h/week)"

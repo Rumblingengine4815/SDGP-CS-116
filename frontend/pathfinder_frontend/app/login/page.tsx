@@ -16,7 +16,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8001/api/login", {
+      const res = await fetch("http://localhost:8001/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -39,7 +39,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center py-20 px-4 pattern-bg relative overflow-hidden">
+    <main className="min-h-screen flex items-center justify-center py-20 px-4 bg-slate-50 dark:bg-zinc-950 pattern-bg relative overflow-hidden">
       {/* Decorative Blur Blobs */}
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
@@ -47,7 +47,7 @@ export default function LoginPage() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md p-8 md:p-10 bg-content1/70 backdrop-blur-xl border border-divider shadow-2xl rounded-3xl z-10"
+        className="w-full max-w-md p-8 md:p-10 bg-white/70 dark:bg-zinc-900/90 backdrop-blur-xl border border-divider shadow-2xl rounded-3xl z-10"
       >
         <div className="text-center mb-8">
           <h1 className="text-3xl font-black bg-gradient-to-br from-foreground to-default-500 bg-clip-text text-transparent mb-2">

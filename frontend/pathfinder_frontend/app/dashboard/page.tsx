@@ -9,10 +9,16 @@ import { motion } from "framer-motion";
 export default function Dashboard() {
   const [name, setName] = useState("User");
   const [greeting, setGreeting] = useState("Hello");
+  const [profileStatus, setProfileStatus] = useState({
+    completion: 0,
+    message: "Upload your CV or take the Quiz to unlock your personalized career roadmap."
+  });
 
   const [marketTrends, setMarketTrends] = useState<any[]>([
-    { title: "Data Analytics", jobs_active: 120 },
-    { title: "UI/UX Design", jobs_active: 95 }
+    { title: "Software Engineering", jobs_active: 150 },
+    { title: "Data Analytics", jobs_active: 85 },
+    { title: "UI/UX Design", jobs_active: 75 },
+    { title: "Product Management", jobs_active: 60 }
   ]);
 
   useEffect(() => {
@@ -21,16 +27,50 @@ export default function Dashboard() {
       setName(storedName);
     }
     
-    // Try to load personalized market trends dynamically from recently completed Quiz
-    try {
-      const resultData = localStorage.getItem("resultData");
-      if (resultData) {
-        const parsed = JSON.parse(resultData);
-        if (parsed?.bundle?.market_demand?.segments && parsed.bundle.market_demand.segments.length > 0) {
-          setMarketTrends(parsed.bundle.market_demand.segments.slice(0, 2));
+    // Explicit Profile State Engine Hydration
+    const fetchProfileStatus = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if(token) {
+          const res = await fetch("http://localhost:8000/api/profile/status", {
+            headers: {
+              "Authorization": `Bearer ${token}`
+            }
+          });
+          const data = await res.json();
+          if(data.success) {
+            setProfileStatus({
+              completion: data.completion_percentage || 0,
+              message: data.message || "Complete your profile to unlock actionable ML insights."
+            });
+          }
         }
+      } catch (e) {
+        console.error("Failed to fetch profile status", e);
       }
-    } catch(e) {}
+    };
+    fetchProfileStatus();
+    
+    // Dynamically pull real market trends from PyTorch backend based natively on User Domain
+    const fetchMarketTrends = async () => {
+      try {
+        let url = "http://localhost:8000/api/market-trends";
+        const savedDomain = localStorage.getItem("userDomain");
+        if (savedDomain && savedDomain !== "undefined") {
+          url += `?domain=${encodeURIComponent(savedDomain)}`;
+        }
+
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.trends) {
+          setMarketTrends(data.trends);
+        }
+      } catch (e) {
+        console.error("Using localized trends fallback", e);
+      }
+    };
+    
+    fetchMarketTrends();
     
     const hour = new Date().getHours();
     if (hour < 12) setGreeting("Good morning");
@@ -52,7 +92,7 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="min-h-screen relative py-20 px-4 sm:px-8 lg:px-16 pattern-bg">
+    <main className="min-h-screen relative py-20 px-4 sm:px-8 lg:px-16 bg-slate-50 dark:bg-zinc-950 pattern-bg">
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Header Section */}
         <motion.div 
@@ -76,59 +116,32 @@ export default function Dashboard() {
           animate="show"
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          {/* Quick Action: Upload CV */}
           <motion.div variants={itemVariants}>
-            <Card className="h-full border border-divider bg-content1/60 backdrop-blur-xl shadow-xl hover:shadow-2xl hover:border-secondary-500/50 transition-all cursor-pointer group">
-              <CardBody className="p-8 flex flex-col justify-between gap-6">
-                <div className="flex justify-between items-start">
-                  <div className="p-4 rounded-2xl bg-secondary-500/10 text-secondary-500 group-hover:scale-110 group-hover:bg-secondary-500 transition-all duration-300">
-                    <Upload size={32} />
+            <Card className="border border-divider bg-gradient-to-br from-indigo-500/10 to-purple-600/10 backdrop-blur-xl shadow-xl hover:shadow-2xl hover:border-indigo-500/50 transition-all cursor-pointer group">
+              <CardBody className="p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
+                <div className="flex-1 space-y-4 text-center md:text-left">
+                  <div className="flex flex-col md:flex-row items-center gap-3 justify-center md:justify-start">
+                    <div className="p-3 rounded-2xl bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 group-hover:bg-indigo-500 group-hover:text-white transition-all duration-300">
+                      <Target size={28} />
+                    </div>
+                    <Chip color="secondary" variant="flat" size="sm" className="font-bold tracking-widest uppercase">Core Hub</Chip>
                   </div>
-                  <Chip color="success" variant="flat" size="sm" className="font-bold">Fast-Track</Chip>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold font-sora mb-2">Upload Resume</h3>
-                  <p className="text-foreground/70">Let our AI instantly extract your skills, map your experience, and match you with live market opportunities in seconds.</p>
-                </div>
-                <Button 
-                  as={Link} 
-                  href="/upload-cv" 
-                  color="secondary" 
-                  variant="flat"
-                  size="lg"
-                  className="w-full font-bold justify-between transition-all"
-                  endContent={<ArrowRight size={18} />}
-                >
-                  Start CV Parse
-                </Button>
-              </CardBody>
-            </Card>
-          </motion.div>
-
-          {/* Quick Action: Take Quiz */}
-          <motion.div variants={itemVariants}>
-            <Card className="h-full border border-divider bg-content1/60 backdrop-blur-xl shadow-xl hover:shadow-2xl px-1 hover:border-primary-500/50 transition-all cursor-pointer group">
-              <CardBody className="p-8 flex flex-col justify-between gap-6">
-                <div className="flex justify-between items-start">
-                  <div className="p-4 rounded-2xl bg-primary-500/10 text-primary-500 group-hover:scale-110 group-hover:bg-primary-500 transition-all duration-300">
-                    <Target size={32} />
+                  <div>
+                    <h3 className="text-3xl font-black font-sora text-slate-800 dark:text-slate-100">Career Assessment Center</h3>
+                    <p className="text-foreground/70 text-lg mt-2 max-w-2xl mx-auto md:mx-0 font-medium">
+                      Take the deep behavioral PyTorch quiz or fast-track the pipeline by uploading your Resume PDF. Our SBERT models will automatically map your vectors into the live Sri Lankan market.
+                    </p>
                   </div>
-                  <Chip color="primary" variant="flat" size="sm" className="font-bold">Deep Analysis</Chip>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold font-sora mb-2">Take Skill Assessment</h3>
-                  <p className="text-foreground/70">Answer a comprehensive quiz to let the PyTorch ML engine extract your exact skill vector and behavioral profile.</p>
                 </div>
                 <Button 
                   as={Link} 
                   href="/skill-assessment" 
-                  color="primary" 
-                  variant="flat"
+                  color="secondary" 
                   size="lg"
-                  className="w-full font-bold justify-between transition-all"
-                  endContent={<ArrowRight size={18} />}
+                  className="font-bold shadow-xl shadow-indigo-500/20 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-10 py-8 text-lg w-full md:w-auto transition-transform hover:scale-[1.02]"
+                  endContent={<ArrowRight size={22} />}
                 >
-                  Start Quiz
+                  Enter Assessment Portal
                 </Button>
               </CardBody>
             </Card>
@@ -140,9 +153,9 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 lg:grid-cols-4 gap-6"
         >
-          <Card className="lg:col-span-2 border border-divider bg-content2/30 backdrop-blur-md shadow-lg">
+          <Card className="lg:col-span-3 border border-divider bg-content2/30 backdrop-blur-md shadow-lg">
             <CardBody className="p-8">
               <div className="flex items-center gap-3 mb-6">
                 <TrendingUp size={24} className="text-warning-500" />
@@ -170,13 +183,20 @@ export default function Dashboard() {
                 <div>
                   <div className="flex justify-between text-sm font-semibold mb-2">
                     <span>Profile Completion</span>
-                    <span className="text-secondary-500">25%</span>
+                    <span className="text-secondary-500">{profileStatus.completion}%</span>
                   </div>
-                  <Progress value={25} color="secondary" size="sm" classNames={{ indicator: "bg-gradient-to-r from-secondary-400 to-primary-500" }} />
+                  <Progress value={profileStatus.completion || 0} color="secondary" size="sm" classNames={{ indicator: "bg-gradient-to-r from-secondary-400 to-primary-500" }} />
                 </div>
-                <p className="text-sm text-foreground/70">
-                  You haven't completed an assessment yet. Take the Quiz or Upload your CV to unlock your personalized career roadmap!
-                </p>
+                <div>
+                  <p className="text-sm text-foreground/70 mb-4">
+                    {profileStatus.message}
+                  </p>
+                  {profileStatus.completion >= 100 && (
+                    <Button as={Link} href="/results" color="secondary" size="md" className="font-bold shadow-md shadow-indigo-500/30 bg-gradient-to-r from-indigo-500 to-purple-500 text-white w-full">
+                      View Computed Roadmap <ArrowRight size={16} className="ml-2" />
+                    </Button>
+                  )}
+                </div>
               </div>
             </CardBody>
           </Card>

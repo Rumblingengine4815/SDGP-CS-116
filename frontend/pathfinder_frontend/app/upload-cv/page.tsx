@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button, Card, CardBody, Progress } from "@heroui/react";
 import { UploadCloud, FileText, CheckCircle2, ChevronLeft } from "lucide-react";
@@ -11,6 +11,11 @@ export default function UploadCVPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -45,8 +50,15 @@ export default function UploadCVPage() {
       }, 500);
 
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const headersInit: HeadersInit = {};
+      const token = localStorage.getItem("token");
+      if (token) {
+        headersInit["Authorization"] = `Bearer ${token}`;
+      }
+      
       const res = await fetch(`${apiUrl}/api/resume/upload`, {
         method: "POST",
+        headers: headersInit,
         body: formData,
       });
 
@@ -69,8 +81,19 @@ export default function UploadCVPage() {
     }
   };
 
+  if (!mounted) {
+    return (
+      <main className="min-h-screen relative flex items-center justify-center py-20 px-4 bg-slate-50 dark:bg-zinc-950 pattern-bg">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="h-12 w-12 rounded-full bg-indigo-200 dark:bg-indigo-900 mb-4"></div>
+          <div className="h-4 w-32 bg-slate-200 dark:bg-zinc-800 rounded"></div>
+        </div>
+      </main>
+    );
+  }
+
   return (
-    <main className="min-h-screen relative flex flex-col items-center justify-center py-20 px-4 pattern-bg">
+    <main className="min-h-screen relative flex flex-col items-center justify-center py-20 px-4 bg-slate-50 dark:bg-zinc-950 pattern-bg">
       <div className="absolute top-8 left-8">
         <Button as={Link} href="/dashboard" variant="light" startContent={<ChevronLeft size={20} />} className="font-semibold px-6">
           Back to Dashboard
@@ -91,11 +114,11 @@ export default function UploadCVPage() {
           </p>
         </div>
 
-        <Card className="border border-divider bg-white/80 dark:bg-content1/80 backdrop-blur-3xl shadow-2xl rounded-[2.5rem]">
+        <Card className="border border-divider bg-white/80 dark:bg-zinc-900/90 backdrop-blur-3xl shadow-2xl rounded-[2.5rem]">
           <CardBody className="p-8 md:p-12">
             {!file ? (
               <div 
-                className="border-3 border-dashed border-divider hover:border-indigo-400 dark:hover:border-indigo-500 rounded-[2rem] p-16 flex flex-col items-center justify-center cursor-pointer transition-all bg-default-50/50 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 group"
+                className="border-3 border-dashed border-divider hover:border-indigo-400 dark:hover:border-indigo-500 rounded-[2rem] p-16 flex flex-col items-center justify-center cursor-pointer transition-all bg-default-50/50 hover:bg-indigo-50/50 dark:bg-zinc-900/50 dark:hover:bg-zinc-800/80 group"
                 onClick={() => fileInputRef.current?.click()}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
@@ -116,7 +139,7 @@ export default function UploadCVPage() {
             ) : (
               <div className="w-full">
                 <div className="flex items-center gap-6 p-6 rounded-2xl border-2 border-indigo-500/20 bg-indigo-50 dark:bg-indigo-900/10 mb-8">
-                  <div className="p-4 rounded-xl bg-white dark:bg-content2 shadow-sm text-indigo-600">
+                  <div className="p-4 rounded-xl bg-white dark:bg-zinc-800 shadow-sm text-indigo-600">
                     <FileText size={32} />
                   </div>
                   <div className="flex-1 overflow-hidden">

@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import traceback
 
 # Load environment variables
 load_dotenv()
@@ -396,6 +397,7 @@ def main():
         print(" Some data may have been partially uploaded. Run again to sync remaining records.")
     except Exception as e:
         print(f"\n Critical failure: {e}")
+        traceback.print_exc()
     finally:
         print("\n MongoDB Connection Closed.")
 

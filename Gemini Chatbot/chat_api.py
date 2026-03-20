@@ -88,6 +88,10 @@ async def chat_with_ui(chat_req: ChatRequest, request: Request):
         raise HTTPException(status_code=500, detail=error_msg)
 
 if __name__ == "__main__":
-    # Runs the server on port 8002
-    uvicorn.run(app, host="0.0.0.0", port=8002)
-
+    try:
+        # Runs the server on port 8002
+        uvicorn.run("chat_api:app", host="0.0.0.0", port=8002, reload=False)
+    except KeyboardInterrupt:
+        print("\n[SYSTEM LOG] Chatbot Microservice cleanly shutdown by Host. Terminating connections...")
+    except Exception as e:
+        print(f"\n[CRITICAL FATAL] Unexpected shutdown: {e}")

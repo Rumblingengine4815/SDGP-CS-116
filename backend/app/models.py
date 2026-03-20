@@ -18,8 +18,19 @@ class UserProfile(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, nullable=False, unique=True)
+    
+    # State-Driven Data Vectors
+    state = Column(String(50), default="NEW")
+    cv_uploaded = Column(Boolean, default=False)
+    quiz_completed = Column(Boolean, default=False)
+    skills_extracted = Column(Boolean, default=False)
+    job_matches_generated = Column(Boolean, default=False)
+    
+    # Payload Storage
     current_skills = Column(Text, default="[]")
     target_role = Column(String(100), nullable=True)
     experience_years = Column(Integer, default=0)
     education_level = Column(String(50), nullable=True)
+    last_bundle = Column(Text, nullable=True)
+    
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

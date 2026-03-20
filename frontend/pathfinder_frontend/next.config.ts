@@ -2,9 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: [
-      "logo.clearbit.com",
-      "cdn-icons-png.flaticon.com"
+    remotePatterns: [
+      { protocol: 'https', hostname: 'logo.clearbit.com' },
+      { protocol: 'https', hostname: 'cdn-icons-png.flaticon.com' },
+      { protocol: 'https', hostname: 'ui-avatars.com' },
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
     ],
   },
 };

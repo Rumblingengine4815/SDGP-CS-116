@@ -1,5 +1,5 @@
 """
-core/logic/recommenders.py — Phase 10 Module
+
 Modular Course, Job and Mentor recommendation logic.
 Operates on data from the main engine context.
 """
@@ -11,7 +11,7 @@ from .action_plan import ActionPlanGenerator
 
 class Recommender:
     """
-    Phase 7 & 10: Core Recommendation Logic.
+   
     Separates Course, Job, and Mentor matching into testable, auditable modules.
     """
 

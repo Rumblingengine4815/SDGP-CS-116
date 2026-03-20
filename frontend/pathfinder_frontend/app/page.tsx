@@ -26,7 +26,7 @@ export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/skill-assessment", label: "Assessment" },
+    { href: "/dashboard", label: "Dashboard" },
     { href: "/resumes", label: "Resumes" },
     { href: "/mentors", label: "Mentors" },
   ];
@@ -75,7 +75,7 @@ export default function HomePage() {
                 Home
               </Link>
             </NavbarItem>
-            <NavbarItem><Link href="/skill-assessment" className="text-sm font-semibold text-foreground hover:text-pf-purple-600 transition-colors">Assessment</Link></NavbarItem>
+            <NavbarItem><Link href="/dashboard" className="text-sm font-semibold text-foreground hover:text-pf-purple-600 transition-colors">Dashboard</Link></NavbarItem>
             <NavbarItem><Link href="/resumes" className="text-sm font-semibold text-foreground hover:text-pf-purple-600 transition-colors">Resumes</Link></NavbarItem>
             <NavbarItem><Link href="/mentors" className="text-sm font-semibold text-foreground hover:text-pf-purple-600 transition-colors">Mentors</Link></NavbarItem>
           </NavbarContent>
@@ -119,8 +119,8 @@ export default function HomePage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mt-4 w-full sm:w-auto">
-              <Button size="lg" radius="full" className="font-bold bg-content2 text-foreground hover:bg-content3 shadow-sm border border-divider hover:-translate-y-1 px-8 py-6 transition-all font-sans" as={Link} href="/skill-assessment">
-                Assess Skills <ArrowRight className="w-4 h-4 ml-2" />
+              <Button size="lg" radius="full" className="font-bold bg-content2 text-foreground hover:bg-content3 shadow-sm border border-divider hover:-translate-y-1 px-8 py-6 transition-all font-sans" as={Link} href="/dashboard">
+                Enter Dashboard <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
               <Button size="lg" radius="full" className="font-bold bg-content2 text-foreground hover:bg-content3 shadow-sm border border-divider hover:-translate-y-1 px-8 py-6 transition-all font-sans" as={Link} href="/mentors">
                 Find a Mentor

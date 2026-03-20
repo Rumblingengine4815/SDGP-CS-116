@@ -489,7 +489,7 @@ def upload_chat_file(file: UploadFile = File(...)):
         
     return {"url": f"/{file_path}", "filename": file.filename}
 
-# --- WEBSOCKET CONNECTION MANAGER ---
+#  WEBSOCKET CONNECTION MANAGER
 class ConnectionManager:
     def __init__(self):
         # Format: { "mentor_id": [websocket1, websocket2, ...] }
