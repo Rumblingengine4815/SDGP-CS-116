@@ -442,3 +442,80 @@ def parse_resume(raw: str) -> dict:
         "references":     get_section_text(lines, smap, "references"),
     }
 
+
+# Text Preview Formatter
+
+def format_txt(data: dict, analysis: dict, filename: str) -> str:
+    SEP  = "=" * 62
+    SEP2 = "-" * 42
+    out  = []
+    out.append(SEP)
+    out.append("               RESUME SCAN RESULTS")
+    out.append(f"  Source : {filename}")
+    out.append(SEP)
+
+    p = data["personal_info"]
+    out.append("\n[ PERSONAL DETAILS ]")
+    out.append(SEP2)
+    out.append(f"  Name   : {p['name']  or 'N/A'}")
+    out.append(f"  Email  : {p['email'] or 'N/A'}")
+    out.append(f"  Phone  : {p['phone'] or 'N/A'}")
+    if p["links"]:
+        out.append("  Links  :")
+        for lnk in p["links"]:
+            out.append(f"           {lnk}")
+
+    def block(title: str, content):
+        if not content:
+            return
+        out.append(f"\n[ {title.upper()} ]")
+        out.append(SEP2)
+        if isinstance(content, list):
+            # List of dicts (experience / education entries)
+            if content and isinstance(content[0], dict):
+                for entry in content:
+                    parts = [v for v in [entry.get("role"), entry.get("company"), entry.get("duration")] if v]
+                    if parts:
+                        out.append(f"  >> {' | '.join(parts)}")
+                    if entry.get("description"):
+                        for ln in entry["description"].strip().splitlines():
+                            out.append(f"     {ln}")
+                    if entry.get("degree") or entry.get("institution"):
+                        deg  = entry.get("degree", "")
+                        inst = entry.get("institution", "")
+                        dur  = entry.get("duration", "")
+                        label = " | ".join(x for x in [deg, inst, dur] if x)
+                        out.append(f"  >> {label}")
+            else:
+                for item in content:
+                    out.append(f"  * {item}")
+        else:
+            for ln in str(content).strip().splitlines():
+                out.append(f"  {ln}")
+
+    block("Summary / Objective", data["summary"])
+    block("Skills",              data["skills"])
+    block("Work Experience",     data["experience"])
+    block("Education",           data["education"])
+    block("Projects",            data["projects"])
+    block("Certifications",      data["certifications"])
+    block("Achievements",        data["achievements"])
+    block("Languages",           data["languages"])
+    block("Interests / Hobbies", data["interests"])
+    block("References",          data["references"])
+
+    # Analysis summary
+    out.append(f"\n[ RESUME ANALYSIS ]")
+    out.append(SEP2)
+    out.append(f"  Matched Skills : {', '.join(analysis['matched_skills']) or 'None'}")
+    out.append(f"  Missing Skills : {', '.join(analysis['missing_skills']) or 'None'}")
+    if analysis["suggestions"]:
+        out.append("  Suggestions    :")
+        for s in analysis["suggestions"]:
+            out.append(f"    - {s}")
+
+    out.append(f"\n{SEP}")
+    out.append("  END OF RESUME SCAN")
+    out.append(SEP)
+    return "\n".join(out)
+
