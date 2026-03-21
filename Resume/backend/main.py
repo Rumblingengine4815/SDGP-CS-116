@@ -224,3 +224,84 @@ def rank_skills(skills: list[str]) -> list[str]:
     rest = sorted(s for s in skills if s not in REQUIRED_SKILLS)
     return required + rest
 
+# Experience Parsing 
+
+# Patterns that hint at a duration / date range like "Jan 2021 – Dec 2022" or "2019 - Present"
+DURATION_RE = re.compile(
+    r"((?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*[\s,]*\d{4}"
+    r"|(?:19|20)\d{2})"
+    r"\s*[-–—to]+\s*"
+    r"((?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*[\s,]*\d{4}"
+    r"|present|current|now|(?:19|20)\d{2})",
+    re.I,
+)
+
+# Typical role title keywords used to detect a new entry boundary
+ROLE_KEYWORDS = re.compile(
+    r"\b(engineer|developer|manager|analyst|designer|architect|consultant|"
+    r"lead|director|intern|specialist|scientist|administrator|coordinator)\b",
+    re.I,
+)
+
+
+def parse_experience_entries(text: str) -> list[dict]:
+    """
+    Attempt to split a blob of experience text into structured entries.
+    Falls back gracefully — if we can't detect structure, returns one
+    entry with the raw text as the description.
+    """
+    if not text:
+        return []
+
+    lines  = [l.strip() for l in text.splitlines() if l.strip()]
+    entries: list[dict] = []
+    current: dict | None = None
+
+    for line in lines:
+        duration_match = DURATION_RE.search(line)
+        is_role_line   = bool(ROLE_KEYWORDS.search(line)) and len(line) < 120
+
+        if is_role_line or duration_match:
+            # Save the previous entry
+            if current:
+                entries.append(current)
+
+            duration = duration_match.group(0).strip() if duration_match else ""
+            # Removes the duration from the line to leave company/role text
+            role_line = DURATION_RE.sub("", line).strip(" -–—|,")
+
+            # If there's a separator character, split company from role
+            for sep in [" at ", " @ ", " | ", " — ", " – ", " - "]:
+                if sep.lower() in role_line.lower():
+                    parts = re.split(re.escape(sep), role_line, maxsplit=1, flags=re.I)
+                    current = {
+                        "role":        parts[0].strip(),
+                        "company":     parts[1].strip(),
+                        "duration":    duration,
+                        "description": "",
+                    }
+                    break
+            else:
+                current = {
+                    "role":        "",
+                    "company":     role_line,
+                    "duration":    duration,
+                    "description": "",
+                }
+        else:
+            # Accumulate description lines
+            if current is None:
+                current = {"role": "", "company": "", "duration": "", "description": ""}
+            sep = "\n" if current["description"] else ""
+            current["description"] = current["description"] + sep + line
+
+    if current:
+        entries.append(current)
+
+    # If only a single entry is avalable and it has no role or company the text is unstructured —
+    # return it as a single raw-description entry rather instead of parsing it.
+    if len(entries) == 1 and not entries[0]["role"] and not entries[0]["company"]:
+        return [{"role": "", "company": "", "duration": "", "description": text}]
+
+    return entries
+
