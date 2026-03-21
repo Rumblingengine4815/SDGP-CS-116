@@ -519,3 +519,49 @@ def format_txt(data: dict, analysis: dict, filename: str) -> str:
     out.append(SEP)
     return "\n".join(out)
 
+
+# API Endpoints
+
+@app.post("/scan")
+async def scan_resume(file: UploadFile = File(...)):
+    filename = file.filename or "resume"
+    ext      = Path(filename).suffix.lower()
+
+    if ext not in (".pdf", ".docx", ".doc"):
+        raise HTTPException(
+            status_code=400,
+            detail="Unsupported file type. Please upload a PDF or DOCX file.",
+        )
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp:
+        shutil.copyfileobj(file.file, tmp)
+        tmp_path = tmp.name
+
+    try:
+        raw = extract_pdf(tmp_path) if ext == ".pdf" else extract_docx(tmp_path)
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=f"Failed to read file: {str(e)}")
+    finally:
+        os.unlink(tmp_path)
+
+    if not raw.strip():
+        raise HTTPException(
+            status_code=422,
+            detail="Could not extract text from the file. It may be image-based or corrupted.",
+        )
+
+    parsed   = parse_resume(raw)
+    analysis = analyze_resume(parsed)
+    preview  = format_txt(parsed, analysis, filename)
+
+    out_name = f"{Path(filename).stem}_scanned.txt"
+    (OUTPUT_DIR / out_name).write_text(preview, encoding="utf-8")
+
+    return {
+        "filename": out_name,
+        "parsed":   parsed,
+        "analysis": analysis,
+        "preview":  preview,
+    }
+
+
