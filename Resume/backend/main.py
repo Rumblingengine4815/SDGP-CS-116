@@ -159,3 +159,39 @@ REQUIRED_SKILLS = {
     "Docker", "React", "Node.js", "AWS", "REST API",
     "Linux", "Agile", "HTML", "CSS",
 }
+
+
+def detect_sections(lines: list[str]) -> dict[str, int]:
+    found: dict[str, int] = {}
+    for i, line in enumerate(lines):
+        norm = line.lower().strip().rstrip(":").strip()
+        for sec, keywords in SECTIONS.items():
+            if norm in keywords and sec not in found:
+                found[sec] = i
+    return found
+
+
+def get_section_text(lines: list[str], smap: dict[str, int], key: str) -> str:
+    if key not in smap:
+        return ""
+    start = smap[key] + 1
+    nexts = sorted(v for k, v in smap.items() if k != key and v > start)
+    end   = nexts[0] if nexts else len(lines)
+    return "\n".join(lines[start:end]).strip()
+
+
+# Personal Details Extraction 
+
+def extract_name(lines: list[str]) -> str:
+    for line in lines[:6]:
+        s = line.strip()
+        if (
+            s and 2 <= len(s.split()) <= 5
+            and not EMAIL_RE.search(s)
+            and not PHONE_RE.search(s)
+            and not any(s.lower().startswith(kw) for kws in SECTIONS.values() for kw in kws)
+            and not any(c.isdigit() for c in s)
+        ):
+            return s
+    return ""
+
