@@ -565,3 +565,19 @@ async def scan_resume(file: UploadFile = File(...)):
     }
 
 
+# Ensuring only files inside outputs/ can be accessed
+
+@app.get("/download/{filename}")
+async def download(filename: str):
+    # Prevent path traversal
+    safe_path = (OUTPUT_DIR / Path(filename).name).resolve()
+    if not str(safe_path).startswith(str(OUTPUT_DIR.resolve())):
+        raise HTTPException(status_code=400, detail="Invalid filename.")
+    if not safe_path.exists():
+        raise HTTPException(status_code=404, detail="File not found.")
+    return FileResponse(str(safe_path), media_type="text/plain", filename=filename)
+
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
