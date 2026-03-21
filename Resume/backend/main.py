@@ -403,3 +403,42 @@ def analyze_resume(parsed: dict) -> dict:
         "suggestions": suggestions,
     }
 
+
+# Core Parser
+
+def parse_resume(raw: str) -> dict:
+    lines = [l for l in raw.splitlines() if l.strip()]
+    smap  = detect_sections(lines)
+
+    emails = EMAIL_RE.findall(raw)
+    phones = PHONE_RE.findall(raw)
+    links  = list(dict.fromkeys(
+        LINKEDIN_RE.findall(raw) + GITHUB_RE.findall(raw) + URL_RE.findall(raw)
+    ))
+
+    skills_text = get_section_text(lines, smap, "skills") or raw
+    raw_skills  = extract_skills(skills_text)
+    ranked      = rank_skills(raw_skills)
+
+    exp_text = get_section_text(lines, smap, "experience")
+    edu_text = get_section_text(lines, smap, "education")
+
+    return {
+        "personal_info": {
+            "name":  extract_name(lines),
+            "email": emails[0] if emails else "",
+            "phone": phones[0].strip() if phones else "",
+            "links": links,
+        },
+        "summary":        get_section_text(lines, smap, "summary"),
+        "skills":         ranked,
+        "experience":     parse_experience_entries(exp_text),
+        "education":      parse_education_entries(edu_text),
+        "projects":       get_section_text(lines, smap, "projects"),
+        "certifications": get_section_text(lines, smap, "certifications"),
+        "achievements":   get_section_text(lines, smap, "achievements"),
+        "languages":      get_section_text(lines, smap, "languages"),
+        "interests":      get_section_text(lines, smap, "interests"),
+        "references":     get_section_text(lines, smap, "references"),
+    }
+
