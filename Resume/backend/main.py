@@ -305,3 +305,53 @@ def parse_experience_entries(text: str) -> list[dict]:
 
     return entries
 
+
+# Education Parsing
+
+DEGREE_RE = re.compile(
+    r"\b(b\.?sc|b\.?tech|b\.?e|b\.?a|m\.?sc|m\.?tech|m\.?b\.?a|ph\.?d|"
+    r"bachelor|master|doctorate|diploma|associate|hnd)\b",
+    re.I,
+)
+
+
+def parse_education_entries(text: str) -> list[dict]:
+    """
+    Attempt to split education text into structured entries.
+    """
+    if not text:
+        return []
+
+    lines   = [l.strip() for l in text.splitlines() if l.strip()]
+    entries: list[dict] = []
+    current: dict | None = None
+
+    for line in lines:
+        duration_match = DURATION_RE.search(line)
+        degree_match   = DEGREE_RE.search(line)
+
+        if degree_match or (duration_match and len(line) < 120):
+            if current:
+                entries.append(current)
+            duration    = duration_match.group(0).strip() if duration_match else ""
+            clean_line  = DURATION_RE.sub("", line).strip(" -–—|,")
+            current = {
+                "institution": "",
+                "degree":      clean_line,
+                "duration":    duration,
+            }
+        else:
+            if current is None:
+                current = {"institution": "", "degree": "", "duration": ""}
+            # First unparsed line after a degree line is likely the institution or else ignoring additional detail lines such as (grades,notes, ect)
+            if current["institution"] == "" and line:
+                current["institution"] = line
+
+    if current:
+        entries.append(current)
+
+    if not entries:
+        return [{"institution": text, "degree": "", "duration": ""}]
+
+    return entries
+
