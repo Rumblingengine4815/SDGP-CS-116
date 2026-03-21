@@ -154,3 +154,6 @@ app.include_router(resume_router, prefix="/api")
 
 from app.routers.profile import router as profile_router
 app.include_router(profile_router)
+
+from app.routers.resume_scan_tool import router as resume_scan_router
+app.include_router(resume_scan_router)

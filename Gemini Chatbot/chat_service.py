@@ -31,7 +31,7 @@ class ChatService:
             "SILENT KNOWLEDGE: Never reference internal datasets, CSV files, or DATABASE records. "
             "GUARDRAILS: If a user asks non-career personal questions (e.g., 'whats my name'), politely pivot."
         )
-        self.model_version = "gemini-1.5-flash"  # Reverted to active 1.5 architecture
+        self.model_version = "gemini-2.5-flash"  # Bypassing the 404 restriction using the newer 2.5 architecture.
 
     def get_academic_context(self, query):
         """Searches MongoDB for relevant academic programs and skill-gap courses from mongo db to make it cloud capable."""

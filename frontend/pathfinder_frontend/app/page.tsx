@@ -24,6 +24,23 @@ import { GlassCard } from "@/components/ui/GlassCard";
 
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (token) setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userName");
+    setIsLoggedIn(false);
+    window.location.href = "/";
+  };
+
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/dashboard", label: "Dashboard" },
@@ -82,12 +99,25 @@ export default function HomePage() {
 
           <NavbarContent justify="end" className="gap-3">
             <NavbarItem className="hidden sm:flex gap-2">
-              <Button variant="light" className="font-bold font-sora text-foreground hover:bg-content2 hover:text-pf-purple-600 px-4 transition-all" as={Link} href="/login">
-                Log In
-              </Button>
-              <Button variant="solid" radius="full" className="font-bold bg-gradient-to-r from-pf-purple-600 to-indigo-600 text-white hover:opacity-90 hover:-translate-y-0.5 transition-all px-6 shadow-md shadow-pf-purple-500/20 font-dm-sans" as={Link} href="/register">
-                Sign Up Free
-              </Button>
+              {isLoggedIn ? (
+                <>
+                  <Button variant="light" className="font-bold font-sora text-foreground hover:bg-content2 hover:text-pf-purple-600 px-4 transition-all" as={Link} href="/dashboard">
+                    Dashboard
+                  </Button>
+                  <Button variant="flat" radius="full" color="danger" className="font-bold hover:-translate-y-0.5 transition-all px-6 shadow-md" onClick={handleLogout}>
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="light" className="font-bold font-sora text-foreground hover:bg-content2 hover:text-pf-purple-600 px-4 transition-all" as={Link} href="/login">
+                    Log In
+                  </Button>
+                  <Button variant="solid" radius="full" className="font-bold bg-gradient-to-r from-pf-purple-600 to-indigo-600 text-white hover:opacity-90 hover:-translate-y-0.5 transition-all px-6 shadow-md shadow-pf-purple-500/20 font-dm-sans" as={Link} href="/register">
+                    Sign Up Free
+                  </Button>
+                </>
+              )}
             </NavbarItem>
           </NavbarContent>
 

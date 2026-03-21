@@ -385,10 +385,10 @@ def main():
         if internships_path.exists():
             upload_internships(db, internships_path)
         
-        # Upload ESCO 
-        esco_dir = raw_dir / "esco"
-        if esco_dir.exists():
-            upload_esco(db, esco_dir)
+        # Removed: ESCO was deprecated in favor of O*NET 30.2
+        # esco_dir = raw_dir / "esco"
+        # if esco_dir.exists():
+        #     upload_esco(db, esco_dir)
 
         print("\nMongoDB upload complete!")
 

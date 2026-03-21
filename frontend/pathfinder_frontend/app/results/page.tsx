@@ -486,6 +486,8 @@ export default function ResultsPage() {
 
         </motion.div>
         
+        {/* Recommended Mentors block natively deleted as per user request */}
+
         {/* AI Explainability */}
         {explainability && explainability.length > 0 && (
           <motion.div variants={itemVariants} className="mt-8">

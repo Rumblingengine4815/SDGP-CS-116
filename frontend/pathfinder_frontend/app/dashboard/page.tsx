@@ -5,13 +5,17 @@ import Link from "next/link";
 import { Card, CardBody, Button, Chip, Progress } from "@heroui/react";
 import { Upload, Target, TrendingUp, Sparkles, BookOpen, Briefcase, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import Navbar from "@/components/Navbar";
 
 export default function Dashboard() {
   const [name, setName] = useState("User");
   const [greeting, setGreeting] = useState("Hello");
-  const [profileStatus, setProfileStatus] = useState({
+  const [profileStatus, setProfileStatus] = useState<any>({
     completion: 0,
-    message: "Upload your CV or take the Quiz to unlock your personalized career roadmap."
+    message: "Upload your CV or take the Quiz to unlock your personalized career roadmap.",
+    state: "NEW",
+    missing: ["cv", "quiz"],
+    cachedResults: {}
   });
 
   const [marketTrends, setMarketTrends] = useState<any[]>([
@@ -31,19 +35,30 @@ export default function Dashboard() {
     const fetchProfileStatus = async () => {
       try {
         const token = localStorage.getItem("token");
-        if(token) {
-          const res = await fetch("http://localhost:8000/api/profile/status", {
-            headers: {
-              "Authorization": `Bearer ${token}`
-            }
-          });
-          const data = await res.json();
-          if(data.success) {
-            setProfileStatus({
-              completion: data.completion_percentage || 0,
-              message: data.message || "Complete your profile to unlock actionable ML insights."
-            });
+        if (!token) {
+          window.location.href = "/login";
+          return;
+        }
+
+        const res = await fetch("http://localhost:8000/api/profile/status", {
+          headers: {
+            "Authorization": `Bearer ${token}`
           }
+        });
+        if (res.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+          return;
+        }
+        if (res.ok) {
+          const data = await res.json();
+          setProfileStatus({
+            completion: data.completion_percentage || 0,
+            message: data.message || "Complete your profile to unlock actionable ML insights.",
+            state: data.state || "NEW",
+            missing: data.missing_components || [],
+            cachedResults: data.cached_results || {}
+          });
         }
       } catch (e) {
         console.error("Failed to fetch profile status", e);
@@ -92,8 +107,9 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="min-h-screen relative py-20 px-4 sm:px-8 lg:px-16 bg-slate-50 dark:bg-zinc-950 pattern-bg">
-      <div className="max-w-7xl mx-auto space-y-12">
+    <main className="min-h-screen relative bg-slate-50 dark:bg-zinc-950 pattern-bg flex flex-col">
+      <Navbar />
+      <div className="max-w-7xl mx-auto space-y-12 py-10 px-4 sm:px-8 lg:px-16 w-full">
         {/* Header Section */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
@@ -133,16 +149,28 @@ export default function Dashboard() {
                     </p>
                   </div>
                 </div>
-                <Button 
-                  as={Link} 
-                  href="/skill-assessment" 
-                  color="secondary" 
-                  size="lg"
-                  className="font-bold shadow-xl shadow-indigo-500/20 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-10 py-8 text-lg w-full md:w-auto transition-transform hover:scale-[1.02]"
-                  endContent={<ArrowRight size={22} />}
-                >
-                  Enter Assessment Portal
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                  <Button 
+                    as={Link} 
+                    href="/skill-assessment" 
+                    color="secondary" 
+                    size="lg"
+                    className="font-bold shadow-xl shadow-indigo-500/20 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-8 text-md transition-transform hover:scale-[1.02]"
+                    endContent={<ArrowRight size={20} />}
+                  >
+                    Enter Assessment
+                  </Button>
+                  <Button 
+                    as={Link} 
+                    href="/resumes" 
+                    color="primary" 
+                    variant="flat"
+                    size="lg"
+                    className="font-bold px-8 py-8 text-md border-2 border-primary-500/30 bg-primary-50/50 dark:bg-primary-900/10 transition-transform hover:scale-[1.02]"
+                  >
+                    ATS CV Analyzer
+                  </Button>
+                </div>
               </CardBody>
             </Card>
           </motion.div>
@@ -188,12 +216,36 @@ export default function Dashboard() {
                   <Progress value={profileStatus.completion || 0} color="secondary" size="sm" classNames={{ indicator: "bg-gradient-to-r from-secondary-400 to-primary-500" }} />
                 </div>
                 <div>
-                  <p className="text-sm text-foreground/70 mb-4">
+                  <p className="text-sm text-foreground/70 mb-4 font-medium">
                     {profileStatus.message}
                   </p>
-                  {profileStatus.completion >= 100 && (
-                    <Button as={Link} href="/results" color="secondary" size="md" className="font-bold shadow-md shadow-indigo-500/30 bg-gradient-to-r from-indigo-500 to-purple-500 text-white w-full">
-                      View Computed Roadmap <ArrowRight size={16} className="ml-2" />
+
+                  {/* Dynamic Action Buttons based on missing core ML dependencies */}
+                  {profileStatus.completion < 100 && (
+                     <div className="flex gap-3 mt-4">
+                       {profileStatus.missing?.includes("cv") && (
+                         <Button as={Link} href="/upload-cv" color="secondary" variant="flat" size="sm" className="font-bold flex-1" endContent={<Upload size={16} />}>Upload CV</Button>
+                       )}
+                       {profileStatus.missing?.includes("quiz") && (
+                         <Button as={Link} href="/skill-assessment" color="secondary" size="sm" className="font-bold shadow-md shadow-indigo-500/30 bg-gradient-to-r from-indigo-500 to-purple-500 text-white flex-1" endContent={<Sparkles size={16} />}>Take Assessment</Button>
+                       )}
+                     </div>
+                  )}
+
+                  {profileStatus.completion >= 100 && profileStatus.cachedResults?.career_readiness && (
+                    <div className="mt-6 space-y-4">
+                      <div className="p-4 rounded-xl bg-indigo-50 dark:bg-zinc-800/50 border border-indigo-100 dark:border-zinc-700">
+                        <p className="text-xs uppercase font-bold text-indigo-500 mb-1 tracking-wider">Calculated Readiness</p>
+                        <h4 className="text-2xl font-black">{profileStatus.cachedResults.career_readiness.overall}/100</h4>
+                      </div>
+                      <Button as={Link} href="/results" color="secondary" size="md" className="font-bold shadow-md shadow-indigo-500/30 bg-gradient-to-r from-indigo-500 to-purple-500 text-white w-full h-12">
+                        View Complete Roadmap <ArrowRight size={18} className="ml-2" />
+                      </Button>
+                    </div>
+                  )}
+                  {profileStatus.completion >= 100 && !profileStatus.cachedResults?.career_readiness && (
+                    <Button as={Link} href="/results" color="secondary" size="md" className="font-bold shadow-md shadow-indigo-500/30 bg-gradient-to-r from-indigo-500 to-purple-500 text-white w-full h-12">
+                      View Computed Roadmap <ArrowRight size={18} className="ml-2" />
                     </Button>
                   )}
                 </div>

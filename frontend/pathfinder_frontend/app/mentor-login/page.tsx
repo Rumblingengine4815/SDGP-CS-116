@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Card, CardBody, Input, Button } from "@heroui/react";
-import { SparklesIcon, LockIcon, MailIcon, ArrowRightIcon } from "lucide-react";
+import { SparklesIcon, LockIcon, MailIcon, ArrowRightIcon, Eye, EyeOff } from "lucide-react";
 
 export default function MentorLogin() {
   const router = useRouter();
@@ -12,6 +12,7 @@ export default function MentorLogin() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => setIsMounted(true), []);
@@ -150,10 +151,15 @@ export default function MentorLogin() {
                     Password
                   </label>
                   <Input
-                    type="password"
+                    type={isVisible ? "text" : "password"}
                     placeholder="••••••••"
                     startContent={
                       <LockIcon size={18} className="text-gray-400 mr-2" />
+                    }
+                    endContent={
+                      <button className="focus:outline-none" type="button" onClick={() => setIsVisible(!isVisible)}>
+                        {isVisible ? <EyeOff size={18} className="text-gray-400" /> : <Eye size={18} className="text-gray-400" />}
+                      </button>
                     }
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}

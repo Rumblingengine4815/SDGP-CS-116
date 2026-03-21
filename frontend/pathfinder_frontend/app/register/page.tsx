@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button, Input } from "@heroui/react";
-import { User, Mail, Lock, UserPlus } from "lucide-react";
+import { User, Mail, Lock, UserPlus, Eye, EyeOff } from "lucide-react";
 
 export default function RegisterPage() {
   const [firstName, setFirstName] = useState("");
@@ -13,6 +13,8 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +27,8 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8001/api/auth/register", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${apiUrl}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -60,10 +63,10 @@ export default function RegisterPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-lg p-8 md:p-10 bg-white/70 dark:bg-zinc-900/90 backdrop-blur-xl border border-divider shadow-2xl rounded-[2.5rem] z-10"
+        className="w-full max-w-lg p-6 md:p-8 bg-white/70 dark:bg-zinc-900/90 backdrop-blur-xl border border-divider shadow-2xl rounded-[2.5rem] z-10"
       >
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-black bg-gradient-to-br from-foreground to-default-500 bg-clip-text text-transparent mb-2">
+        <div className="text-center mb-4">
+          <h1 className="text-3xl font-black bg-gradient-to-br from-foreground to-default-500 bg-clip-text text-transparent mb-1">
             Create an Account
           </h1>
           <p className="text-default-500 text-sm">Join PathFinder+ and map your future</p>
@@ -71,44 +74,69 @@ export default function RegisterPage() {
 
         <form onSubmit={handleRegister} className="space-y-5">
           <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-bold text-foreground ml-1 block mb-1">First Name *</label>
+              <Input 
+                placeholder="John"
+                variant="faded" color="secondary"
+                value={firstName} onChange={(e) => setFirstName(e.target.value)}
+                startContent={<User size={18} className="text-default-400 ml-1" />}
+                isRequired
+              />
+            </div>
+            <div>
+              <label className="text-sm font-bold text-foreground ml-1 block mb-1">Last Name *</label>
+              <Input 
+                placeholder="Doe"
+                variant="faded" color="secondary"
+                value={lastName} onChange={(e) => setLastName(e.target.value)}
+                isRequired
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-bold text-foreground ml-1 block mb-1">Email Address *</label>
             <Input 
-              label="First Name" 
-              variant="faded" color="secondary"
-              value={firstName} onChange={(e) => setFirstName(e.target.value)}
-              startContent={<User size={18} className="text-default-400" />}
-              isRequired
-            />
-            <Input 
-              label="Last Name" 
-              variant="faded" color="secondary"
-              value={lastName} onChange={(e) => setLastName(e.target.value)}
+              placeholder="john@example.com"
+              type="email" variant="faded" color="secondary"
+              value={email} onChange={(e) => setEmail(e.target.value)}
+              startContent={<Mail size={18} className="text-default-400 ml-1" />}
               isRequired
             />
           </div>
 
-          <Input 
-            label="Email Address" 
-            type="email" variant="faded" color="secondary"
-            value={email} onChange={(e) => setEmail(e.target.value)}
-            startContent={<Mail size={18} className="text-default-400" />}
-            isRequired
-          />
+          <div>
+            <label className="text-sm font-bold text-foreground ml-1 block mb-1">New Password *</label>
+            <Input 
+              placeholder="••••••••"
+              type={isVisible ? "text" : "password"} variant="faded" color="secondary"
+              value={password} onChange={(e) => setPassword(e.target.value)}
+              startContent={<Lock size={18} className="text-default-400 ml-1" />}
+              endContent={
+                <button className="focus:outline-none pr-1" type="button" onClick={() => setIsVisible(!isVisible)}>
+                  {isVisible ? <EyeOff size={18} className="text-default-400" /> : <Eye size={18} className="text-default-400" />}
+                </button>
+              }
+              isRequired
+            />
+          </div>
 
-          <Input 
-            label="New Password" 
-            type="password" variant="faded" color="secondary"
-            value={password} onChange={(e) => setPassword(e.target.value)}
-            startContent={<Lock size={18} className="text-default-400" />}
-            isRequired
-          />
-
-          <Input 
-            label="Confirm Password" 
-            type="password" variant="faded" color="secondary"
-            value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-            startContent={<Lock size={18} className="text-default-400" />}
-            isRequired
-          />
+          <div>
+            <label className="text-sm font-bold text-foreground ml-1 block mb-1">Confirm Password *</label>
+            <Input 
+              placeholder="••••••••"
+              type={isConfirmVisible ? "text" : "password"} variant="faded" color="secondary"
+              value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+              startContent={<Lock size={18} className="text-default-400 ml-1" />}
+              endContent={
+                <button className="focus:outline-none pr-1" type="button" onClick={() => setIsConfirmVisible(!isConfirmVisible)}>
+                  {isConfirmVisible ? <EyeOff size={18} className="text-default-400" /> : <Eye size={18} className="text-default-400" />}
+                </button>
+              }
+              isRequired
+            />
+          </div>
 
           <Button 
             type="submit" 
@@ -123,11 +151,13 @@ export default function RegisterPage() {
           </Button>
         </form>
 
-        <div className="mt-8 text-center text-sm text-default-500 font-medium">
-          Already have an account?{" "}
-          <Link href="/login" className="text-secondary hover:underline">
-            Login
-          </Link>
+        <div className="mt-8 flex flex-col items-center gap-4">
+          <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">
+            Already have an account?{" "}
+            <Link href="/login" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 font-bold transition-colors">
+              Login here
+            </Link>
+          </div>
         </div>
       </motion.div>
     </main>

@@ -28,10 +28,22 @@ app.add_middleware(
 )
 
 # ---------------------------
-# DB (SQLite for Chat & Requests)
+# DB (Supabase / Postgres / SQLite fallback)
 # ---------------------------
-DATABASE_URL = "sqlite:///./mentor_chat.db"
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+from dotenv import load_dotenv
+load_dotenv()
+
+raw_db_url = os.getenv("SUPABASE_URL", "sqlite:///./mentor_chat.db")
+if raw_db_url.startswith("postgres://"):
+    raw_db_url = raw_db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+elif raw_db_url.startswith("postgresql://") and not raw_db_url.startswith("postgresql+psycopg2://"):
+    raw_db_url = raw_db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+
+DATABASE_URL = raw_db_url
+
+# Handle connection args (SQLite needs check_same_thread, Postgres doesn't (for chnaging to sqlite to supabase for hosting))
+connect_args = {"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 Base = declarative_base()
