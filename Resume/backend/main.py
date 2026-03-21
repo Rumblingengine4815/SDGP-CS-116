@@ -195,3 +195,32 @@ def extract_name(lines: list[str]) -> str:
             return s
     return ""
 
+
+# Skill Extraction & Normalization
+
+def extract_skills(text: str) -> list[str]:
+
+    # Matching skills from SKILL_CANONICAL against the text. Returns deduplicated, display-name list.
+    
+    lower = text.lower()
+    found_display: set[str] = set()
+
+    # Sort patterns longest-first to give multi-word patterns priority
+    for pattern in sorted(SKILL_CANONICAL, key=len, reverse=True):
+        display = SKILL_CANONICAL[pattern]
+        if display in found_display:
+            continue 
+        if re.search(r"\b" + re.escape(pattern) + r"\b", lower):
+            found_display.add(display)
+
+    return sorted(found_display)
+
+
+def rank_skills(skills: list[str]) -> list[str]:
+
+    # Return skills sorted: commonly required first, then the rest.
+    
+    required = sorted(s for s in skills if s in REQUIRED_SKILLS)
+    rest = sorted(s for s in skills if s not in REQUIRED_SKILLS)
+    return required + rest
+
