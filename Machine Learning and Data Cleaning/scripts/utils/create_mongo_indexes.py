@@ -1,6 +1,7 @@
+import os
 from pymongo import MongoClient, ASCENDING, TEXT
 
-MONGO_URI = "mongodb+srv://pathfinderpluslk:oWTRMFoT7n2AVlds@pathfinderplus.pekgg4w.mongodb.net/?appName=PathFinderPlus"
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 DATABASE_NAME = "pathfinder_plus"
 
 def create_indexes():

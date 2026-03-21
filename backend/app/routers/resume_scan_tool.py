@@ -35,7 +35,9 @@ async def process_standalone_resume_scan(file: UploadFile = File(...), mode: str
         except Exception as pdf_e:
             raise HTTPException(400, "Unable to parse PDF text.")
             
-        api_key = system_os.getenv("GEMINI_API_KEY", "AIzaSyDodUtFUZRY8z8PUZM1h82wQBxDYmoNyT4")
+        api_key = system_os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            raise HTTPException(500, "Server Configuration Error: Missing GEMINI API Key")
         client = genai.Client(api_key=api_key)
         
         # Original Offline Engine (Colleague's Logic)
