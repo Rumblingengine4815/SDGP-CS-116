@@ -566,33 +566,7 @@ async def websocket_chat(websocket: WebSocket, mentor_id: str, user_role: str, d
             }
             await manager.broadcast(mentor_id, msg_payload)
             
-            # Hybrid Bot: Only reply if Student sends a message, and only simple standard replies
-            if user_role == "user" and content:
-                content_lower = content.lower()
-                
-                bot_text = None
-                if any(greet in content_lower for greet in ["hello", "hi", "hey"]):
-                    bot_text = "Hi there! I am currently online. How can I help you today?"
-                elif "internship" in content_lower or "job" in content_lower:
-                    bot_text = "I'd be happy to help you find an internship! Let's review your CV first."
-                elif "skill" in content_lower or "learn" in content_lower:
-                    bot_text = "Great initiative! We can definitely focus on building those foundational skills."
-                    
-                if bot_text:
-                    bot_msg = ChatMessageLog(
-                        user_id=1, mentor_id=mentor_id, sender="mentor", message=bot_text
-                    )
-                    db.add(bot_msg)
-                    db.commit()
-                    db.refresh(bot_msg)
-                    
-                    bot_payload = {
-                        "id": bot_msg.id, "sender": "mentor", "message": bot_msg.message, 
-                        "attachment_url": None, "timestamp": bot_msg.timestamp.isoformat()
-                    }
-                    import asyncio
-                    await asyncio.sleep(1) # Small delay so it feels like typing
-                    await manager.broadcast(mentor_id, bot_payload)
+            # The Mentor space is strictly human-to-human. Real experts will reply manually.
 
     except WebSocketDisconnect:
         manager.disconnect(websocket, mentor_id)

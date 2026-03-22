@@ -157,3 +157,6 @@ app.include_router(profile_router)
 
 from app.routers.resume_scan_tool import router as resume_scan_router
 app.include_router(resume_scan_router)
+
+from app.routers.career_paths import router as career_paths_router
+app.include_router(career_paths_router, prefix="/api")

@@ -297,7 +297,21 @@ export default function ResultsPage() {
               {/* Pathfinder */}
               <Card className="border border-divider bg-content1/80 backdrop-blur-xl shadow-xl">
                 <CardBody className="p-8">
-                  <h3 className="text-xl font-bold font-sora mb-6 flex items-center gap-2"><Map className="text-secondary-500"/> AI Recommended Path</h3>
+                  <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-4">
+                    <h3 className="text-xl font-bold font-sora flex items-center gap-2">
+                       <Map className="text-secondary-500"/> AI Recommended Path
+                    </h3>
+                    <Button 
+                      size="sm" 
+                      color="secondary" 
+                      variant="shadow" 
+                      as={Link} 
+                      href="/skill-assessment/career-paths"
+                      className="font-bold shrink-0"
+                    >
+                      Visualise Interactive Trajectory
+                    </Button>
+                  </div>
                   <div className="space-y-4">
                     {careerPath.length > 0 ? careerPath.map((node: any, i: number) => (
                       <div key={i} className="flex flex-col">

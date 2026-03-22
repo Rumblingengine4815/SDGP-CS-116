@@ -159,9 +159,21 @@ export default function ResumeScannerStructure() {
     <div className="container mx-auto px-4 py-8 max-w-7xl animate-fade-in text-foreground">
       
       {/* HEADER SECTION */}
-      <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-black font-sora tracking-tight mb-2">Resume Analyzer <Zap className="inline text-primary-500 mb-1" /></h1>
-        <p className="text-foreground/60 font-medium">Drop your CV directly here to parse technical gaps and calculate ATS readiness instantly.</p>
+      <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-black font-sora tracking-tight mb-2">Resume Analyzer <Zap className="inline text-primary-500 mb-1" /></h1>
+          <p className="text-foreground/60 font-medium">Drop your CV directly here to parse technical gaps and calculate ATS readiness instantly.</p>
+        </div>
+        <Button 
+          color="secondary" 
+          variant="shadow" 
+          size="lg" 
+          className="font-bold shrink-0"
+          onPress={() => router.push('/resumes/builder')}
+          startContent={<FileText size={18} />}
+        >
+          Create CV Manually
+        </Button>
       </div>
 
       {/* UPLOAD ZONE */}
