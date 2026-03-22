@@ -35,9 +35,21 @@ Machine Learning and Data Cleaning/Project SeaLanka Implementation CS-40.pdf
 tmp/
 .vscode/
 .idea/
+Resume/
+Resume-backend/
+SDGP-CS-116/
+mentor backend/
+Machine Learning and Data Cleaning/utils/
+
+# Databases
+*.db
+*.sqlite3
 
 # OS specific
 .DS_Store
 Thumbs.db
 
 demo_output.txt
+
+# Zip archives (may contain .env secrets)
+*.zip

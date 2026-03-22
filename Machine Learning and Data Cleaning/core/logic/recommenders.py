@@ -1,5 +1,5 @@
 """
-core/logic/recommenders.py — Phase 10 Module
+
 Modular Course, Job and Mentor recommendation logic.
 Operates on data from the main engine context.
 """
@@ -11,7 +11,7 @@ from .action_plan import ActionPlanGenerator
 
 class Recommender:
     """
-    Phase 7 & 10: Core Recommendation Logic.
+   
     Separates Course, Job, and Mentor matching into testable, auditable modules.
     """
 
@@ -76,6 +76,9 @@ class Recommender:
                 else [f"Role match: {mentor.get('current_role', 'Professional')}"]
             )
 
+            # Generate the Magic Link based on the first matched skill
+            magic_link = f"/mentors?required_skill={overlap[0].replace(' ', '%20')}" if overlap else "/mentors"
+
             scored_mentors.append({
                 "name":           mentor.get("name"),
                 "title":          mentor.get("current_role", mentor.get("title")) or "Professional Mentor",
@@ -83,6 +86,7 @@ class Recommender:
                 "score":          score,
                 "domain":         mentor_domain,
                 "matched_skills": matched_skills_display,
+                "connect_url":    magic_link,
             })
 
         scored_mentors.sort(key=lambda x: x["score"], reverse=True)
