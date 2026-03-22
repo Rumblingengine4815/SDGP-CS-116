@@ -88,3 +88,30 @@ npm run dev
 
 Frontend runs at `http://localhost:3000`  
 Resume scanner page at `http://localhost:3000/resume`
+
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/scan` | Upload a PDF or DOCX resume for scanning |
+| `GET` | `/download/{filename}` | Download the generated `.txt` report |
+| `GET` | `/health` | Check if the backend server is running |
+
+## Supported File Types
+
+- `.pdf`
+- `.docx`
+- `.doc`
+
+---
+
+## Requirements
+
+```
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+python-multipart==0.0.9
+pdfplumber==0.11.0
+python-docx==1.1.2
+```
