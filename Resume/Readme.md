@@ -34,3 +34,57 @@ Upload a PDF or DOCX resume and get structured data, skill matching, and actiona
 - Tailwind CSS
 
 ---
+
+
+## Project Structure
+
+```
+project/
+├── backend/
+    ├── main.py              # FastAPI app — all endpoints and logic
+    ├── requirements.txt     # Python dependencies
+    └── outputs/             # Generated scan report .txt files
+
+```
+
+## Getting Started
+
+### Backend
+
+```bash
+cd backend
+
+# Create and activate virtual environment
+python -m venv venv
+
+# Windows
+venv\Scripts\activate
+
+# Mac/Linux
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the server
+uvicorn main:app --reload
+```
+
+Backend runs at `http://localhost:8000`
+
+---
+
+### Frontend
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start dev server
+npm run dev
+```
+
+Frontend runs at `http://localhost:3000`  
+Resume scanner page at `http://localhost:3000/resume`
