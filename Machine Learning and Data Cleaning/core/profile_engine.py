@@ -6,7 +6,6 @@ class ProfileEngine:
         score = 0
         total = 4
         
-        # Guard against None proxy models
         if not user_profile:
             return 0
             

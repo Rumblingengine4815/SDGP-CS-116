@@ -16,7 +16,7 @@ export default function AboutPage() {
       role: "Full Stack Developer",
       image:
         "https://ui-avatars.com/api/?name=Senuth+Kodithuwakku&size=256&background=7c3aed&color=fff",
-      linkedin: "https://www.linkedin.com/in/senuth-kodithuwakku/",
+      linkedin: "https://www.linkedin.com/in/senuth-dilwan-kodithuwakku/",
       github: "https://github.com/SenuX69",
     },
     {

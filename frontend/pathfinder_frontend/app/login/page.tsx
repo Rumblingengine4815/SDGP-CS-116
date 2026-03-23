@@ -40,7 +40,7 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
-
+/----# Login #----/ 
   return (
     <main className="min-h-screen flex items-center justify-center py-20 px-4 bg-slate-50 dark:bg-zinc-950 pattern-bg relative overflow-hidden">
       {/* Decorative Blur Blobs */}
