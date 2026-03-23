@@ -29,11 +29,11 @@ export default function QuizPage() {
     "Helpful","Precise","Interested about the physical/real world"
   ];
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleAnswer = (q, val) => {
+  const handleAnswer = (q: string, val: string) => {
     setAnswers({ ...answers, [q]: val });
   };
 
