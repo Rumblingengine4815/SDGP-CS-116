@@ -4,7 +4,7 @@ import sys
 import json
 import re
 import torch
-import fitz # PyMuPDF for Resume Parsing
+import fitz
 from sentence_transformers import SentenceTransformer, util
 from pathlib import Path
 import traceback
