@@ -3,7 +3,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Card, CardHeader, CardBody, CardFooter, Button, Chip, Textarea, Avatar, Badge, Spacer, Divider } from "@heroui/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Button,
+  Chip,
+  Textarea,
+  Avatar,
+  Badge,
+  Spacer,
+  Divider,
+} from "@heroui/react";
 
 interface Message {
   role: "user" | "model";
@@ -14,11 +26,19 @@ const STARTER_QUESTIONS = [
   "How can I improve my cv? ",
   "Technical Interview tips?",
   "What does a Data Scientist do?",
-  "Business Analyst skills?"
+  "Business Analyst skills?",
 ];
 
 //  Sub-component: Typewriter Effect from hero  ui
-const Typewriter = ({ text, onComplete, skip }: { text: string, onComplete?: () => void, skip?: boolean }) => {
+const Typewriter = ({
+  text,
+  onComplete,
+  skip,
+}: {
+  text: string;
+  onComplete?: () => void;
+  skip?: boolean;
+}) => {
   const [displayedText, setDisplayedText] = useState("");
   const [index, setIndex] = useState(0);
 
@@ -36,7 +56,12 @@ const Typewriter = ({ text, onComplete, skip }: { text: string, onComplete?: () 
         setIndex((prev) => prev + 1);
       }, 10); // Standardize speed
       return () => clearTimeout(timeout);
-    } else if (onComplete && index === text.length && displayedText.length > 0 && !skip) {
+    } else if (
+      onComplete &&
+      index === text.length &&
+      displayedText.length > 0 &&
+      !skip
+    ) {
       // Trigger onComplete only once when naturally reaching the end
       onComplete();
     }
@@ -55,14 +80,14 @@ export default function ChatbotPopup() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const API_URL = "http://localhost:8002/api/chat";
+  const API_URL = "http://localhost:8000/api/chat";
 
   // Material Auto-scroll
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
         top: scrollRef.current.scrollHeight,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   }, [history, isLoading, isTyping]);
@@ -110,7 +135,12 @@ export default function ChatbotPopup() {
       console.error("Chat Error:", error);
       setHistory((prev) => [
         ...prev,
-        { role: "model", parts: [{ text: "I'm having a technical issue. Please try again later." }] },
+        {
+          role: "model",
+          parts: [
+            { text: "I'm having a technical issue. Please try again later." },
+          ],
+        },
       ]);
     } finally {
       setIsLoading(false);
@@ -130,11 +160,11 @@ export default function ChatbotPopup() {
             className="mb-6 z-50"
           >
             <Card
-              className="h-[500px] w-[360px] max-w-[90vw] bg-white/90 backdrop-blur-3xl shadow-[0_32px_128px_-32px_rgba(0,0,0,0.3)] border-2 border-purple-800 rounded-[2rem] overflow-hidden"
+              className="h-[500px] w-[360px] max-w-[90vw] bg-white dark:bg-zinc-900 shadow-[0_32px_128px_-32px_rgba(0,0,0,0.3)] border border-purple-200 dark:border-purple-800 rounded-[2rem] overflow-hidden"
               shadow="lg"
             >
               {/* Header  */}
-              <CardHeader className="flex justify-between items-center px-6 py-5 bg-white/50 border-b border-divider/50">
+              <CardHeader className="flex justify-between items-center px-6 py-5 bg-gray-50 dark:bg-zinc-800 border-b border-gray-200 dark:border-zinc-700">
                 <div className="flex items-center gap-3.5">
                   <Badge
                     content=""
@@ -151,9 +181,13 @@ export default function ChatbotPopup() {
                     />
                   </Badge>
                   <div>
-                    <h3 className="text-[15px] font-black tracking-tight text-foreground leading-none">PathFinder+ AI</h3>
+                    <h3 className="text-[15px] font-black tracking-tight text-gray-900 dark:text-white leading-none">
+                      PathFinder+ AI
+                    </h3>
                     <Spacer y={1} />
-                    <p className="text-[10px] font-bold text-success uppercase tracking-[0.1em] opacity-80">Expert Advisor</p>
+                    <p className="text-[10px] font-bold text-success uppercase tracking-[0.1em] opacity-80">
+                      Expert Advisor
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-1.5">
@@ -184,7 +218,7 @@ export default function ChatbotPopup() {
               {/* Easy scroll */}
               <CardBody
                 ref={scrollRef}
-                className="flex-1 overflow-y-auto px-6 py-10 space-y-8 scrollbar-hide bg-gradient-to-b from-transparent via-white/10 to-white/40"
+                className="flex-1 overflow-y-auto px-6 py-10 space-y-8 scrollbar-hide bg-white dark:bg-zinc-900"
               >
                 <AnimatePresence mode="popLayout">
                   {history.length === 0 && (
@@ -205,9 +239,12 @@ export default function ChatbotPopup() {
                         />
                       </div>
                       <div className="space-y-4">
-                        <h2 className="text-3xl font-black tracking-tighter text-foreground">Insight awaits.</h2>
+                        <h2 className="text-3xl font-black tracking-tighter text-gray-900 dark:text-white">
+                          Insight awaits.
+                        </h2>
                         <p className="text-sm font-medium text-default-500 max-w-[300px] leading-relaxed">
-                          Your senior academic & career consultant, specialized for Sri Lanka.
+                          Your senior academic & career consultant, specialized
+                          for Sri Lanka.
                         </p>
                       </div>
                     </motion.div>
@@ -223,15 +260,16 @@ export default function ChatbotPopup() {
                       <Avatar
                         src={msg.role === "user" ? "/user.png" : "/model.png"}
                         size="sm"
-                        className={`flex-shrink-0 shadow-md border-2 border-white ring-1 ring-black/5 ${msg.role === "user" ? "bg-purple-50" : "bg-white"}`}
+                        className={`flex-shrink-0 shadow-md border-2 border-pf-purple-100 ring-1 ring-black/5 ${msg.role === "user" ? "bg-pf-purple-50" : "bg-content2"}`}
                       />
 
                       <Card
                         shadow="none"
-                        className={`max-w-[85%] px-5 py-4 border-none shadow-sm ${msg.role === "user"
-                          ? "bg-purple-600 text-white rounded-tr-none font-semibold leading-relaxed"
-                          : "bg-default-50/80 text-foreground rounded-tl-none ring-1 ring-default-200/50 leading-relaxed font-medium"
-                          }`}
+                        className={`max-w-[85%] px-5 py-4 border-none shadow-sm ${
+                          msg.role === "user"
+                            ? "bg-purple-600 text-white rounded-tr-none font-semibold leading-relaxed"
+                            : "bg-gray-100 dark:bg-zinc-700 text-gray-800 dark:text-gray-100 rounded-tl-none ring-1 ring-gray-200 dark:ring-zinc-600 leading-relaxed font-medium"
+                        }`}
                       >
                         <p className="text-[13px]">
                           {msg.role === "model" && i === history.length - 1 ? (
@@ -257,7 +295,7 @@ export default function ChatbotPopup() {
               </CardBody>
 
               {/*  Professional Input Section */}
-              <CardFooter className="flex flex-col p-5 pt-4 bg-white border-t border-divider/50 shadow-[0_-10px_40px_-5px_rgba(0,0,0,0.03)] pb-4">
+              <CardFooter className="flex flex-col p-5 pt-4 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-700 pb-4">
                 {/* Starter Chips: Material Style */}
                 {history.length < 3 && (
                   <div className="flex flex-wrap gap-2 mb-4 w-full">
@@ -268,7 +306,7 @@ export default function ChatbotPopup() {
                         variant="flat"
                         color="secondary"
                         onClick={() => handleSend(q)}
-                        className="font-bold text-[9px] border-none bg-purple-50 hover:bg-purple-100 transition-all cursor-pointer px-1 active:scale-95 h-6 uppercase tracking-tight text-purple-700"
+                        className="font-bold text-[9px] border-none bg-pf-purple-50 hover:bg-pf-purple-100 transition-all cursor-pointer px-1 active:scale-95 h-6 uppercase tracking-tight text-pf-purple-700"
                       >
                         {q}
                       </Chip>
@@ -276,7 +314,7 @@ export default function ChatbotPopup() {
                   </div>
                 )}
 
-                <div className="relative flex items-end gap-2 w-full bg-default-50/50 rounded-[2rem] p-2 ring-1 ring-default-200 transition-all focus-within:ring-purple-300 focus-within:bg-white shadow-inner">
+                <div className="relative flex items-end gap-2 w-full bg-gray-100 dark:bg-zinc-800 rounded-[2rem] p-2 ring-1 ring-gray-300 dark:ring-zinc-600 transition-all focus-within:ring-purple-400 shadow-inner">
                   <Textarea
                     variant="flat"
                     size="sm"
@@ -293,8 +331,10 @@ export default function ChatbotPopup() {
                     placeholder="Ask about careers, courses, or universities..."
                     classNames={{
                       base: "flex-1",
-                      input: "text-xs font-semibold placeholder:text-default-400 no-scrollbar leading-relaxed",
-                      inputWrapper: "bg-transparent hover:bg-transparent shadow-none px-2",
+                      input:
+                        "text-xs font-semibold placeholder:text-gray-400 no-scrollbar leading-relaxed !text-gray-900",
+                      inputWrapper:
+                        "bg-transparent hover:bg-transparent shadow-none px-2 !text-gray-900",
                     }}
                   />
                   {isLoading || isTyping ? (
@@ -340,8 +380,11 @@ export default function ChatbotPopup() {
         whileHover={{ scale: 1.05, y: -4, rotate: -3 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex h-16 w-16 items-center justify-center rounded-3xl shadow-[0_25px_50px_-12px_rgba(147,51,234,0.5)] ring-4 ring-white/40 transition-all overflow-hidden relative ${isOpen ? "bg-black" : "bg-gradient-to-tr from-purple-700 to-purple-500"
-          }`}
+        className={`flex h-16 w-16 items-center justify-center rounded-3xl shadow-[0_25px_50px_-12px_rgba(147,51,234,0.5)] ring-4 ring-white/40 transition-all overflow-hidden relative ${
+          isOpen
+            ? "bg-black"
+            : "bg-gradient-to-tr from-purple-700 to-purple-500"
+        }`}
       >
         <AnimatePresence mode="wait">
           {isOpen ? (

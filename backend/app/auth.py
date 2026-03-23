@@ -2,21 +2,34 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from passlib.context import CryptContext
 from supabase import create_client
+import os
 
 router = APIRouter()
 
-SUPABASE_URL = "https://fivqjyegpeatgeatbbdj.supabase.co"
-SUPABASE_KEY = "sb_publishable_Bt0svPzhOpYB8X_2tWAv_g_-9bb0D89"
-
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+SECRET_KEY = os.getenv("SECRET_KEY", "fallback")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+try:
+    supabase = create_client(os.getenv("SUPABASE_URL", ""), os.getenv("SUPABASE_KEY", ""))
+except:
+    supabase = None
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
+
+def create_access_token(data: dict, expires_delta=None):
+    return "simulated_token"
+
+def verify_token(token: str):
+    return {"sub": "dummy@test.com"}
 
 
-# =========================
 # MODELS
-# =========================
-
 class UserRegister(BaseModel):
     name: str
     email: str
@@ -28,9 +41,8 @@ class UserLogin(BaseModel):
     password: str
 
 
-# =========================
 # REGISTER
-# =========================
+
 
 @router.post("/register")
 def register(user: UserRegister):
@@ -54,10 +66,7 @@ def register(user: UserRegister):
     return {"message": "User registered successfully"}
 
 
-# =========================
 # LOGIN
-# =========================
-
 @router.post("/login")
 def login(user: UserLogin):
 

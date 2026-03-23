@@ -138,6 +138,11 @@ class MarketTrendAnalyzer:
         if len(field_df) == 0:
             return [{"segment": "Insufficient Data", "skills": ["GENERAL SKILLS"], "demand": 0}], pd.DataFrame()
 
+        # SUPER OPTIMIZATION: Cap data to 300 random samples!
+        # Running KMeans encode on 10,000+ jobs natively takes 100+ seconds on typical CPUs.
+        if len(field_df) > 300:
+            field_df = field_df.sample(n=300, random_state=42).copy()
+
         # 2. Field-Specific Clustering
         embeddings = self.model.encode(field_df['combined_text'].tolist(), show_progress_bar=False)
         

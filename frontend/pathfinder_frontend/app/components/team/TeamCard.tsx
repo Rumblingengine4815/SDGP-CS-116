@@ -13,8 +13,7 @@ interface Member {
 
 export default function TeamCard({ member }: { member: Member }) {
   return (
-    <div className="group rounded-2xl border border-purple-100 bg-white shadow-sm transition-all duration-300 hover:border-purple-400 hover:shadow-xl hover:shadow-purple-100/50">
-
+    <div className="group rounded-2xl border border-purple-100 bg-content1 shadow-sm transition-all duration-300 hover:border-purple-400 hover:shadow-xl hover:shadow-purple-100/50">
       <figure className="relative aspect-square w-full overflow-hidden rounded-t-2xl bg-purple-50 p-6">
         <div className="relative h-full w-full overflow-hidden rounded-full border-4 border-white shadow-md">
           <Image
@@ -26,7 +25,6 @@ export default function TeamCard({ member }: { member: Member }) {
         </div>
       </figure>
 
-
       <div className="p-6 text-center">
         <h3 className="text-xl font-bold text-gray-900">{member.name}</h3>
 
@@ -37,7 +35,6 @@ export default function TeamCard({ member }: { member: Member }) {
             {member.role}
           </p>
         </div>
-
 
         <div className="flex items-center justify-center gap-4">
           <a

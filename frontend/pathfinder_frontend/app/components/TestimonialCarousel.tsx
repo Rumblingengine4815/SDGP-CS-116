@@ -31,7 +31,7 @@ export default function TestimonialCarousel({ items }: { items: Item[] }) {
           >
             {items.map((it, i) => (
               <div key={i} className="min-w-full px-4">
-                <div className="p-8 bg-white rounded-2xl border border-purple-50 shadow-sm text-center">
+                <div className="p-8 bg-content1 rounded-2xl border border-purple-50 shadow-sm text-center">
                   <Image
                     src={it.img ?? `/team/p${(i % 3) + 1}.jpg`}
                     alt={it.name}
@@ -39,10 +39,15 @@ export default function TestimonialCarousel({ items }: { items: Item[] }) {
                     height={80}
                     className="w-20 h-20 mb-6 object-cover object-center rounded-full inline-block border-2 border-purple-100 mx-auto"
                   />
-                  <p className="leading-relaxed text-slate-600">{it.text}</p>
+                  <p className="leading-relaxed text-default-600">{it.text}</p>
                   <span className="inline-block h-1 w-10 rounded bg-purple-600 mt-6 mb-4 mx-auto" />
-                  <h3 className="text-slate-900 font-medium tracking-wider text-sm">{it.name}</h3>
-                  <p className="text-slate-500">{it.role}{it.location ? ` — ${it.location}` : ""}</p>
+                  <h3 className="text-foreground font-medium tracking-wider text-sm">
+                    {it.name}
+                  </h3>
+                  <p className="text-default-400 text-default-500">
+                    {it.role}
+                    {it.location ? ` — ${it.location}` : ""}
+                  </p>
                 </div>
               </div>
             ))}
@@ -64,8 +69,10 @@ export default function TestimonialCarousel({ items }: { items: Item[] }) {
 
         <div className="absolute inset-y-0 left-2 flex items-center md:left-4">
           <button
-            onClick={() => setIndex((i) => (i - 1 + items.length) % items.length)}
-            className="p-2 rounded-full bg-white border shadow-sm hover:bg-purple-50"
+            onClick={() =>
+              setIndex((i) => (i - 1 + items.length) % items.length)
+            }
+            className="p-2 rounded-full bg-content1 border shadow-sm hover:bg-purple-50"
             aria-label="Previous testimonial"
           >
             ‹
@@ -74,7 +81,7 @@ export default function TestimonialCarousel({ items }: { items: Item[] }) {
         <div className="absolute inset-y-0 right-2 flex items-center md:right-4">
           <button
             onClick={() => setIndex((i) => (i + 1) % items.length)}
-            className="p-2 rounded-full bg-white border shadow-sm hover:bg-purple-50"
+            className="p-2 rounded-full bg-content1 border shadow-sm hover:bg-purple-50"
             aria-label="Next testimonial"
           >
             ›

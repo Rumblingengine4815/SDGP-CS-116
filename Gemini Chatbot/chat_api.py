@@ -38,37 +38,48 @@ class ChatRequest(BaseModel):
     message: str
     history: Optional[List[Dict[str, Any]]] = []
 
-<<<<<<< HEAD
+from fastapi import Request
 import time
 
-# Rate limiting storage (user_id -> last_timestamp)
-user_last_request: Dict[str, float] = {}
-RATE_LIMIT_SECONDS = 5.0  # 1 message per 5 seconds
+# Rate limiting part to prevent API abuse and quick finishing of the quota
+user_last_request: Dict[str, float] = {}   # user_id throttle
+ip_request_counts: Dict[str, int] = {}     # API guards
+ip_last_reset: Dict[str, float] = {}
+RATE_LIMIT_SECONDS = 5.0
+MAX_REQUESTS_PER_MINUTE = 15
 
-=======
->>>>>>> d46034006fbfab04e3addc49f7ed278fccc8bba9
+
 @app.post("/api/chat")
-async def chat_with_ui(request: ChatRequest):
+async def chat_with_ui(chat_req: ChatRequest, request: Request):
     """
     Endpoint that the frontend or Postman will call.
+    Includes explicit IP-based Cybersecurity Rate Limiting for GenAI guards.
     """
-<<<<<<< HEAD
+    client_ip = request.client.host if request.client else "unknown"
     current_time = time.time()
-    last_req_time = user_last_request.get(request.user_id, 0.0)
     
-    # Enforce Rate Limit
+    # Check IP Quota per minute
+    if current_time - ip_last_reset.get(client_ip, 0.0) > 60:
+        ip_request_counts[client_ip] = 0
+        ip_last_reset[client_ip] = current_time
+        
+    ip_request_counts[client_ip] += 1
+    if ip_request_counts[client_ip] > MAX_REQUESTS_PER_MINUTE:
+        return {"reply": "API Guard: Rate limit exceeded (15 req/min). Please wait 60 seconds."}
+
+    # Check User ID Timeout
+    last_req_time = user_last_request.get(chat_req.user_id, 0.0)
     if current_time - last_req_time < RATE_LIMIT_SECONDS:
         return {"reply": "You're sending queries too quickly! Our AI needs a moment to catch its breath. Please wait 5 seconds before asking again."}
     
-    user_last_request[request.user_id] = current_time
+    user_last_request[chat_req.user_id] = current_time
 
-=======
->>>>>>> d46034006fbfab04e3addc49f7ed278fccc8bba9
+
     try:
         reply = chat_service.get_reply(
-            user_id=request.user_id,
-            user_message=request.message,
-            chat_history=request.history
+            user_id=chat_req.user_id,
+            user_message=chat_req.message,
+            chat_history=chat_req.history
         )
         return {"reply": reply}
     
@@ -79,5 +90,10 @@ async def chat_with_ui(request: ChatRequest):
         raise HTTPException(status_code=500, detail=error_msg)
 
 if __name__ == "__main__":
-    # Runs the server on port 8002
-    uvicorn.run(app, host="0.0.0.0", port=8002)
+    try:
+        # Runs the server on port 8002
+        uvicorn.run("chat_api:app", host="0.0.0.0", port=8002, reload=False)
+    except KeyboardInterrupt:
+        print("\n[SYSTEM LOG] Chatbot Microservice cleanly shutdown by Host. Terminating connections...")
+    except Exception as e:
+        print(f"\n[CRITICAL FATAL] Unexpected shutdown: {e}")

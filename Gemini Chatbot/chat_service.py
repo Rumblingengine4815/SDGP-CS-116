@@ -1,6 +1,10 @@
 import os
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from dotenv import load_dotenv
+
+# Prevent Windows/ISP IPv6 routing drops for the Gemini connections
+os.environ["GRPC_DNS_RESOLVER"] = "native"
 
 class ChatService:
     def __init__(self, db=None):
@@ -8,10 +12,12 @@ class ChatService:
         self._setup_gemini()
 
     def _setup_gemini(self):
-        """Configure Gemini with a strict persona to save tokens since well this is a free tier accut."""
-        load_dotenv()
+        """Configure the new Google GenAI Client with a strict persona."""
+        load_dotenv(override=True)
         api_key = os.getenv("GEMINI_API_KEY")
-        genai.configure(api_key=api_key)
+        
+        # New Google GenAI Native Client Initialization
+        self.client = genai.Client(api_key=api_key)
         
         # Instruction for the model
         self.system_instructions = (
@@ -19,33 +25,23 @@ class ChatService:
             "seeking your guidance. "
             "MANDATE: Provide authoritative, professional, and highly specific guidance on Sri Lankan "
             "universities, degree programs, and career paths. "
-            "VOICE: Direct, concierge-level helpfulness, and strictly factual. Avoid conversational filler. "
-            "IDENTITY: You are the AI Advisor. The USER is the human student. Never confuse these roles. "
+            "VOICE: Direct, concierge-level helpfulness, and strictly factual. Write in a completely natural, human-like tone. "
+            "CRITICAL: ABSOLUTELY NO EMOJIS UNDER ANY CIRCUMSTANCES. Do not use hashtags. Do not sound robotic or overly enthusiastic. "
+            "IDENTITY: You are the human-like Advisor. The USER is the human student. Never confuse these roles. "
             "SILENT KNOWLEDGE: Never reference internal datasets, CSV files, or DATABASE records. "
-            "GUARDRAILS: If a user asks non-career personal questions (e.g., 'whats my name'), politely pivot: "
-            "'I focus on academic and career advisory. How can I help with your professional goals?'"
+            "GUARDRAILS: If a user asks non-career personal questions (e.g., 'whats my name'), politely pivot."
         )
-
-        # Using models/gemma-3-1b-it as and it is light and effcient for our needs and uses fewer tokens
-        self.model = genai.GenerativeModel(
-            model_name="models/gemma-3-1b-it"
-        )
+        self.model_version = "gemma-3-27b-it"  # Generous open-weight AI model with 14,400 RPD to guarantee flawless execution!
 
     def get_academic_context(self, query):
         """Searches MongoDB for relevant academic programs and skill-gap courses from mongo db to make it cloud capable."""
         if self.db is None: return ""
         try:
-            # 1. Smarter Keyword Extraction: Include short but critical terms
-            # We keep words > 4 chars, OR specific short academic/tech terms
             critical_terms = {"bsc", "msc", "ba", "ma", "it", "cs", "ai", "law", "imb"}
-            words = [kw.lower() for kw in str(query).split() if len(kw) > 4 or kw.lower() in critical_terms]
-            
-            if not words: words = ["university", "career", "study", "job", "institute", "college", "school"]
-            
-            # Create a regex pattern for multi-keyword search
+            words = [kw.lower() for kw in str(query).split() if len(kw) > 3 or kw.lower() in critical_terms]
+            if not words: words = ["university", "career", "study", "job", "institute", "college"]
             pattern = "|".join(words)
             
-            # 2. Query Academic degrees(bsc,msc type ones)
             academic_hits = self.db.courses_academic.find({
                 "$or": [
                     {"course_title": {"$regex": pattern, "$options": "i"}},
@@ -53,7 +49,6 @@ class ChatService:
                 ]
             }).limit(5)
             
-            # 3. Query Skill Gap courses
             skill_hits = self.db.courses.find({
                 "$or": [
                     {"course_title": {"$regex": pattern, "$options": "i"}},
@@ -79,11 +74,10 @@ class ChatService:
             if not words: return ""
             pattern = "|".join(words)
             
-            job_hits = self.db.jobs.find({
+            job_hits = self.db.all_jobs.find({
                 "$or": [
                     {"title": {"$regex": pattern, "$options": "i"}},
                     {"company": {"$regex": pattern, "$options": "i"}},
-                    {"category": {"$regex": pattern, "$options": "i"}}
                 ]
             }).limit(5)
             
@@ -99,44 +93,53 @@ class ChatService:
         jobs = self.get_job_context(user_message)
         if acad: context_parts.append(f"Academic: {acad}")
         if jobs: context_parts.append(f"Live Vacancies: {jobs}")
-        if self.db is not None:
-            user = self.db.users.find_one({"_id": user_id})
-            if user: 
-                context_parts.append(f"User Profile: Skills={user.get('skills')}, Goal={user.get('target_job')}")
-        
         return " | ".join(context_parts) if context_parts else ""
 
     def get_reply(self, user_id, user_message, chat_history=None):
-        """Standard reply logic using the smart context."""
+        """Standard reply logic using the new generate_content logic mimicking start_chat."""
         try:
             facts = self.get_smart_context(user_id, user_message)
+            
+            # Collapse history block so it seamlessly patches into generate_content
+            history_str = ""
+            if chat_history and isinstance(chat_history, list):
+                history_str = "[RECENT CONVERSATION HISTORY]\n"
+                for msg in chat_history[-5:]: # Keep Context Window tight
+                    role = msg.get("role", "user")
+                    # React frontend often sends parts array, extract text
+                    text = msg.get("parts", [{}])[0].get("text", "") if type(msg.get("parts")) is list else str(msg)
+                    history_str += f"{role.upper()}: {text}\n"
+                history_str += "[END HISTORY]\n\n"
+
+            # Construct the definitive prompt
             full_prompt = (
                 f"{self.system_instructions}\n\n"
+                f"{history_str}"
                 f"{facts}\n\n"
-                f"USER: {user_message}"
+                f"CURRENT USER QUESTION: {user_message}"
             )
             
-            chat = self.model.start_chat(history=chat_history or [])
-            response = chat.send_message(full_prompt)
+            # Fire to Gem 2.5 natively
+            response = self.client.models.generate_content(
+                model=self.model_version,
+                contents=full_prompt
+            )
             return response.text
  
         except Exception as e:
-            print(f"DEBUG - AI Error: {e}")
-            return "I'm having a technical hiccup right now. Please try again in a minute!"
-
+            error_str = str(e).lower()
+            print(f"CRITICAL CHATBOT EXCEPTION: {e}")
+            if "429" in error_str or "quota" in error_str or "exhausted" in error_str:
+                return f"Google API Quota Error: {e}"
+            return f"API Exception: {e}"
 
 if __name__ == "__main__":
-    # This allows you to run the file directly for testing
     from pymongo import MongoClient
-    
-    # Setup connection from the env files
     client = MongoClient(os.getenv("MONGO_URI"))
     db = client[os.getenv("DATABASE_NAME")]
     
-    # Initialize (we'll skip the RecommendationEngine for now to keep it simple otherwise too problematic for now probably a future feature)
     service = ChatService(db=db)
-    
-    print("--- PathFinder+ Chatbot CLI Test ---")
+    print("--- PathFinder+ Chatbot (google-genai) ---")
     while True:
         user_in = input("You: ")
         if user_in.lower() in ["exit", "quit"]: break

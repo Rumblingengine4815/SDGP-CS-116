@@ -22,12 +22,20 @@ SECTORS = {
         "Business Intelligence Analyst", "Analytics Manager"
     ],
     "Business": [
-        "Product Manager", "Project Manager", "Business Analyst",
+        "Product Manager", "Business Analyst",
         "Marketing Manager", "HR Manager", "Operations Manager"
     ],
     "Engineering": [
         "Electrical Engineer", "Mechanical Engineer", "Civil Engineer",
         "Quantity Surveyor", "Project Engineer"
+    ],
+    "Design": [
+        "Graphic Designer", "UI/UX Designer", "Product Designer", 
+        "Art Director", "Creative Director", "UX Researcher"
+    ],
+    "Project Management": [
+        "Project Manager", "Scrum Master", "Agile Coach", 
+        "Delivery Manager", "Technical Program Manager"
     ]
 }
 
@@ -49,7 +57,6 @@ SKILLS = {
         ["Spark", "Hadoop", "Data Engineering"]
     ],
     "Business": [
-        ["Agile", "Scrum", "JIRA"],
         ["Product Strategy", "Roadmapping", "Stakeholder Management"],
         ["Market Research", "SEO", "Digital Marketing"],
         ["Leadership", "Team Building", "Communication"],
@@ -60,6 +67,18 @@ SKILLS = {
         ["Project Management", "Construction Safety", "Quality Control"],
         ["Circuit Design", "PCB Design", "Embedded Systems"],
         ["Structural Analysis", "Civil 3D", "Cost Estimation"]
+    ],
+    "Design": [
+        ["Figma", "Adobe XD", "Sketch"],
+        ["Photoshop", "Illustrator", "InDesign"],
+        ["User Research", "Wireframing", "Prototyping"],
+        ["Brand Identity", "Typography", "Visual Design"]
+    ],
+    "Project Management": [
+        ["JIRA", "Confluence", "Agile"],
+        ["Scrum", "Kanban", "Sprint Planning"],
+        ["Risk Management", "Stakeholder Communication", "Budgeting"],
+        ["MS Project", "Asana", "Trello"]
     ]
 }
 
@@ -104,8 +123,8 @@ def main():
     """Generate 50 mentors"""
     mentors = []
     
-    # Generate 50 unique mentors
-    for i in range(1, 51):
+    # Generate 35 unique mentors
+    for i in range(1, 36):
         mentors.append(generate_mentor(i))
     
     # Save to file

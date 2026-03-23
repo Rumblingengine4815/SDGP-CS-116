@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import traceback
 
 # Load environment variables
 load_dotenv()
@@ -356,6 +357,8 @@ def main():
         return
     
     try:
+        if mentors_path.exists():
+            upload_mentors(db, mentors_path)
         # Upload Jobs
         if jobs_path.exists():
             upload_jobs(db, jobs_path)
@@ -376,17 +379,16 @@ def main():
         upload_configs(db, config_dir, raw_dir)
         
         # Upload Metadata
-        if mentors_path.exists():
-            upload_mentors(db, mentors_path)
+       
         if progressions_path.exists():
             upload_career_paths(db, progressions_path)
         if internships_path.exists():
             upload_internships(db, internships_path)
         
-        # Upload ESCO 
-        esco_dir = raw_dir / "esco"
-        if esco_dir.exists():
-            upload_esco(db, esco_dir)
+        # Removed: ESCO was deprecated in favor of O*NET 30.2
+        # esco_dir = raw_dir / "esco"
+        # if esco_dir.exists():
+        #     upload_esco(db, esco_dir)
 
         print("\nMongoDB upload complete!")
 
@@ -395,6 +397,7 @@ def main():
         print(" Some data may have been partially uploaded. Run again to sync remaining records.")
     except Exception as e:
         print(f"\n Critical failure: {e}")
+        traceback.print_exc()
     finally:
         print("\n MongoDB Connection Closed.")
 

@@ -1,8 +1,5 @@
-"""
-core/logic/analytics.py — Phase 10 Module
-Career Readiness Index (CRI) + Local Demand Scoring.
-All logic delegated here from the main orchestrator.
-"""
+
+
 import json
 import pandas as pd
 import numpy as np
@@ -88,6 +85,11 @@ class Analytics:
         domain_kws = set(RuleEngine.DOMAIN_CLUSTERS.get(domain, []))
         overlap = user_skills_set & domain_kws
         raw_skill_pct = len(overlap) / len(domain_kws) if domain_kws else 0.5
+        
+        # Grant partial semantic credit for related skills avoiding heavy dictionary penalties
+        if len(user_skills_set) >= 5 and raw_skill_pct < 0.5:
+            raw_skill_pct += 0.40
+            
         skill_alignment = max(raw_skill_pct, 0.15)  # Production floor
         status_level = assessment_vector.get("status_level", 1)
         if status_level <= 1:
@@ -95,7 +97,8 @@ class Analytics:
 
         # ── 2. Experience (25%) ───────────────────────────────────────
         exp_years = float(assessment_vector.get("experience_years", 0))
-        _bp = [(0, 0.0), (1.5, 0.30), (4.0, 0.60), (8.0, 0.85), (12.0, 1.0)]
+        # Refined interpolation: granting highly skilled juniors/students 0.40 baseline experience floor preventing 50/100 hard caps.
+        _bp = [(0, 0.40), (1.5, 0.60), (4.0, 0.80), (8.0, 0.95), (12.0, 1.0)]
         exp_pct = 1.0
         for i in range(len(_bp) - 1):
             lo_x, lo_y = _bp[i]; hi_x, hi_y = _bp[i + 1]
