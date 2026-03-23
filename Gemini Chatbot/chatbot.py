@@ -1,15 +1,6 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 """
-PathFinder+ Career Guidance Chatbot
+PathFinder+ Career Guidance Chatbot (CLI Core)
 """
-=======
-
-#PathFinder+ Career Guidance Chatbot
->>>>>>> d46034006fbfab04e3addc49f7ed278fccc8bba9
-=======
-#PathFinder+ Career Guidance Chatbot (CLI Core)
->>>>>>> feature/website-ui
 
 import os
 from google import genai
@@ -69,40 +60,17 @@ def setup_gemini():
     print(" Gemini AI ready (via google-genai SDK)")
     return client
 
-<<<<<<< HEAD
-    # This is the chatbot's personality and rules
-    system_prompt = """
-    You are PathFinder+ chatbot, a friendly career guidance assistant for students in Sri Lanka.
-    Your job is to help users find suitable careers, courses, and job opportunities.
-
-    Rules:
-    - Be friendly, short, and helpful.
-    - If the user is given course or job data, mention those first.
-    - If no internal data is available, suggest: LinkedIn, Glassdoor, Coursera, or Udemy.
-    - Never make up job titles, salaries, or course details.
-<<<<<<< HEAD
-    - Keep answers under 100 words.
-=======
-    - Keep answers under 200 words.
->>>>>>> d46034006fbfab04e3addc49f7ed278fccc8bba9
-    """
-
-    model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
-        system_instruction=system_prompt
-    )
-    print(" Gemini AI ready")
-    return model
-=======
 system_prompt = """
 You are PathFinder+ chatbot, a friendly career guidance assistant for students in Sri Lanka.
+Your job is to help users find suitable careers, courses, and job opportunities.
+
 Rules:
 - Be friendly, short, and helpful.
 - If the user is given course or job data, mention those first.
-- Never make up job titles.
+- If no internal data is available, suggest: LinkedIn, Glassdoor, Coursera, or Udemy.
+- Never make up job titles, salaries, or course details.
 - Keep answers under 200 words.
 """
->>>>>>> feature/website-ui
 
 # Step 6: Ask the AI a question 
 def ask_gemini(client, chat_history, user_message, db):

@@ -38,11 +38,7 @@ class ChatRequest(BaseModel):
     message: str
     history: Optional[List[Dict[str, Any]]] = []
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 from fastapi import Request
->>>>>>> feature/website-ui
 import time
 
 # Rate limiting part to prevent API abuse and quick finishing of the quota
@@ -52,22 +48,14 @@ ip_last_reset: Dict[str, float] = {}
 RATE_LIMIT_SECONDS = 5.0
 MAX_REQUESTS_PER_MINUTE = 15
 
-<<<<<<< HEAD
-=======
->>>>>>> d46034006fbfab04e3addc49f7ed278fccc8bba9
-=======
->>>>>>> feature/website-ui
+
 @app.post("/api/chat")
 async def chat_with_ui(chat_req: ChatRequest, request: Request):
     """
     Endpoint that the frontend or Postman will call.
     Includes explicit IP-based Cybersecurity Rate Limiting for GenAI guards.
     """
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
     client_ip = request.client.host if request.client else "unknown"
->>>>>>> feature/website-ui
     current_time = time.time()
     
     # Check IP Quota per minute
@@ -86,11 +74,7 @@ async def chat_with_ui(chat_req: ChatRequest, request: Request):
     
     user_last_request[chat_req.user_id] = current_time
 
-<<<<<<< HEAD
-=======
->>>>>>> d46034006fbfab04e3addc49f7ed278fccc8bba9
-=======
->>>>>>> feature/website-ui
+
     try:
         reply = chat_service.get_reply(
             user_id=chat_req.user_id,

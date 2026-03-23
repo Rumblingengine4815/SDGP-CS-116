@@ -23,7 +23,7 @@ def download_onet():
                 print("Download started. Extracting ZIP archive directly into memory...")
                 with zipfile.ZipFile(io.BytesIO(response.content)) as z:
                     z.extractall(dest_dir)
-                print("✅ O*NET Database successfully harvested!")
+                print(" O*NET Database successfully harvested!")
                 return
             else:
                 print(f"Version {v} returned status code {response.status_code}. Trying next...")
@@ -31,7 +31,7 @@ def download_onet():
         except Exception as e:
             print(f"Error fetching {v}: {e}")
             
-    print("❌ Critical: Could not download any O*NET versions.")
+    print(" Critical: Could not download any O*NET versions.")
 
 if __name__ == "__main__":
     download_onet()

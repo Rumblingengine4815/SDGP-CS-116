@@ -18,6 +18,10 @@ venv/
 *.msg
 *.bak
 *.tmp
+# Local scratch scripts and temporary tests
+scratch_*.py
+temp_*.py
+test_temp*.py
 node_modules/
 .next/
 out/

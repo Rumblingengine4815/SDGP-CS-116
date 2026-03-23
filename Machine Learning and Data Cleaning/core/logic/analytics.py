@@ -1,8 +1,5 @@
-"""
-core/logic/analytics.py — Phase 10 Module
-Career Readiness Index (CRI) + Local Demand Scoring.
-All logic delegated here from the main orchestrator.
-"""
+
+
 import json
 import pandas as pd
 import numpy as np
