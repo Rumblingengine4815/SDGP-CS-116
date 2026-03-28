@@ -1,96 +1,105 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from ..database import get_db
 from ..models import User, UserProfile
 from ..schemas import UserCreate, UserLogin, UserOut, Token
-from ..auth import hash_password, verify_password, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
+from ..auth import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+    verify_token
+)
 
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 
+# 🔥 SWITCH HERE
+DEMO_MODE = True
 
-# ─── Register ────────────────────────────────────────────────
+
+# ───────────────── REGISTER ─────────────────
 
 @router.post("/register", response_model=UserOut, status_code=201)
 def register(user_data: UserCreate, db: Session = Depends(get_db)):
 
-    # 1. Check if email already exists
     existing_user = db.query(User).filter(User.email == user_data.email).first()
     if existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
-        )
+        raise HTTPException(status_code=400, detail="Email already registered")
 
-    # 2. Hash the password
     hashed = hash_password(user_data.password)
 
-    # 3. Create the user object
     new_user = User(
         name=user_data.name,
         email=user_data.email,
         hashed_password=hashed
     )
 
-    # 4. Save to database gracefully
     try:
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
 
-        # 5. Create empty profile for the user
         profile = UserProfile(user_id=new_user.id)
         db.add(profile)
         db.commit()
+
         return new_user
+
     except Exception as e:
-        print(f"Graceful Demo Fallback: Supabase Registration Intercepted. {e}")
-        from datetime import datetime
-        new_user.id = 777
-        new_user.created_at = datetime.utcnow()
-        new_user.is_active = True
-        return new_user
+        print("REGISTER ERROR:", e)
+
+        if DEMO_MODE:
+            return User(
+                id=999,
+                name=user_data.name,
+                email=user_data.email,
+                is_active=True,
+                created_at=datetime.utcnow()
+            )
+
+        raise HTTPException(status_code=500, detail="Registration failed")
 
 
-# ─── Login ───────────────────────────────────────────────────
+# ───────────────── LOGIN ─────────────────
 
 @router.post("/login", response_model=Token)
 def login(user_data: UserLogin, db: Session = Depends(get_db)):
-    # --- MOCK BYPASS FOR UNIVERSITY DEMO ---
-    if user_data.email == "user@pathfinder.com" and user_data.password == "user123":
+
+    # 🔥 Demo bypass account
+    if DEMO_MODE and user_data.email == "user@pathfinder.com" and user_data.password == "user123":
         access_token = create_access_token(
             data={"sub": user_data.email},
             expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         )
         return {"access_token": access_token, "token_type": "bearer"}
-    # ---------------------------------------
 
-    # 1. Graceful Find User / Mock Bypass
     try:
         user = db.query(User).filter(User.email == user_data.email).first()
+
         if user and not verify_password(user_data.password, user.hashed_password):
-            user = None # Force mock below if password fails
+            user = None
+
     except Exception as e:
-        print(f"Graceful Demo Fallback: Supabase Login Intercepted. {e}")
+        print("LOGIN ERROR:", e)
         user = None
 
-    if not user:
-        # Automatically generate a valid JWT anyway to ensure Demo Continuity!
+    # 🔥 Demo fallback (ONLY if enabled)
+    if DEMO_MODE and not user:
         access_token = create_access_token(
             data={"sub": user_data.email},
             expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         )
         return {"access_token": access_token, "token_type": "bearer"}
 
-    # 3. Check account is active
-    if not user.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Account is deactivated"
-        )
+    # ❌ Real validation
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    # 4. Create and return JWT token
+    if not user.is_active:
+        raise HTTPException(status_code=403, detail="Account is deactivated")
+
     access_token = create_access_token(
         data={"sub": user.email},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -99,8 +108,32 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-# ─── Get current user (protected route example) ──────────────
+# ───────────────── GET CURRENT USER ─────────────────
 
 @router.get("/me", response_model=UserOut)
 def get_me(token: str, db: Session = Depends(get_db)):
-    from ..auth import verify_token
+
+    try:
+        payload = verify_token(token)
+        email = payload.get("sub")
+
+        user = db.query(User).filter(User.email == email).first()
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        return user
+
+    except Exception as e:
+        print("GET_ME ERROR:", e)
+
+        if DEMO_MODE:
+            return User(
+                id=999,
+                name="Demo User",
+                email="demo@example.com",
+                is_active=True,
+                created_at=datetime.utcnow()
+            )
+
+        raise HTTPException(status_code=401, detail="Invalid token")
